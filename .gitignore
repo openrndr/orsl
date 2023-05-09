@@ -1,0 +1,11 @@
+application.log
+build
+out
+.idea
+.gradle
+openrndr-application.exe
+openrndr-application.ico
+ffmpeg*
+video
+runtime
+app

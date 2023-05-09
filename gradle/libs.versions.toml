@@ -1,0 +1,96 @@
+[versions]
+ksp = "1.8.21-1.0.11"
+kotlinPoet = "1.13.1"
+kotlinApi = "1.8"
+kotlinLanguage = "1.8"
+kotlin = "1.8.21"
+jvmTarget = "11"
+openrndr = { require = "[0.4.2, 0.5.0)" }
+kotlinxCoroutines = "1.6.4"
+kotlinLogging = "3.0.0"
+kotlinxSerialization = "1.5.0"
+dokka = "1.7.10"
+nebulaRelease = "17.2.1"
+gradleNexusPublish = "1.3.0"
+spek = "2.0.19"
+boofcv = "0.42"
+kluent = "1.72"
+junitJupiter = "5.9.2"
+slf4j = "2.0.7"
+libfreenect = "0.5.7-1.5.8"
+librealsense = "2.50.0-1.5.8"
+gson = "2.10.1"
+antlr = "4.12.0"
+tensorflow = "0.5.0"
+jarchivelib = "1.2.0"
+minim = "2.2.2"
+netty = "4.1.92.Final"
+rabbitcontrol = "0.3.29"
+zxing = "3.5.1"
+ktor = "2.2.4"
+jgit = "6.5.0.202303070854-r"
+javaosc = "0.8"
+
+[libraries]
+kotlin-poet = { group = "com.squareup", name = "kotlinpoet", version.ref = "kotlinPoet"}
+kotlin-poet-ksp = { group = "com.squareup", name = "kotlinpoet-ksp", version.ref = "kotlinPoet"}
+ksp-symbol-processing-api = { group = "com.google.devtools.ksp", name = "symbol-processing-api", version.ref = "ksp"}
+ksp-symbol-processing = { group = "com.google.devtools.ksp", name = "symbol-processing", version.ref = "ksp"}
+kotlin-logging = { group = "io.github.microutils", name = "kotlin-logging", version.ref = "kotlinLogging" }
+kotlin-coroutines = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-core", version.ref = "kotlinxCoroutines" }
+kotlin-serialization-json = { group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-json", version.ref = "kotlinxSerialization" }
+kotlin-serialization-core = { group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-core", version.ref = "kotlinxSerialization" }
+kotlin-compiler-embeddable  = { group = "org.jetbrains.kotlin", name = "kotlin-compiler-embeddable", version.ref = "kotlin" }
+kotlin-stdlib = { group = "org.jetbrains.kotlin", name = "kotlin-stdlib", version.ref = "kotlin" }
+kotlin-test = { group = "org.jetbrains.kotlin", name = "kotlin-test", version.ref = "kotlin" }
+kotlin-reflect = { group = "org.jetbrains.kotlin", name = "kotlin-reflect", version.ref = "kotlin" }
+kotlin-scriptingJvm = { group = "org.jetbrains.kotlin", name = "kotlin-scripting-jvm", version.ref = "kotlin" }
+kotlin-scriptingJvmHost = { group = "org.jetbrains.kotlin", name = "kotlin-scripting-jvm-host", version.ref = "kotlin" }
+kotlin-scriptingJSR223 = { group = "org.jetbrains.kotlin", name = "kotlin-scripting-jsr223", version.ref = "kotlin" }
+kotlin-gradle-plugin = { group = "org.jetbrains.kotlin", name = "kotlin-gradle-plugin", version.ref = "kotlin" }
+kotlin-serialization-gradle-plugin = { group = "org.jetbrains.kotlin", name = "kotlin-serialization", version.ref = "kotlin" }
+dokka-gradle-plugin = { group = "org.jetbrains.dokka", name = "dokka-gradle-plugin", version.ref = "dokka" }
+
+openrndr-application = { group = "org.openrndr", name = "openrndr-application", version.ref = "openrndr" }
+openrndr-extensions = { group = "org.openrndr", name = "openrndr-extensions", version.ref = "openrndr" }
+openrndr-math = { group = "org.openrndr", name = "openrndr-math", version.ref = "openrndr" }
+openrndr-shape = { group = "org.openrndr", name = "openrndr-shape", version.ref = "openrndr" }
+openrndr-draw = { group = "org.openrndr", name = "openrndr-draw", version.ref = "openrndr" }
+openrndr-event = { group = "org.openrndr", name = "openrndr-event", version.ref = "openrndr" }
+openrndr-filter = { group = "org.openrndr", name = "openrndr-filter", version.ref = "openrndr" }
+openrndr-dialogs = { group = "org.openrndr", name = "openrndr-dialogs", version.ref = "openrndr" }
+openrndr-ffmpeg = { group = "org.openrndr", name = "openrndr-ffmpeg", version.ref = "openrndr" }
+openrndr-svg = { group = "org.openrndr", name = "openrndr-svg", version.ref = "openrndr" }
+openrndr-gl3-core = { group = "org.openrndr", name = "openrndr-gl3", version.ref = "openrndr" }
+
+tensorflow = { group = "org.tensorflow", name = "tensorflow-core-api", version.ref = "tensorflow" }
+boofcv = { group = "org.boofcv", name = "boofcv-core", version.ref = "boofcv" }
+libfreenect = { group = "org.bytedeco", name = "libfreenect", version.ref = "libfreenect" }
+librealsense = { group = "org.bytedeco", name = "librealsense2", version.ref = "librealsense" }
+jarchivelib = { group = "org.rauschig", name = "jarchivelib", version.ref = "jarchivelib" }
+minim = { group = "net.compartmental.code", name = "minim", version.ref = "minim" }
+netty-all = { group = "io.netty", name = "netty-all", version.ref = "netty" }
+rabbitcontrol-rcp = { group = "cc.rabbitcontrol", name = "rcp", version.ref = "rabbitcontrol" }
+zxing-core = { group = "com.google.zxing", name = "core", version.ref = "zxing" }
+ktor-server-core = { group = "io.ktor", name = "ktor-server-core", version.ref = "ktor" }
+ktor-server-netty = { group = "io.ktor", name = "ktor-server-netty", version.ref = "ktor" }
+jgit = { group = "org.eclipse.jgit", name = "org.eclipse.jgit", version.ref = "jgit" }
+javaosc-core = { group = "com.illposed.osc", name = "javaosc-core", version.ref = "javaosc" }
+gson = { group = "com.google.code.gson", name = "gson", version.ref = "gson" }
+antlr-core = { group = "org.antlr", name = "antlr4", version.ref = "antlr" }
+antlr-runtime = { group = "org.antlr", name = "antlr4-runtime", version.ref = "antlr" }
+
+jupiter-api = { group = "org.junit.jupiter", name = "junit-jupiter-api", version.ref = "junitJupiter" }
+jupiter-engine = { group = "org.junit.jupiter", name = "junit-jupiter-engine", version.ref = "junitJupiter" }
+spek-dsl = { group = "org.spekframework.spek2", name = "spek-dsl-jvm", version.ref = "spek" }
+spek-junit5 = { group = "org.spekframework.spek2", name = "spek-runner-junit5", version.ref = "spek" }
+kluent = { group = "org.amshove.kluent", name = "kluent", version.ref = "kluent" }
+slf4j-simple = { group = "org.slf4j", name = "slf4j-simple", version.ref = "slf4j" }
+
+[plugins]
+kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
+nebula-release = { id = "nebula.release", version.ref = "nebulaRelease" }
+gradle-nexus-publish = { id = "io.github.gradle-nexus.publish-plugin", version.ref = "gradleNexusPublish" }
+
+[bundles]
+jupiter = ["jupiter-api", "jupiter-engine"]
