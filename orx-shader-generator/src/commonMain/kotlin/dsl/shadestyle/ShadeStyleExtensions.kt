@@ -4,7 +4,6 @@ import org.openrndr.draw.ShadeStyle
 import org.openrndr.extra.shadergenerator.phrases.PhraseResolver
 import org.openrndr.extra.shadergenerator.phrases.dsl.ArrayPhrases
 import org.openrndr.extra.shadergenerator.phrases.dsl.ArrayPhrasesIndex
-import org.openrndr.extra.shadergenerator.phrases.dsl.FragmentTransformBuilder
 import org.openrndr.extra.shadergenerator.phrases.phrases.*
 
 private fun preprocessor():PhraseResolver {
@@ -22,7 +21,7 @@ private fun preprocessor():PhraseResolver {
 
 fun ShadeStyle.fragmentTransform(f: FragmentTransformBuilder.() -> Unit) {
     val prep = preprocessor()
-    val builder = FragmentTransformBuilder(prep)
+    val builder = FragmentTransformBuilder()
     builder.f()
     fragmentPreamble = prep.preprocessShader(builder.preamble)
     fragmentTransform = prep.preprocessShader(builder.code)

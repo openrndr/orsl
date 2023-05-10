@@ -3,12 +3,7 @@ package org.openrndr.extra.shadergenerator.phrases.dsl
 import kotlin.reflect.KProperty
 
 class OutputProperty<T>(val generator: Generator) {
-    operator fun getValue(any: Any?, property: KProperty<*>): Symbol<T> {
-        return object: Symbol<T> {
-            override val name: String
-                get() = property.name
-        }
-    }
+    operator fun getValue(any: Any?, property: KProperty<*>): Symbol<T> = symbol(property.name)
 
     operator fun setValue(any: Any?, property: KProperty<*>, value: Symbol<T>) {
         generator.emit("${property.name} = ${value.name};")
@@ -16,22 +11,12 @@ class OutputProperty<T>(val generator: Generator) {
 }
 
 class ConstantProperty<T> {
-    operator fun getValue(any: Any?, property: KProperty<*>): Symbol<T> {
-        return object: Symbol<T> {
-            override val name: String
-                get() = property.name
-        }
-    }
+    operator fun getValue(any: Any?, property: KProperty<*>): Symbol<T> = symbol(property.name)
 }
 
 class VariableProperty<T>(val generator: Generator, val glslType:String) {
     private var declarationEmitted = false
-    operator fun getValue(any: Any?, property: KProperty<*>): Symbol<T> {
-        return object: Symbol<T> {
-            override val name: String
-                get() = property.name
-        }
-    }
+    operator fun getValue(any: Any?, property: KProperty<*>): Symbol<T> = symbol(property.name)
 
     operator fun setValue(any: Any?, property: KProperty<*>, value: Symbol<T>) {
         if (!declarationEmitted) {
@@ -57,7 +42,6 @@ class ArrayVariableProperty<T>(val generator: Generator, val length: Int, val gl
         }
     }
     operator fun setValue(any: Any?, property: KProperty<*>, value: ArraySymbol<T>) {
-
         generator.emit("${property.name} = ${value.name};")
     }
 
@@ -71,15 +55,8 @@ class ArrayVariableProperty<T>(val generator: Generator, val length: Int, val gl
 }
 
 class ValueProperty<T> {
-    operator fun getValue(any: Any?, property: KProperty<*>): Symbol<T> {
-        return object : Symbol<T> {
-            override val name: String
-                get() = property.name
-        }
-    }
+    operator fun getValue(any: Any?, property: KProperty<*>): Symbol<T> = symbol(property.name)
 }
-
-
 
 class ArrayValueProperty<T>(
     val generator: Generator, val length: Int, val glslType:String) {

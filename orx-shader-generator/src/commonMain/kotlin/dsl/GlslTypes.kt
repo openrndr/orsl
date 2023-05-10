@@ -14,7 +14,21 @@ inline fun <reified T> zero(): String {
         Vector4::class -> "vec4(0.0)"
         IntVector4::class -> "ivec4(0)"
         else -> error("static zero not supported for '${T::class}")
+    }
+}
 
+inline fun <reified T> one(): String {
+    return when(T::class) {
+        Boolean::class -> "true"
+        Double::class -> "1.0"
+        Int::class -> "1"
+        Vector2::class -> "vec2(1.0)"
+        IntVector2::class -> "ivec2(1)"
+        Vector3::class -> "vec3(1.0)"
+        IntVector3::class -> "ivec3(1)"
+        Vector4::class -> "vec4(1.0)"
+        IntVector4::class -> "ivec4(1)"
+        else -> error("static one not supported for '${T::class}")
     }
 }
 

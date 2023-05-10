@@ -8,10 +8,27 @@ interface Symbol<T> {
     val name: String
 }
 
+
+fun <T> symbol(name: String) = object : Symbol<T> {
+    override val name = name
+}
+
 interface ArraySymbol<T> {
     val name: String
     val length: Int
     val type: String
+}
+
+fun <T> arraySymbol(name: String, length: Int, type: String) = object : ArraySymbol<T> {
+    override val name = name
+    override val length = length
+    override val type = type
+}
+
+inline fun <reified T> arraySymbol(name: String, length:Int) = object : ArraySymbol<T> {
+    override val name = name
+    override val length = length
+    override val type = staticType<T>()
 }
 
 data class FunctionSymbol1<T0, R>(

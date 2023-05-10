@@ -1,27 +1,12 @@
 package org.openrndr.extra.shadergenerator.phrases.dsl
 
-import org.openrndr.extra.shadergenerator.phrases.PhraseResolver
-import org.openrndr.extra.shadergenerator.phrases.dsl.functions.ArrayFunctions
-import org.openrndr.extra.shadergenerator.phrases.dsl.functions.Functions
-import org.openrndr.extra.shadergenerator.phrases.dsl.functions.Sampler2DFunctions
-import org.openrndr.extra.shadergenerator.phrases.phrases.HashPhrasesFunctions
-import org.openrndr.extra.shadergenerator.phrases.phrases.SimplexPhrasesFunctions
+import org.openrndr.extra.shadergenerator.phrases.dsl.functions.*
 import org.openrndr.math.*
 import kotlin.reflect.KProperty
 
-open class ShaderBuilder(val resolver: PhraseResolver) : Generator, Functions, ArrayFunctions, Sampler2DFunctions {
+open class ShaderBuilder : Generator, Functions, ArrayFunctions, Sampler2DFunctions, IntFunctions, IntVectorFunctions {
     var code = ""
     var preamble = ""
-    override fun emitSymbol(symbol: String, f: () -> String) {
-        emitPreamble("#pragma import $symbol")
-        resolver.functions[symbol] = f
-    }
-
-    override fun emitLocalSymbol(symbol: String, f: () -> String) {
-        emit("#pragma import $symbol")
-        resolver.functions[symbol] = f
-    }
-
 
     override fun emit(code: String) {
         this.code += code + "\n"
@@ -37,10 +22,39 @@ open class ShaderBuilder(val resolver: PhraseResolver) : Generator, Functions, A
         return range
     }
 
-    infix fun Symbol<Int>.until(to: Symbol<Int>): Range {
-        val range = Range(startP = this, endP = to)
-        return range
+
+    infix fun Symbol<Int>.until(to: Symbol<Int>): Range = Range(startP = this, endP = to)
+
+    operator fun Symbol<Int>.rangeTo(to: Symbol<Int>): Range = Range(startP = this, endP = to + symbol<Int>("1"))
+    operator fun Int.rangeTo(to: Symbol<Int>): Range = Range(startV = this, endP = to + symbol<Int>("1"))
+    operator fun Symbol<Int>.rangeTo(to: Int): Range = Range(startP = this, endV = to - 1)
+
+    operator fun Int.provideDelegate(thisRef: Any?, property: KProperty<*>) : ConstantProperty<Int> {
+        emit("int ${property.name} = $this;")
+        return ConstantProperty()
     }
+
+    inline operator fun <reified T:EuclideanVector<T>> T.provideDelegate(thisRef: Any?, property: KProperty<*>) : ConstantProperty<T> {
+        emit("${staticType<T>()} ${property.name} = ${glsl(this)};")
+        return ConstantProperty()
+    }
+
+    operator fun Matrix44.provideDelegate(thisRef: Any?, property: KProperty<*>) : ConstantProperty<Matrix44> {
+        emit("mat4 ${property.name} = ${glsl(this)};")
+        return ConstantProperty()
+    }
+
+    operator fun Matrix33.provideDelegate(thisRef: Any?, property: KProperty<*>) : ConstantProperty<Matrix33> {
+        emit("int ${property.name} = $this;")
+        return ConstantProperty()
+    }
+
+
+    operator fun Double.provideDelegate(thisRef: Any?, property: KProperty<*>) : ConstantProperty<Double> {
+        emit("float ${property.name} = $this;")
+        return ConstantProperty()
+    }
+
 
 
     inline operator fun <reified T> ArraySymbol<T>.provideDelegate(
@@ -56,11 +70,9 @@ open class ShaderBuilder(val resolver: PhraseResolver) : Generator, Functions, A
     }
 
     inline operator fun <reified T> Symbol<T>.provideDelegate(thisRef: Any?, property: KProperty<*>): ValueProperty<T> {
-        val hash = (property.name.hashCode() * 31 + staticType<T>().hashCode()).toUInt()
-        emitLocalSymbol("DELEGATE_$hash") { "${staticType<T>()} ${property.name} = ${name};" }
+        emit("${staticType<T>()} ${property.name} = ${name};")
         return ValueProperty()
     }
-
 
     override fun emitPreamble(code: String) {
         this.preamble += code + "\n"
@@ -76,79 +88,121 @@ open class ShaderBuilder(val resolver: PhraseResolver) : Generator, Functions, A
         return ArrayVariableProperty(this@ShaderBuilder, length, glslType)
     }
 
-    inline fun <reified T> array(length: Int): ArraySymbol<T> {
-        val glslType = staticType<T>()
-        return object : ArraySymbol<T> {
-            override val name = ""
-            override val length = length
-            override val type = glslType
-        }
-    }
+    inline fun <reified T> array(length: Int): ArraySymbol<T> = arraySymbol("", length)
 
     inline fun <reified T> constant(): ConstantProperty<T> {
         return ConstantProperty()
     }
-
 
     fun <T> output(): OutputProperty<T> {
         return OutputProperty(this@ShaderBuilder)
     }
 
     class FunctionProperty<T, R>(
+        name: String,
         val generator: Generator,
-        val parameter0Type: String,
-        val returnType: String,
-        f: (Symbol<T>) -> Symbol<R>
+        parameter0Type: String,
+        returnType: String,
+        f: ShaderBuilder.(Symbol<T>) -> Symbol<R>
     ) {
-
-        var emittedFunction = false
-        val id = object : Symbol<T> {
-            override val name: String
-                get() = "$0"
-        }
-        val resultSym = f(id)
-        operator fun getValue(any: Any?, property: KProperty<*>): (Symbol<T>) -> FunctionSymbol1<T, R> {
-            if (!emittedFunction) {
-                generator.emitSymbol("${property.name}") {
-                    """$returnType ${property.name}($parameter0Type x) { 
-    return ${resultSym.name.replace("$0", "x")};
+        init {
+            val sb = ShaderBuilder()
+            val resultSym = sb.f(symbol("$0"))
+            generator.emitPreamble(
+                """$returnType ${name}($parameter0Type __x__) { 
+${sb.code.replace("$0", "__x__").prependIndent("    ")}                    
+    return ${resultSym.name.replace("$0", "__x__")};
 }"""
-                }
-                emittedFunction = true
-            }
+            )
+        }
 
-            return { x ->
-                FunctionSymbol1(p0 = x, function = "${property.name}($0)")
-            }
-
+        operator fun getValue(any: Any?, property: KProperty<*>): (Symbol<T>) -> FunctionSymbol1<T, R> {
+            return { x -> FunctionSymbol1(p0 = x, function = "${property.name}($0)") }
         }
     }
 
-    inline fun <reified T, reified R> function(noinline f: (Symbol<T>) -> Symbol<R>): FunctionProperty<T, R> {
-        val ttype = staticType<T>()
-        val rtype = staticType<R>()
-        return FunctionProperty(this@ShaderBuilder, parameter0Type = ttype, returnType = rtype, f)
+    class FunctionPropertyCapture1<T, R>(
+        name: String,
+        private val generator: Generator,
+        capture0Type: String,
+        private val capture0Name: String,
+        parameter0Type: String,
+        returnType: String,
+        f: ShaderBuilder.(Symbol<T>) -> Symbol<R>
+    ) {
+        init {
+            val sb = ShaderBuilder()
+            generator.emitPreamble(
+                """$returnType ${name}($capture0Type $capture0Name, $parameter0Type x_) { 
+${sb.code.prependIndent("    ")}                    
+    return ${sb.f(symbol("$0")).name.replace("$0", "x_")};
+}"""
+            )
+        }
+
+        operator fun getValue(any: Any?, property: KProperty<*>): (Symbol<T>) -> FunctionSymbol1<T, R> =
+            { x -> FunctionSymbol1(p0 = x, function = "${property.name}(${capture0Name}, $0)") }
     }
 
+    class FunctionPropertyProvider<T, R>(
+        private val generator: Generator,
+        private val parameter0Type: String,
+        private val returnType: String,
+        private val f: ShaderBuilder.(Symbol<T>) -> Symbol<R>
+    ) {
+        operator fun provideDelegate(any: Any?, property: KProperty<*>): FunctionProperty<T, R> =
+            FunctionProperty(property.name, generator, parameter0Type, returnType, f)
+    }
+
+    class FunctionPropertyProviderCapture1<T, R>(
+        private val generator: Generator,
+        private val capture0Type: String,
+        private val capture0Name: String,
+        private val parameter0Type: String,
+        private val returnType: String,
+        private val f: ShaderBuilder.(Symbol<T>) -> Symbol<R>
+    ) {
+        operator fun provideDelegate(any: Any?, property: KProperty<*>): FunctionPropertyCapture1<T, R> {
+            return FunctionPropertyCapture1(
+                property.name,
+                generator,
+                capture0Type,
+                capture0Name,
+                parameter0Type,
+                returnType,
+                f
+            )
+        }
+    }
+
+    inline fun <reified T, reified R> function(noinline f: ShaderBuilder.(Symbol<T>) -> Symbol<R>): FunctionPropertyProvider<T, R> =
+        FunctionPropertyProvider(
+            this@ShaderBuilder,
+            parameter0Type = staticType<T>(),
+            returnType = staticType<R>(),
+            f
+        )
+
+    inline fun <reified C0, reified T, reified R> function(
+        capture0: Symbol<C0>,
+        noinline f: ShaderBuilder.(Symbol<T>) -> Symbol<R>
+    ): FunctionPropertyProviderCapture1<T, R> = FunctionPropertyProviderCapture1(
+        this@ShaderBuilder, staticType<C0>(), capture0.name,
+        parameter0Type = staticType<T>(),
+        returnType = staticType<R>(), f
+    )
 
     inline fun <reified R> BoxRange2.weightedAverageBy(
         noinline itemFunction: (x: Symbol<IntVector2>) -> FunctionSymbol1<IntVector2, R>,
         noinline weightFunction: (x: Symbol<IntVector2>) -> FunctionSymbol1<IntVector2, Double>
     ): Symbol<R> {
-
-        val id = object : Symbol<IntVector2> {
-            override val name: String
-                get() = "$0"
-        }
+        val id = symbol<IntVector2>("$0")
         val itemFunctionId = itemFunction(id)
         val weightFunctionId = weightFunction(id)
         val returnType = staticType<R>()
+        val hash = hash(itemFunctionId.name, weightFunctionId.name, returnType)
 
-        var thash = itemFunctionId.name.hashCode()
-        thash = thash * 31 + weightFunctionId.name.hashCode()
-        val hash = thash.toUInt()
-
-        emitSymbol("weightedAverageBy_${hash}") {
+        emitPreamble(
             """$returnType weightedAverageBy_${hash}(int startX, int endX, int startY, int endY) {
     $returnType sum = ${zero<R>()};
     float weight = 0.0;
@@ -160,26 +214,20 @@ open class ShaderBuilder(val resolver: PhraseResolver) : Generator, Functions, A
     }
     return sum / weight;
 }"""
-        }
+        )
         val startX = xrange.startP?.name ?: xrange.startV?.toString() ?: error("no startX")
         val startY = yrange.startP?.name ?: yrange.startV?.toString() ?: error("no startY")
         val endX = xrange.endP?.name ?: xrange.endV?.toString() ?: error("no endX")
         val endY = yrange.endP?.name ?: yrange.endV?.toString() ?: error("no endY")
-        return object : Symbol<R> {
-            override val name = "weightedAverageBy_${hash}($startX, $endX, $startY, $endY)"
-        }
+        return symbol("weightedAverageBy_${hash}($startX, $endX, $startY, $endY)")
     }
 
     inline fun <reified R> BoxRange2.sumBy(noinline function: (x: Symbol<IntVector2>) -> FunctionSymbol1<IntVector2, R>): Symbol<R> {
-        val hash = (function.hashCode() * 31 + this.hashCode()).toUInt()
-        val id = object : Symbol<IntVector2> {
-            override val name: String
-                get() = "$0"
-        }
+        val id = symbol<IntVector2>("$0")
         val functionId = function(id)
         val returnType = staticType<R>()
-
-        emitSymbol("sumBy_${hash}") {
+        val hash = hash(functionId.name, this, returnType)
+        emit(
             """$returnType sumBy_${hash}(int startX, int endX, int startY, int endY) {
     $returnType sum = ${zero<R>()};
     for (int j = startY; j < endY; ++j) {
@@ -189,14 +237,13 @@ open class ShaderBuilder(val resolver: PhraseResolver) : Generator, Functions, A
     }
     return sum;
 }"""
-        }
-        val startX = xrange.startP?.name ?: xrange.startV?.toString() ?: error("no start")
-        val startY = yrange.startP?.name ?: yrange.startV?.toString() ?: error("no start")
-        val endX = xrange.endP?.name ?: xrange.endV?.toString() ?: error("no start")
-        val endY = yrange.endP?.name ?: yrange.endV?.toString() ?: error("no start")
-        return object : Symbol<R> {
-            override val name = "sumBy_${hash}($startX, $endX, $startY, $endY)"
-        }
+        )
+        val startX = xrange.startP?.name ?: xrange.startV?.toString() ?: error("no startX")
+        val startY = yrange.startP?.name ?: yrange.startV?.toString() ?: error("no startY")
+        val endX = xrange.endP?.name ?: xrange.endV?.toString() ?: error("no endX")
+        val endY = yrange.endP?.name ?: yrange.endV?.toString() ?: error("no endY")
+
+        return symbol("sumBy_${hash}($startX, $endX, $startY, $endY)")
     }
 
     inline fun <reified R> Range.sumBy(noinline function: (x: Symbol<Int>) -> FunctionSymbol1<Int, R>): Symbol<R> {
@@ -206,12 +253,9 @@ open class ShaderBuilder(val resolver: PhraseResolver) : Generator, Functions, A
         }
         val functionId = function(id)
         val returnType = staticType<R>()
+        val hash = hash(functionId.name, returnType)
 
-        var thash = functionId.name.hashCode()
-        thash = thash * 31 + returnType.hashCode()
-        val hash = thash.toUInt()
-
-        emitSymbol("sumBy_${hash}") {
+        emitPreamble(
             """$returnType sumBy_${hash}(int start, int end) {
     $returnType sum = ${zero<R>()}; 
     for (int i = start; i < end; ++i) {
@@ -219,29 +263,20 @@ open class ShaderBuilder(val resolver: PhraseResolver) : Generator, Functions, A
     }
     return sum;
 }"""
-        }
+        )
         val start = startP?.name ?: startV?.toString() ?: error("no start")
         val end = endP?.name ?: endV?.toString() ?: error("no end")
-        return object : Symbol<R> {
-            override val name = "sumBy_${hash}($start, $end)"
-        }
+        return symbol("sumBy_${hash}($start, $end)")
     }
 
     inline fun <reified T, reified R> ArraySymbol<T>.map(noinline function: (x: Symbol<T>) -> FunctionSymbol1<T, R>): ArraySymbol<R> {
-        val id = object : Symbol<T> {
-            override val name: String
-                get() = "$0"
-        }
+        val id = symbol<T>("$0")
         val functionId = function(id)
         val returnType = staticType<R>()
         val inputType = staticType<T>()
+        val hash = hash(functionId.name, returnType, inputType)
 
-        var thash = functionId.name.hashCode()
-        thash = thash * 31 + returnType.hashCode()
-        thash = thash * 31 + inputType.hashCode()
-        val hash = thash.toUInt()
-
-        emitSymbol("map_${hash}") {
+        emitPreamble(
             """$returnType[${length}] map_${hash}($inputType x[${length}]) {
     $returnType[$length] y;
     for (int i = 0; i < $length; ++i) {
@@ -249,7 +284,7 @@ open class ShaderBuilder(val resolver: PhraseResolver) : Generator, Functions, A
     }
     return y;
 }"""
-        }
+        )
         return object : ArraySymbol<R> {
             override val name = "map_${hash}(${this@map.name})"
             override val length = this@map.length
@@ -258,38 +293,3 @@ open class ShaderBuilder(val resolver: PhraseResolver) : Generator, Functions, A
     }
 }
 
-open class ShadeStyleBuilder(resolver: PhraseResolver) : ShaderBuilder(resolver) {
-    class Parameter<T> {
-        operator fun getValue(any: Any?, property: KProperty<*>): Symbol<T> {
-            return object : Symbol<T> {
-                override val name: String
-                    get() = property.name
-            }
-        }
-    }
-
-    fun <T> parameter(): Parameter<T> {
-        return Parameter()
-    }
-}
-
-class FragmentTransformBuilder(resolver: PhraseResolver) : ShadeStyleBuilder(resolver), HashPhrasesFunctions,
-    SimplexPhrasesFunctions {
-    var color by output<Vector4>()
-    var x_fill by output<Vector4>()
-    var x_stroke by output<Vector4>()
-
-    val v_worldNormal by variable<Vector3>()
-    val v_viewNormal by variable<Vector3>()
-    val v_worldPosition by variable<Vector3>()
-    val v_viewPosition by variable<Vector3>()
-    val v_clipPosition by variable<Vector4>()
-    val v_modelNormalMatrix by variable<Matrix44>()
-
-    val c_boundsPosition by variable<Vector3>()
-    val c_boundsSize by variable<Vector3>()
-    val c_screenPosition by variable<Vector2>()
-    val c_contourPosition by variable<Double>()
-    val c_instance by variable<Int>()
-    val c_element by variable<Int>()
-}
