@@ -1,0 +1,54 @@
+package org.openrndr.extra.shadergenerator.phrases.dsl.functions
+
+import org.openrndr.extra.shadergenerator.phrases.dsl.FunctionSymbol1
+import org.openrndr.extra.shadergenerator.phrases.dsl.Symbol
+import org.openrndr.extra.shadergenerator.phrases.dsl.functionSymbol
+import org.openrndr.math.Vector2
+import org.openrndr.math.Vector3
+import org.openrndr.math.Vector4
+import kotlin.jvm.JvmName
+
+@Suppress("INAPPLICABLE_JVM_NAME")
+interface Vector4Functions {
+    @JvmName("cosSv4")
+    fun cos(x: Symbol<Vector4>): Symbol<Vector4> = functionSymbol(x, "cos($0)")
+
+    @JvmName("sinSv4")
+    fun sin(x: Symbol<Vector4>): Symbol<Vector4> = functionSymbol(x, "sin($0)")
+
+    @JvmName("absSv4")
+    fun abs(x: Symbol<Vector4>): Symbol<Vector4> = functionSymbol(x, "abs($0)")
+
+    @JvmName("sqrtSv4")
+    fun sqrt(x: Symbol<Vector4>): Symbol<Vector4> = functionSymbol(x, "sqrt($0)")
+
+    @JvmName("powSv4Sv4")
+    fun pow(x: Symbol<Vector4>, y: Symbol<Vector4>): Symbol<Vector4> = functionSymbol(x, y, "pow($0, $1)")
+
+    val Symbol<Vector4>.length: Symbol<Double>
+        @JvmName("lengthSv4")
+        get() = functionSymbol(this, "length($0)")
+    val Symbol<Vector4>.normalized: Symbol<Vector4>
+        @JvmName("normalizedSv4")
+        get() = functionSymbol(this, "normalize($0)")
+    val Symbol<Vector4>.x: Symbol<Double>
+        @JvmName("xSv4")
+        get() = functionSymbol(this, "$0.x")
+    val Symbol<Vector4>.y: Symbol<Double>
+        @JvmName("ySv4")
+        get() = functionSymbol(this, "$0.y")
+    val Symbol<Vector4>.xy: Symbol<Vector2>
+        @JvmName("xySv4")
+        get() = functionSymbol(this, "$0.xy")
+    val Symbol<Vector4>.yz: Symbol<Vector2>
+        @JvmName("yzSv4")
+        get() = functionSymbol(this, "$0.yz")
+
+    fun Vector4(xy: Symbol<Vector2>, zw: Symbol<Vector2>) : Symbol<Vector4> =
+        functionSymbol(xy, zw, "vec4($0, $1)")
+
+    fun Vector3(xyz: Symbol<Vector3>, w: Symbol<Vector2>) : Symbol<Vector4> =
+        functionSymbol(xyz, w, "vec4($0, $1)")
+
+
+}

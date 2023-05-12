@@ -29,7 +29,7 @@ fun main() {
                         val p_window by parameter<Int>()
 
                         val f by function<IntVector2, _> {
-                            p_texture[va_texCoord0 + it * 0.1  * cos(p_time)]
+                            p_texture[va_texCoord0 + (it * 0.1  * cos(p_time))]
                         }
 
                         val w by function<IntVector2, _> { (it * 1.0).length }

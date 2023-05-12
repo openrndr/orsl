@@ -1,10 +1,14 @@
 package org.openrndr.extra.shadergenerator.phrases.dsl
 
 import org.openrndr.extra.shadergenerator.phrases.dsl.functions.*
+import org.openrndr.extra.shadergenerator.phrases.dsl.structs.Struct
+import org.openrndr.extra.shadergenerator.phrases.dsl.structs.StructSymbol
 import org.openrndr.math.*
 import kotlin.reflect.KProperty
 
-open class ShaderBuilder : Generator, Functions, ArrayFunctions, Sampler2DFunctions, IntFunctions, IntVectorFunctions {
+open class ShaderBuilder : Generator, Functions, DoubleFunctions, ArrayFunctions, Sampler2DFunctions, IntFunctions,
+    Vector2Functions, Vector3Functions, Vector4Functions,
+    IntVector2Functions {
     var code = ""
     var preamble = ""
 
@@ -29,32 +33,34 @@ open class ShaderBuilder : Generator, Functions, ArrayFunctions, Sampler2DFuncti
     operator fun Int.rangeTo(to: Symbol<Int>): Range = Range(startV = this, endP = to + symbol<Int>("1"))
     operator fun Symbol<Int>.rangeTo(to: Int): Range = Range(startP = this, endV = to - 1)
 
-    operator fun Int.provideDelegate(thisRef: Any?, property: KProperty<*>) : ConstantProperty<Int> {
+    operator fun Int.provideDelegate(thisRef: Any?, property: KProperty<*>): ConstantProperty<Int> {
         emit("int ${property.name} = $this;")
-        return ConstantProperty()
+        return ConstantProperty("int")
     }
 
-    inline operator fun <reified T:EuclideanVector<T>> T.provideDelegate(thisRef: Any?, property: KProperty<*>) : ConstantProperty<T> {
+    inline operator fun <reified T : EuclideanVector<T>> T.provideDelegate(
+        thisRef: Any?,
+        property: KProperty<*>
+    ): ConstantProperty<T> {
         emit("${staticType<T>()} ${property.name} = ${glsl(this)};")
-        return ConstantProperty()
+        return ConstantProperty(staticType<T>())
     }
 
-    operator fun Matrix44.provideDelegate(thisRef: Any?, property: KProperty<*>) : ConstantProperty<Matrix44> {
+    operator fun Matrix44.provideDelegate(thisRef: Any?, property: KProperty<*>): ConstantProperty<Matrix44> {
         emit("mat4 ${property.name} = ${glsl(this)};")
-        return ConstantProperty()
+        return ConstantProperty("mat4")
     }
 
-    operator fun Matrix33.provideDelegate(thisRef: Any?, property: KProperty<*>) : ConstantProperty<Matrix33> {
-        emit("int ${property.name} = $this;")
-        return ConstantProperty()
+    operator fun Matrix33.provideDelegate(thisRef: Any?, property: KProperty<*>): ConstantProperty<Matrix33> {
+        emit("mat3 ${property.name} = $this;")
+        return ConstantProperty("mat3")
     }
 
 
-    operator fun Double.provideDelegate(thisRef: Any?, property: KProperty<*>) : ConstantProperty<Double> {
+    operator fun Double.provideDelegate(thisRef: Any?, property: KProperty<*>): ConstantProperty<Double> {
         emit("float ${property.name} = $this;")
-        return ConstantProperty()
+        return ConstantProperty("float")
     }
-
 
 
     inline operator fun <reified T> ArraySymbol<T>.provideDelegate(
@@ -70,8 +76,8 @@ open class ShaderBuilder : Generator, Functions, ArrayFunctions, Sampler2DFuncti
     }
 
     inline operator fun <reified T> Symbol<T>.provideDelegate(thisRef: Any?, property: KProperty<*>): ValueProperty<T> {
-        emit("${staticType<T>()} ${property.name} = ${name};")
-        return ValueProperty()
+        emit("$type ${property.name} = ${name};")
+        return ValueProperty(type)
     }
 
     override fun emitPreamble(code: String) {
@@ -88,26 +94,28 @@ open class ShaderBuilder : Generator, Functions, ArrayFunctions, Sampler2DFuncti
         return ArrayVariableProperty(this@ShaderBuilder, length, glslType)
     }
 
+
     inline fun <reified T> array(length: Int): ArraySymbol<T> = arraySymbol("", length)
 
+
     inline fun <reified T> constant(): ConstantProperty<T> {
-        return ConstantProperty()
+        return ConstantProperty(staticType<T>())
     }
 
-    fun <T> output(): OutputProperty<T> {
-        return OutputProperty(this@ShaderBuilder)
+    inline fun <reified T> output(): OutputProperty<T> {
+        return OutputProperty(this@ShaderBuilder, staticType<T>())
     }
 
     class FunctionProperty<T, R>(
         name: String,
-        val generator: Generator,
+        private val generator: Generator,
         parameter0Type: String,
-        returnType: String,
-        f: ShaderBuilder.(Symbol<T>) -> Symbol<R>
+        private val returnType: String,
+        f: ShaderBuilder.(Symbol<T>) -> Symbol<R>,
     ) {
         init {
             val sb = ShaderBuilder()
-            val resultSym = sb.f(symbol("$0"))
+            val resultSym = sb.f(symbol("$0", "dc"))
             generator.emitPreamble(
                 """$returnType ${name}($parameter0Type __x__) { 
 ${sb.code.replace("$0", "__x__").prependIndent("    ")}                    
@@ -117,7 +125,32 @@ ${sb.code.replace("$0", "__x__").prependIndent("    ")}
         }
 
         operator fun getValue(any: Any?, property: KProperty<*>): (Symbol<T>) -> FunctionSymbol1<T, R> {
-            return { x -> FunctionSymbol1(p0 = x, function = "${property.name}($0)") }
+            return { x -> FunctionSymbol1(p0 = x, function = "${property.name}($0)", type = returnType) }
+        }
+    }
+
+    class StructFunctionProperty<T:Struct<T>, R>(
+        name: String,
+        private val generator: Generator,
+        parameter0Type: String,
+        private val returnType: String,
+        f: ShaderBuilder.(StructSymbol<T>) -> Symbol<R>,
+    ) {
+        init {
+            val sb = ShaderBuilder()
+            //val resultSym = sb.f(symbol("$0", "dc"))
+//            val resultSym = sb.f(object: StructSymbol<T> {
+//            })
+            generator.emitPreamble(
+                """$returnType ${name}($parameter0Type __x__) { 
+${sb.code.replace("$0", "__x__").prependIndent("    ")}                    
+
+}"""
+            )
+        }
+
+        operator fun getValue(any: Any?, property: KProperty<*>): (Symbol<T>) -> FunctionSymbol1<T, R> {
+            return { x -> FunctionSymbol1(p0 = x, function = "${property.name}($0)", type = returnType) }
         }
     }
 
@@ -127,7 +160,7 @@ ${sb.code.replace("$0", "__x__").prependIndent("    ")}
         capture0Type: String,
         private val capture0Name: String,
         parameter0Type: String,
-        returnType: String,
+        private val returnType: String,
         f: ShaderBuilder.(Symbol<T>) -> Symbol<R>
     ) {
         init {
@@ -135,13 +168,13 @@ ${sb.code.replace("$0", "__x__").prependIndent("    ")}
             generator.emitPreamble(
                 """$returnType ${name}($capture0Type $capture0Name, $parameter0Type x_) { 
 ${sb.code.prependIndent("    ")}                    
-    return ${sb.f(symbol("$0")).name.replace("$0", "x_")};
+    return ${sb.f(symbol("$0", "")).name.replace("$0", "x_")};
 }"""
             )
         }
 
         operator fun getValue(any: Any?, property: KProperty<*>): (Symbol<T>) -> FunctionSymbol1<T, R> =
-            { x -> FunctionSymbol1(p0 = x, function = "${property.name}(${capture0Name}, $0)") }
+            { x -> FunctionSymbol1(p0 = x, function = "${property.name}(${capture0Name}, $0)", type = returnType) }
     }
 
     class FunctionPropertyProvider<T, R>(
@@ -153,6 +186,17 @@ ${sb.code.prependIndent("    ")}
         operator fun provideDelegate(any: Any?, property: KProperty<*>): FunctionProperty<T, R> =
             FunctionProperty(property.name, generator, parameter0Type, returnType, f)
     }
+
+    class StructFunctionPropertyProvider<T:Struct<T>, R>(
+        private val generator: Generator,
+        private val parameter0Type: String,
+        private val returnType: String,
+        private val f: ShaderBuilder.(StructSymbol<T>) -> Symbol<R>
+    ) {
+        operator fun provideDelegate(any: Any?, property: KProperty<*>): StructFunctionProperty<T, R> =
+            StructFunctionProperty(property.name, generator, parameter0Type, returnType, f)
+    }
+
 
     class FunctionPropertyProviderCapture1<T, R>(
         private val generator: Generator,
@@ -182,6 +226,15 @@ ${sb.code.prependIndent("    ")}
             returnType = staticType<R>(),
             f
         )
+
+    inline fun <reified T:Struct<T>, reified R> structFunction(noinline f: ShaderBuilder.(StructSymbol<T>) -> Symbol<R>): StructFunctionPropertyProvider<T, R> =
+        StructFunctionPropertyProvider(
+            this@ShaderBuilder,
+            parameter0Type = staticType<T>(),
+            returnType = staticType<R>(),
+            f
+        )
+
 
     inline fun <reified C0, reified T, reified R> function(
         capture0: Symbol<C0>,
@@ -246,11 +299,9 @@ ${sb.code.prependIndent("    ")}
         return symbol("sumBy_${hash}($startX, $endX, $startY, $endY)")
     }
 
+
     inline fun <reified R> Range.sumBy(noinline function: (x: Symbol<Int>) -> FunctionSymbol1<Int, R>): Symbol<R> {
-        val id = object : Symbol<Int> {
-            override val name: String
-                get() = "$0"
-        }
+        val id = symbol<Int>("$0")
         val functionId = function(id)
         val returnType = staticType<R>()
         val hash = hash(functionId.name, returnType)

@@ -61,13 +61,14 @@ class ShaderFunctionProcessor(val codeGenerator: CodeGenerator, val logger: KSPL
                 return when (parameters.size) {
                     1 -> """fun ${name}($kotlinFunctionParameters): FunctionSymbol1<$parameterTypes, ${glslToKotlin(returnType)}> {
                     |    emitPreamble("#pragma import $name")
-                    |    return FunctionSymbol1(p0 = ${parameters[0].first}, function = "$name($0)")  
+                    |    return FunctionSymbol1(p0 = ${parameters[0].first}, function = "$name($0)", type = "$returnType")  
                     |} 
                     """
                     else -> """fun ${name}($kotlinFunctionParameters): Symbol<${glslToKotlin(returnType)}> {
                     |    emitPreamble("#pragma import $name")
                     |    return object : Symbol<${glslToKotlin(returnType)}> {
                     |         override val name = "$name($kotlinFunctionArguments)"
+                    |         override val type = "$returnType";
                     |    }    
                     |}
                     """

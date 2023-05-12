@@ -2,6 +2,7 @@ package org.openrndr.extra.shadergenerator.phrases.dsl.shadestyle
 
 import org.openrndr.extra.shadergenerator.phrases.dsl.ShaderBuilder
 import org.openrndr.extra.shadergenerator.phrases.dsl.Symbol
+import org.openrndr.extra.shadergenerator.phrases.dsl.staticType
 import org.openrndr.extra.shadergenerator.phrases.dsl.symbol
 import org.openrndr.extra.shadergenerator.phrases.phrases.HashPhrasesFunctions
 import org.openrndr.extra.shadergenerator.phrases.phrases.SimplexPhrasesFunctions
@@ -12,11 +13,11 @@ import org.openrndr.math.Vector4
 import kotlin.reflect.KProperty
 
 open class ShadeStyleBuilder : ShaderBuilder() {
-    class Parameter<T> {
-        operator fun getValue(any: Any?, property: KProperty<*>) = symbol<T>(property.name)
+    class Parameter<T>(val type: String) {
+        operator fun getValue(any: Any?, property: KProperty<*>) = symbol<T>(property.name, type)
     }
-    fun <T> parameter(): Parameter<T> {
-        return Parameter()
+    inline fun <reified T> parameter(): Parameter<T> {
+        return Parameter(staticType<T>())
     }
 }
 

@@ -1,5 +1,6 @@
 package org.openrndr.extra.shadergenerator.phrases.dsl
 
+import org.openrndr.extra.shadergenerator.phrases.dsl.structs.Struct
 import org.openrndr.math.*
 
 inline fun <reified T> zero(): String {
@@ -32,7 +33,7 @@ inline fun <reified T> one(): String {
     }
 }
 
-inline fun <reified T> staticType(): String {
+inline fun <reified T> staticTypeOrNull(): String? {
     return when (T::class) {
         Boolean::class -> "bool"
         Double::class -> "float"
@@ -46,8 +47,33 @@ inline fun <reified T> staticType(): String {
         Matrix33::class -> "mat3"
         Matrix44::class -> "mat4"
         Sampler2D::class -> "sampler2D"
-        else -> error("not supported")
+        else -> null
     }
+}
+fun dynamicTypeOrNull(v: Any): String? {
+    return when(v) {
+        is Boolean -> "bool"
+        is Double -> "float"
+        is Int -> "int"
+        is Vector2 -> "vec2"
+        is IntVector2 -> "ivec2"
+        is Vector3 -> "vec3"
+        is IntVector3 -> "ivec3"
+        is Vector4 -> "vec4"
+        is IntVector4 -> "ivec4"
+        is Matrix33 -> "mat3"
+        is Matrix44 -> "mat4"
+        is Sampler2D -> "sampler2D"
+        else -> null
+    }
+}
+
+fun dynamicType(v: Any): String {
+    return dynamicTypeOrNull(v) ?: error("dynamic type not supported ${v::class.simpleName}")
+}
+
+inline fun <reified T> staticType(): String {
+    return staticTypeOrNull<T>() ?: error("static type not supported ${T::class.simpleName}")
 }
 
 fun glsl(v: Any?): String? {

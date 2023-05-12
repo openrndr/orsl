@@ -6,14 +6,12 @@ import kotlin.math.min
 
 interface ArrayFunctions : Generator {
     operator fun <T> ArraySymbol<T>.get(index: Int): Symbol<T> {
-        return object : Symbol<T> {
-            override val name = "${this@get.name}[$index]"
-        }
+        return symbol("${this@get.name}[$index]", type)
     }
 
     fun ArraySymbol<Double>.max(): Symbol<Double> {
         emitPreamble("#pragma import floatArrayMax($length)")
-        return symbol("floatArrayMax_$length(${this@max.name})")
+        return symbol("floatArrayMax_$length(${this@max.name})", "float")
     }
 
     fun <T> ArraySymbol<T>.drop(n: Int) : ArraySymbol<T> {
@@ -82,7 +80,7 @@ interface ArrayFunctions : Generator {
 
     operator fun <T> ArraySymbol<T>.set(index: Int, value: Symbol<T>): Symbol<T> {
         emit("${this@set.name}[$index] = ${value.name};")
-        return symbol("${this@set.name}[$index] = ${value.name}")
+        return symbol("${this@set.name}[$index] = ${value.name}", type)
     }
 
     operator fun <T> ArraySymbol<T>.set(index: Int, value: T) {
