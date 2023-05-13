@@ -1,5 +1,7 @@
 package org.openrndr.extra.shadergenerator.phrases.dsl
 
+import org.openrndr.extra.shadergenerator.phrases.dsl.structs.Struct
+import org.openrndr.extra.shadergenerator.phrases.dsl.structs.StructSymbol
 import org.openrndr.math.Vector4
 import kotlin.reflect.KProperty
 import kotlin.reflect.KProperty0
@@ -125,3 +127,17 @@ inline fun <reified T0, reified T1, reified T2, reified R> functionSymbol(
     function: String
 ): Symbol<R> =
     FunctionSymbol3(v0 = v0, v1 = v1, p2 = p2, function = function, type = staticType<R>())
+
+
+data class StructFunctionSymbol1<T0:Struct<T0>, R>(
+    val v0: T0? = null,
+    val p0: StructSymbol<T0>? = null,
+    val function: String,
+    override val type: String
+) : Symbol<R> {
+    override val name: String
+        get() {
+            val x0 = p0?.name ?: glsl(v0) ?: error("no v")
+            return function.replace("$0", x0)
+        }
+}

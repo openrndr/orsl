@@ -134,23 +134,42 @@ ${sb.code.replace("$0", "__x__").prependIndent("    ")}
         private val generator: Generator,
         parameter0Type: String,
         private val returnType: String,
-        f: ShaderBuilder.(StructSymbol<T>) -> Symbol<R>,
+        f: ShaderBuilder.(T) -> Symbol<R>,
+        val proto: T,
     ) {
         init {
             val sb = ShaderBuilder()
-            //val resultSym = sb.f(symbol("$0", "dc"))
-//            val resultSym = sb.f(object: StructSymbol<T> {
-//            })
+//            val oldName = proto.hackName
+//            println("storing hack name $oldName")
+//            println("setting hack name to $0")
+//            proto.hackName = "$0"
+            val resultSym = sb.f(proto)
             generator.emitPreamble(
                 """$returnType ${name}($parameter0Type __x__) { 
 ${sb.code.replace("$0", "__x__").prependIndent("    ")}                    
+    return ${resultSym.name.replace("$0", "__x__")};
 
 }"""
             )
+//            println("restoring hackname to $oldName")
+//            proto.hackName = oldName
         }
 
-        operator fun getValue(any: Any?, property: KProperty<*>): (Symbol<T>) -> FunctionSymbol1<T, R> {
-            return { x -> FunctionSymbol1(p0 = x, function = "${property.name}($0)", type = returnType) }
+        operator fun getValue(any: Any?, property: KProperty<*>): (T) -> StructFunctionSymbol1<T, R> {
+
+
+            return { x ->
+                println("doing some function hacking for ${property.name} ${x==proto} ${x.hackName} " )
+                println("storing hackname ${x.hackName}")
+//                val oldName = x.hackName
+                val fx = StructSymbol(generator, "$0", proto)
+
+                val r = StructFunctionSymbol1<T, R>(p0 = fx, function = "${property.name}(${x.hackName})", type = returnType)
+//                println("restoring hackname to $oldName")
+//                x.hackName = oldName
+                r
+
+            }
         }
     }
 
@@ -191,10 +210,11 @@ ${sb.code.prependIndent("    ")}
         private val generator: Generator,
         private val parameter0Type: String,
         private val returnType: String,
-        private val f: ShaderBuilder.(StructSymbol<T>) -> Symbol<R>
+        private val f: ShaderBuilder.(T) -> Symbol<R>,
+        private val proto: T,
     ) {
         operator fun provideDelegate(any: Any?, property: KProperty<*>): StructFunctionProperty<T, R> =
-            StructFunctionProperty(property.name, generator, parameter0Type, returnType, f)
+            StructFunctionProperty(property.name, generator, parameter0Type, returnType, f, proto)
     }
 
 
@@ -227,12 +247,14 @@ ${sb.code.prependIndent("    ")}
             f
         )
 
-    inline fun <reified T:Struct<T>, reified R> structFunction(noinline f: ShaderBuilder.(StructSymbol<T>) -> Symbol<R>): StructFunctionPropertyProvider<T, R> =
+
+    inline fun <reified T:Struct<T>, reified R> StructSymbol<T>.Function(noinline f: ShaderBuilder.(T) -> Symbol<R>): StructFunctionPropertyProvider<T, R> =
         StructFunctionPropertyProvider(
             this@ShaderBuilder,
-            parameter0Type = staticType<T>(),
+            parameter0Type = this.name,
             returnType = staticType<R>(),
-            f
+            f,
+            this.proto.create().apply { hackName = "$0" }
         )
 
 
