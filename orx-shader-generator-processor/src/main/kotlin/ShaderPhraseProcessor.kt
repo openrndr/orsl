@@ -2,8 +2,6 @@ import com.google.devtools.ksp.*
 import com.google.devtools.ksp.processing.*
 import com.google.devtools.ksp.symbol.*
 import java.io.OutputStream
-import com.google.devtools.ksp.symbol.impl.kotlin.KSPropertyDeclarationImpl
-import org.jetbrains.kotlin.psi.psiUtil.children
 
 fun OutputStream.appendText(str: String) {
     this.write(str.toByteArray())
@@ -25,14 +23,11 @@ class ShaderPhraseProcessor(val codeGenerator: CodeGenerator, val logger: KSPLog
     inner class ShaderBookVisitor: KSVisitorVoid() {
         override fun visitClassDeclaration(classDeclaration: KSClassDeclaration, data: Unit) {
             val packageName = classDeclaration.containingFile!!.packageName.asString()
-            val className = "${classDeclaration.simpleName.asString()}"
+            val className = classDeclaration.simpleName.asString()
             val generatedClassName = "${className}Index"
             val file = codeGenerator.createNewFile(Dependencies(true, classDeclaration.containingFile!!), packageName , className)
 
-
             val propertyNames = classDeclaration.getDeclaredProperties().map {
-                val k = it as KSPropertyDeclarationImpl
-                //error(k.ktProperty.node.lastChildNode.children().toList().drop(1).dropLast(1).joinToString("") { it.text })
                 it.simpleName.asString()
             }
 
@@ -63,7 +58,6 @@ class ShaderPhraseProcessor(val codeGenerator: CodeGenerator, val logger: KSPLog
                 |    override fun dynamicPhrase1(symbol: String, param0: String): String? {
                 |        return d1[symbol]?.invoke(book, param0)
                 |    }
-
                 |} """.trimMargin())
             file.close()
         }

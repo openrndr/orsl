@@ -46,7 +46,7 @@ fun main() {
 
                         val addLight by function<Light, Light, Light> { a, b ->
                             val sum by Light()
-                            sum.position = a.position// + b.position
+                            sum.position = a.position + b.position
                             sum
                         }
 

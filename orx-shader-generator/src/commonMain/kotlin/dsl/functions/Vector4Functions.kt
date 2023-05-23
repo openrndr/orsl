@@ -43,10 +43,28 @@ interface Vector4Functions {
         @JvmName("yzSv4")
         get() = functionSymbol(this, "$0.yz")
 
+    val Symbol<Vector4>.xyz: Symbol<Vector3>
+        @JvmName("xyzSv4")
+        get() = functionSymbol(this, "$0.xyz")
+
+
     @Suppress("FunctionName")
     @JvmName("vec4Sv2Sv2")
     fun Vector4(xy: Symbol<Vector2>, zw: Symbol<Vector2>) : Symbol<Vector4> =
         functionSymbol(xy, zw, "vec4($0, $1)")
+
+
+    @Suppress("FunctionName")
+    @JvmName("vec4SdSdSdSd")
+    fun Vector4(x: Symbol<Double>, y: Symbol<Double>, z: Symbol<Double>, w: Symbol<Double>) : Symbol<Vector4> =
+        functionSymbol(x, y, z, w, "vec4($0, $1, $2, $3)")
+
+
+    @Suppress("FunctionName")
+    @JvmName("vec4SdSdSdVd")
+    fun Vector4(x: Symbol<Double>, y: Symbol<Double>, z: Symbol<Double>, w: Double) : Symbol<Vector4> =
+        functionSymbol(x, y, z, w, "vec4($0, $1, $2, $3)")
+
 
     @Suppress("FunctionName")
     @JvmName("vec4Sv2Sd")

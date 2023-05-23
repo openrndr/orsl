@@ -9,7 +9,6 @@ import org.openrndr.extra.shadergenerator.phrases.dsl.*
 import org.openrndr.extra.shadergenerator.phrases.*
 import org.openrndr.math.*
 
-
 fun main() {
     application {
         program {
@@ -28,11 +27,11 @@ fun main() {
                         val p_window by parameter<Int>()
 
                         val f by function<IntVector2, _> {
-                            p_texture[va_texCoord0 + (it * 0.1  * cos(p_time))]
+                            p_texture[va_texCoord0 + (it * 0.1 * cos(p_time))]
                         }
 
                         val w by function<IntVector2, _> { (it * 1.0).length }
-                        val s by ((-p_window .. p_window )  * (-p_window .. p_window)).weightedAverageBy(f, w)
+                        val s by ((-p_window..p_window) * (-p_window..p_window)).weightedAverageBy(f, w)
                         x_fill = s
                         pop()
                     }

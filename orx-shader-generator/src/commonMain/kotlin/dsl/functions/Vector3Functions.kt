@@ -23,6 +23,16 @@ interface Vector3Functions {
     @JvmName("powSv3Sv3")
     fun pow(x: Symbol<Vector3>, y: Symbol<Vector3>): Symbol<Vector3> = functionSymbol(x, y, "pow($0, $1)")
 
+    @JvmName("dotSv3Sv3")
+    fun Symbol<Vector3>.dot(right: Symbol<Vector3>): Symbol<Double> = functionSymbol(this, right, "dot($0, $1)")
+
+    @JvmName("dotSv3Vv3")
+    fun Symbol<Vector3>.dot(right: Vector3): Symbol<Double> = functionSymbol(this, right, "dot($0, $1)")
+
+    @JvmName("unaryMinusSv3")
+    operator fun Symbol<Vector3>.unaryMinus(): Symbol<Vector3> =
+        functionSymbol(this, "(-$0)")
+
     @JvmName("plusSv3Sv3")
     operator fun Symbol<Vector3>.plus(right: Symbol<Vector3>): Symbol<Vector3> =
         functionSymbol(this, right, "($0 + $1)")
@@ -37,8 +47,20 @@ interface Vector3Functions {
     @JvmName("minusSv3Vv3")
     operator fun Symbol<Vector3>.minus(right: Vector3): Symbol<Vector3> = functionSymbol(this, right, "($0 - $1)")
 
+    @JvmName("minusVv3Sv3")
+    operator fun Vector3.minus(right: Symbol<Vector3>): Symbol<Vector3> = functionSymbol(this, right, "($0 - $1)")
+
+
     @JvmName("timesSv3Vd")
     operator fun Symbol<Vector3>.times(right: Double): Symbol<Vector3> = functionSymbol(this, right, "($0 * $1)")
+
+
+    @JvmName("timesVdSv3")
+    operator fun Double.times(right: Symbol<Vector3>): Symbol<Vector3> = functionSymbol(this, right, "($0 * $1)")
+
+    @JvmName("timesSdSv3")
+    operator fun Symbol<Double>.times(right: Symbol<Vector3>): Symbol<Vector3> = functionSymbol(this, right, "($0 * $1)")
+
 
     @JvmName("timesSv3Sd")
     operator fun Symbol<Vector3>.times(right: Symbol<Double>): Symbol<Vector3> =

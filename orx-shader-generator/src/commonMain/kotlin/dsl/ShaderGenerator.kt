@@ -3,8 +3,7 @@ package org.openrndr.extra.shadergenerator.dsl
 import org.openrndr.draw.Struct
 import org.openrndr.draw.typeDef
 import org.openrndr.extra.shadergenerator.dsl.functions.*
-import org.openrndr.extra.shadergenerator.dsl.functions.Functions.Function2PropertyProvider
-import org.openrndr.extra.shadergenerator.dsl.functions.Functions.FunctionPropertyProvider
+import org.openrndr.extra.shadergenerator.dsl.functions.Functions.*
 import org.openrndr.math.*
 import kotlin.reflect.KProperty
 
@@ -127,6 +126,29 @@ open class ShaderBuilder : Generator, Functions, DoubleFunctions, ArrayFunctions
             returnType = staticType<R>(),
             f
         )
+
+    inline fun <reified T0, reified T1, reified T2, reified R> function(noinline f: ShaderBuilder.(Symbol<T0>, Symbol<T1>, Symbol<T2>) -> Symbol<R>): Function3PropertyProvider<T0, T1, T2, R> =
+        Function3PropertyProvider(
+            this@ShaderBuilder,
+            parameter0Type = staticType<T0>(),
+            parameter1Type = staticType<T1>(),
+            parameter2Type = staticType<T2>(),
+            returnType = staticType<R>(),
+            f
+        )
+
+    inline fun <reified T0, reified T1, reified T2, reified T3, reified R> function(noinline f: ShaderBuilder.(Symbol<T0>, Symbol<T1>, Symbol<T2>, Symbol<T3>) -> Symbol<R>): Function4PropertyProvider<T0, T1, T2, T3, R> =
+        Function4PropertyProvider(
+            this@ShaderBuilder,
+            parameter0Type = staticType<T0>(),
+            parameter1Type = staticType<T1>(),
+            parameter2Type = staticType<T2>(),
+            parameter3Type = staticType<T3>(),
+            returnType = staticType<R>(),
+            f
+        )
+
+
 
     inline fun <reified R> BoxRange2.weightedAverageBy(
         noinline itemFunction: (x: Symbol<IntVector2>) -> FunctionSymbol1<IntVector2, R>,

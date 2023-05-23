@@ -42,6 +42,8 @@ kotlin {
         @Suppress("UNUSED_VARIABLE")
         val jvmDemo by getting {
             dependencies {
+                implementation(libs.orx.mesh.generators)
+                implementation(libs.orx.camera)
             }
         }
     }

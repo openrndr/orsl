@@ -88,7 +88,7 @@ inline fun <reified T0, reified T1, reified R> functionSymbol(v0: T0, p1: Symbol
     Function2Symbol(v0 = v0, p1 = p1, function = function, type = staticType<R>())
 
 
-data class FunctionSymbol3<T0, T1, T2, R>(
+data class Function3Symbol<T0, T1, T2, R>(
     val v0: T0? = null,
     val p0: Symbol<T0>? = null,
     val v1: T1? = null,
@@ -113,7 +113,7 @@ inline fun <reified T0, reified T1, reified T2, reified R> functionSymbol(
     p2: Symbol<T2>,
     function: String
 ): Symbol<R> =
-    FunctionSymbol3(p0 = p0, p1 = p1, p2 = p2, function = function, type = staticType<R>())
+    Function3Symbol(p0 = p0, p1 = p1, p2 = p2, function = function, type = staticType<R>())
 
 inline fun <reified T0, reified T1, reified T2, reified R> functionSymbol(
     v0: T0,
@@ -121,6 +121,45 @@ inline fun <reified T0, reified T1, reified T2, reified R> functionSymbol(
     p2: Symbol<T2>,
     function: String
 ): Symbol<R> =
-    FunctionSymbol3(v0 = v0, v1 = v1, p2 = p2, function = function, type = staticType<R>())
+    Function3Symbol(v0 = v0, v1 = v1, p2 = p2, function = function, type = staticType<R>())
 
 
+data class Function4Symbol<T0, T1, T2, T3, R>(
+    val v0: T0? = null,
+    val p0: Symbol<T0>? = null,
+    val v1: T1? = null,
+    val p1: Symbol<T1>? = null,
+    val v2: T2? = null,
+    val p2: Symbol<T2>? = null,
+    val v3: T3? = null,
+    val p3: Symbol<T3>? = null,
+    val function: String,
+    override val type: String
+) : Symbol<R> {
+    override val name: String
+        get() {
+            val x0 = p0?.name ?: glsl(v0) ?: error("no x0")
+            val x1 = p1?.name ?: glsl(v1) ?: error("no x1")
+            val x2 = p2?.name ?: glsl(v2) ?: error("no x2")
+            val x3 = p3?.name ?: glsl(v3) ?: error("no x3")
+            return function.replace("$0", x0).replace("$1", x1).replace("$2", x2).replace("$3", x3)
+        }
+}
+
+inline fun <reified T0, reified T1, reified T2, reified T3, reified R> functionSymbol(
+    p0: Symbol<T0>,
+    p1: Symbol<T1>,
+    p2: Symbol<T2>,
+    p3: Symbol<T3>,
+    function: String
+): Symbol<R> =
+    Function4Symbol(p0 = p0, p1 = p1, p2 = p2, p3 = p3, function = function, type = staticType<R>())
+
+inline fun <reified T0, reified T1, reified T2, reified T3, reified R> functionSymbol(
+    p0: Symbol<T0>,
+    p1: Symbol<T1>,
+    p2: Symbol<T2>,
+    v3: T3,
+    function: String
+): Symbol<R> =
+    Function4Symbol(p0 = p0, p1 = p1, p2 = p2, v3 = v3, function = function, type = staticType<R>())
