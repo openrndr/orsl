@@ -1,4 +1,4 @@
-package org.openrndr.extra.shadergenerator.phrases.dsl
+package org.openrndr.extra.shadergenerator.dsl
 
 class Range(val startP: Symbol<Int>? = null, val startV: Int? = null, val endP: Symbol<Int>? = null, val endV: Int? = null)
 

@@ -1,10 +1,10 @@
-package org.openrndr.extra.shadergenerator.phrases.dsl.shadestyle
+package org.openrndr.extra.shadergenerator.dsl.shadestyle
 
 import org.openrndr.draw.ShadeStyle
 import org.openrndr.extra.shadergenerator.phrases.PhraseResolver
 import org.openrndr.extra.shadergenerator.phrases.dsl.ArrayPhrases
 import org.openrndr.extra.shadergenerator.phrases.dsl.ArrayPhrasesIndex
-import org.openrndr.extra.shadergenerator.phrases.phrases.*
+import org.openrndr.extra.shadergenerator.phrases.*
 
 private fun preprocessor():PhraseResolver {
     val resolver = PhraseResolver()

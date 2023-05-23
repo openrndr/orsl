@@ -1,10 +1,5 @@
-package org.openrndr.extra.shadergenerator.phrases.dsl
+package org.openrndr.extra.shadergenerator.dsl
 
-import org.openrndr.extra.shadergenerator.phrases.dsl.structs.Struct
-import org.openrndr.extra.shadergenerator.phrases.dsl.structs.StructSymbol
-import org.openrndr.math.Vector4
-import kotlin.reflect.KProperty
-import kotlin.reflect.KProperty0
 
 interface Symbol<T> {
     val name: String
@@ -61,7 +56,7 @@ inline fun <reified T0, reified R> functionSymbol(p0: Symbol<T0>, function: Stri
     FunctionSymbol1<T0, R>(p0 = p0, function = function, type = staticType<R>())
 
 
-data class FunctionSymbol2<T0, T1, R>(
+data class Function2Symbol<T0, T1, R>(
     val v0: T0? = null,
     val p0: Symbol<T0>? = null,
     val v1: T1? = null,
@@ -84,13 +79,13 @@ inline fun <reified T0, reified T1, reified R> functionSymbol(
     p1: Symbol<T1>,
     function: String
 ): Symbol<R> =
-    FunctionSymbol2(p0 = p0, p1 = p1, function = function, type = staticType<R>())
+    Function2Symbol(p0 = p0, p1 = p1, function = function, type = staticType<R>())
 
 inline fun <reified T0, reified T1, reified R> functionSymbol(p0: Symbol<T0>, v1: T1, function: String): Symbol<R> =
-    FunctionSymbol2(p0 = p0, v1 = v1, function = function, type = staticType<R>())
+    Function2Symbol(p0 = p0, v1 = v1, function = function, type = staticType<R>())
 
 inline fun <reified T0, reified T1, reified R> functionSymbol(v0: T0, p1: Symbol<T1>, function: String): Symbol<R> =
-    FunctionSymbol2(v0 = v0, p1 = p1, function = function, type = staticType<R>())
+    Function2Symbol(v0 = v0, p1 = p1, function = function, type = staticType<R>())
 
 
 data class FunctionSymbol3<T0, T1, T2, R>(
@@ -129,15 +124,3 @@ inline fun <reified T0, reified T1, reified T2, reified R> functionSymbol(
     FunctionSymbol3(v0 = v0, v1 = v1, p2 = p2, function = function, type = staticType<R>())
 
 
-data class StructFunctionSymbol1<T0:Struct<T0>, R>(
-    val v0: T0? = null,
-    val p0: StructSymbol<T0>? = null,
-    val function: String,
-    override val type: String
-) : Symbol<R> {
-    override val name: String
-        get() {
-            val x0 = p0?.name ?: glsl(v0) ?: error("no v")
-            return function.replace("$0", x0)
-        }
-}

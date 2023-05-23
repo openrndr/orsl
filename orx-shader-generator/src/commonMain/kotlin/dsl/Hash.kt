@@ -1,4 +1,4 @@
-package org.openrndr.extra.shadergenerator.phrases.dsl
+package org.openrndr.extra.shadergenerator.dsl
 
 fun hash(vararg items: Any): UInt {
     var hash = 0

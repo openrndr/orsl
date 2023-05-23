@@ -1,8 +1,10 @@
-package org.openrndr.extra.shadergenerator.phrases.dsl
+package org.openrndr.extra.shadergenerator.dsl
 
-import org.openrndr.extra.shadergenerator.phrases.dsl.functions.*
-import org.openrndr.extra.shadergenerator.phrases.dsl.structs.Struct
-import org.openrndr.extra.shadergenerator.phrases.dsl.structs.StructSymbol
+import org.openrndr.draw.Struct
+import org.openrndr.draw.typeDef
+import org.openrndr.extra.shadergenerator.dsl.functions.*
+import org.openrndr.extra.shadergenerator.dsl.functions.Functions.Function2PropertyProvider
+import org.openrndr.extra.shadergenerator.dsl.functions.Functions.FunctionPropertyProvider
 import org.openrndr.math.*
 import kotlin.reflect.KProperty
 
@@ -80,6 +82,8 @@ open class ShaderBuilder : Generator, Functions, DoubleFunctions, ArrayFunctions
         return ValueProperty(type)
     }
 
+//    inline operator fun <reified T:Struct<T>> Symbol<T>
+
     override fun emitPreamble(code: String) {
         this.preamble += code + "\n"
     }
@@ -106,138 +110,6 @@ open class ShaderBuilder : Generator, Functions, DoubleFunctions, ArrayFunctions
         return OutputProperty(this@ShaderBuilder, staticType<T>())
     }
 
-    class FunctionProperty<T, R>(
-        name: String,
-        private val generator: Generator,
-        parameter0Type: String,
-        private val returnType: String,
-        f: ShaderBuilder.(Symbol<T>) -> Symbol<R>,
-    ) {
-        init {
-            val sb = ShaderBuilder()
-            val resultSym = sb.f(symbol("$0", "dc"))
-            generator.emitPreamble(
-                """$returnType ${name}($parameter0Type __x__) { 
-${sb.code.replace("$0", "__x__").prependIndent("    ")}                    
-    return ${resultSym.name.replace("$0", "__x__")};
-}"""
-            )
-        }
-
-        operator fun getValue(any: Any?, property: KProperty<*>): (Symbol<T>) -> FunctionSymbol1<T, R> {
-            return { x -> FunctionSymbol1(p0 = x, function = "${property.name}($0)", type = returnType) }
-        }
-    }
-
-    class StructFunctionProperty<T:Struct<T>, R>(
-        name: String,
-        private val generator: Generator,
-        parameter0Type: String,
-        private val returnType: String,
-        f: ShaderBuilder.(T) -> Symbol<R>,
-        val proto: T,
-    ) {
-        init {
-            val sb = ShaderBuilder()
-//            val oldName = proto.hackName
-//            println("storing hack name $oldName")
-//            println("setting hack name to $0")
-//            proto.hackName = "$0"
-            val resultSym = sb.f(proto)
-            generator.emitPreamble(
-                """$returnType ${name}($parameter0Type __x__) { 
-${sb.code.replace("$0", "__x__").prependIndent("    ")}                    
-    return ${resultSym.name.replace("$0", "__x__")};
-
-}"""
-            )
-//            println("restoring hackname to $oldName")
-//            proto.hackName = oldName
-        }
-
-        operator fun getValue(any: Any?, property: KProperty<*>): (T) -> StructFunctionSymbol1<T, R> {
-
-
-            return { x ->
-                println("doing some function hacking for ${property.name} ${x==proto} ${x.hackName} " )
-                println("storing hackname ${x.hackName}")
-//                val oldName = x.hackName
-                val fx = StructSymbol(generator, "$0", proto)
-
-                val r = StructFunctionSymbol1<T, R>(p0 = fx, function = "${property.name}(${x.hackName})", type = returnType)
-//                println("restoring hackname to $oldName")
-//                x.hackName = oldName
-                r
-
-            }
-        }
-    }
-
-    class FunctionPropertyCapture1<T, R>(
-        name: String,
-        private val generator: Generator,
-        capture0Type: String,
-        private val capture0Name: String,
-        parameter0Type: String,
-        private val returnType: String,
-        f: ShaderBuilder.(Symbol<T>) -> Symbol<R>
-    ) {
-        init {
-            val sb = ShaderBuilder()
-            generator.emitPreamble(
-                """$returnType ${name}($capture0Type $capture0Name, $parameter0Type x_) { 
-${sb.code.prependIndent("    ")}                    
-    return ${sb.f(symbol("$0", "")).name.replace("$0", "x_")};
-}"""
-            )
-        }
-
-        operator fun getValue(any: Any?, property: KProperty<*>): (Symbol<T>) -> FunctionSymbol1<T, R> =
-            { x -> FunctionSymbol1(p0 = x, function = "${property.name}(${capture0Name}, $0)", type = returnType) }
-    }
-
-    class FunctionPropertyProvider<T, R>(
-        private val generator: Generator,
-        private val parameter0Type: String,
-        private val returnType: String,
-        private val f: ShaderBuilder.(Symbol<T>) -> Symbol<R>
-    ) {
-        operator fun provideDelegate(any: Any?, property: KProperty<*>): FunctionProperty<T, R> =
-            FunctionProperty(property.name, generator, parameter0Type, returnType, f)
-    }
-
-    class StructFunctionPropertyProvider<T:Struct<T>, R>(
-        private val generator: Generator,
-        private val parameter0Type: String,
-        private val returnType: String,
-        private val f: ShaderBuilder.(T) -> Symbol<R>,
-        private val proto: T,
-    ) {
-        operator fun provideDelegate(any: Any?, property: KProperty<*>): StructFunctionProperty<T, R> =
-            StructFunctionProperty(property.name, generator, parameter0Type, returnType, f, proto)
-    }
-
-
-    class FunctionPropertyProviderCapture1<T, R>(
-        private val generator: Generator,
-        private val capture0Type: String,
-        private val capture0Name: String,
-        private val parameter0Type: String,
-        private val returnType: String,
-        private val f: ShaderBuilder.(Symbol<T>) -> Symbol<R>
-    ) {
-        operator fun provideDelegate(any: Any?, property: KProperty<*>): FunctionPropertyCapture1<T, R> {
-            return FunctionPropertyCapture1(
-                property.name,
-                generator,
-                capture0Type,
-                capture0Name,
-                parameter0Type,
-                returnType,
-                f
-            )
-        }
-    }
 
     inline fun <reified T, reified R> function(noinline f: ShaderBuilder.(Symbol<T>) -> Symbol<R>): FunctionPropertyProvider<T, R> =
         FunctionPropertyProvider(
@@ -247,25 +119,14 @@ ${sb.code.prependIndent("    ")}
             f
         )
 
-
-    inline fun <reified T:Struct<T>, reified R> StructSymbol<T>.Function(noinline f: ShaderBuilder.(T) -> Symbol<R>): StructFunctionPropertyProvider<T, R> =
-        StructFunctionPropertyProvider(
+    inline fun <reified T0, reified T1, reified R> function(noinline f: ShaderBuilder.(Symbol<T0>, Symbol<T1>) -> Symbol<R>): Function2PropertyProvider<T0, T1, R> =
+        Function2PropertyProvider(
             this@ShaderBuilder,
-            parameter0Type = this.name,
+            parameter0Type = staticType<T0>(),
+            parameter1Type = staticType<T1>(),
             returnType = staticType<R>(),
-            f,
-            this.proto.create().apply { hackName = "$0" }
+            f
         )
-
-
-    inline fun <reified C0, reified T, reified R> function(
-        capture0: Symbol<C0>,
-        noinline f: ShaderBuilder.(Symbol<T>) -> Symbol<R>
-    ): FunctionPropertyProviderCapture1<T, R> = FunctionPropertyProviderCapture1(
-        this@ShaderBuilder, staticType<C0>(), capture0.name,
-        parameter0Type = staticType<T>(),
-        returnType = staticType<R>(), f
-    )
 
     inline fun <reified R> BoxRange2.weightedAverageBy(
         noinline itemFunction: (x: Symbol<IntVector2>) -> FunctionSymbol1<IntVector2, R>,
@@ -364,5 +225,112 @@ ${sb.code.prependIndent("    ")}
             override val type = "float"
         }
     }
+
+
+    inline fun <reified T> ArraySymbol<T>.minBy(noinline function: (x: Symbol<T>) -> FunctionSymbol1<T, Double>): Symbol<T> {
+        val id = symbol<T>("$0")
+        val functionId = function(id)
+        val returnType = staticType<T>()
+        val inputType = staticType<T>()
+        val hash = hash(functionId.name, returnType, inputType)
+
+        emitPreamble(
+            """$returnType minBy_${hash}($inputType x__[${length}]) {
+    float minValue = ${functionId.function.replace("$0", "x__[0]")};
+    int index = 0;
+    for (int i = 1; i < $length; ++i) {
+        float candidateValue = ${functionId.function.replace("$0", "x__[i]")};
+        if (candidateValue < minValue) {
+            minValue = candidateValue;
+            index = i;
+        }
+    }
+    return x__[index];
+}"""
+        )
+        return symbol(name = "minBy_${hash}(${this@minBy.name})", type = this@minBy.type)
+    }
+
+    inline fun <reified T> ArraySymbol<T>.argMinBy(noinline function: (x: Symbol<T>) -> FunctionSymbol1<T, Double>): Symbol<Int> {
+        val id = symbol<T>("$0")
+        val functionId = function(id)
+        val returnType = staticType<Int>()
+        val inputType = staticType<T>()
+        val hash = hash(functionId.name, returnType, inputType)
+
+        emitPreamble(
+            """$returnType argMinBy_${hash}($inputType x__[${length}]) {
+    float minValue = ${functionId.function.replace("$0", "x__[0]")};
+    int index = 0;
+    for (int i = 1; i < $length; ++i) {
+        float candidateValue = ${functionId.function.replace("$0", "x__[i]")};
+        if (candidateValue < minValue) {
+            minValue = candidateValue;
+            index = i;
+        }
+    }
+    return index;
+}"""
+        )
+        return symbol(name = "argMinBy_${hash}(${this@argMinBy.name})", type = "int")
+    }
+
+
+    inline fun <reified T> ArraySymbol<T>.maxBy(noinline function: (x: Symbol<T>) -> FunctionSymbol1<T, Double>): Symbol<T> {
+        val id = symbol<T>("$0")
+        val functionId = function(id)
+        val returnType = staticType<T>()
+        val inputType = staticType<T>()
+        val hash = hash(functionId.name, returnType, inputType)
+
+        emitPreamble(
+            """$returnType maxBy_${hash}($inputType x__[${length}]) {
+    float maxValue = ${functionId.function.replace("$0", "x__[0]")};
+    int index = 0;
+    for (int i = 1; i < $length; ++i) {
+        float candidateValue = ${functionId.function.replace("$0", "x__[i]")};
+        if (candidateValue > maxValue) {
+            maxValue = candidateValue;
+            index = i;
+        }
+    }
+    return x__[index];
+}"""
+        )
+        return symbol(name = "maxBy_${hash}(${this@maxBy.name})", type = this@maxBy.type)
+    }
+
+
+    inline fun <reified T> ArraySymbol<T>.argMaxBy(noinline function: (x: Symbol<T>) -> FunctionSymbol1<T, Double>): Symbol<Int> {
+        val id = symbol<T>("$0")
+        val functionId = function(id)
+        val returnType = staticType<Int>()
+        val inputType = staticType<T>()
+        val hash = hash(functionId.name, returnType, inputType)
+
+        emitPreamble(
+            """$returnType argMaxBy_${hash}($inputType x__[${length}]) {
+    float maxValue = ${functionId.function.replace("$0", "x__[0]")};
+    int index = 0;
+    for (int i = 1; i < $length; ++i) {
+        float candidateValue = ${functionId.function.replace("$0", "x__[i]")};
+        if (candidateValue > maxValue) {
+            minValue = candidateValue;
+            index = i;
+        }
+    }
+    return index;
+}"""
+        )
+        return symbol(name = "argMaxBy_${hash}(${this@argMaxBy.name})", type = "int")
+    }
+
+    inline operator fun <reified T : Struct<T>> T.provideDelegate(any: Any?, property: KProperty<*>): T {
+        emitPreamble(this.typeDef())
+        emit("${this::class.simpleName} ${property.name};")
+        return this
+    }
 }
+
+
 

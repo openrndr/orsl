@@ -1,11 +1,11 @@
-package org.openrndr.extra.shadergenerator.phrases.dsl.functions
+package org.openrndr.extra.shadergenerator.dsl.functions
 
-import org.openrndr.extra.shadergenerator.phrases.dsl.FunctionSymbol2
-import org.openrndr.extra.shadergenerator.phrases.dsl.Symbol
-import org.openrndr.extra.shadergenerator.phrases.dsl.functionSymbol
+import org.openrndr.extra.shadergenerator.dsl.Symbol
+import org.openrndr.extra.shadergenerator.dsl.functionSymbol
 import org.openrndr.math.IntVector2
 import org.openrndr.math.Vector2
 import kotlin.jvm.JvmName
+
 @Suppress("INAPPLICABLE_JVM_NAME")
 interface IntVector2Functions {
 
@@ -20,6 +20,7 @@ interface IntVector2Functions {
     operator fun Symbol<IntVector2>.times(right: Double): Symbol<Vector2> = functionSymbol(this, right, "($0 * $1)")
 
     @JvmName("timesSiv2Sd")
-    operator fun Symbol<IntVector2>.times(right: Symbol<Double>): Symbol<Vector2> = functionSymbol(this, right, "($0 * $1)")
+    operator fun Symbol<IntVector2>.times(right: Symbol<Double>): Symbol<Vector2> =
+        functionSymbol(this, right, "($0 * $1)")
 
 }

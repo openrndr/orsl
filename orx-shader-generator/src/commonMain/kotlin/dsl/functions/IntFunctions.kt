@@ -1,9 +1,7 @@
-package org.openrndr.extra.shadergenerator.phrases.dsl.functions
+package org.openrndr.extra.shadergenerator.dsl.functions
 
-import org.openrndr.extra.shadergenerator.phrases.dsl.FunctionSymbol1
-import org.openrndr.extra.shadergenerator.phrases.dsl.FunctionSymbol2
-import org.openrndr.extra.shadergenerator.phrases.dsl.Symbol
-import org.openrndr.extra.shadergenerator.phrases.dsl.functionSymbol
+import org.openrndr.extra.shadergenerator.dsl.Symbol
+import org.openrndr.extra.shadergenerator.dsl.functionSymbol
 import kotlin.jvm.JvmName
 
 @Suppress("INAPPLICABLE_JVM_NAME")

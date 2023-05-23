@@ -1,6 +1,6 @@
-package org.openrndr.extra.shadergenerator.phrases.dsl.functions
+package org.openrndr.extra.shadergenerator.dsl.functions
 
-import org.openrndr.extra.shadergenerator.phrases.dsl.*
+import org.openrndr.extra.shadergenerator.dsl.*
 import org.openrndr.math.Matrix44
 import org.openrndr.math.Vector4
 

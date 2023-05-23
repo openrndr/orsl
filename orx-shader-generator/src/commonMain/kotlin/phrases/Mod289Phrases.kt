@@ -1,4 +1,4 @@
-package org.openrndr.extra.shadergenerator.phrases.phrases
+package org.openrndr.extra.shadergenerator.phrases
 
 import org.openrndr.extra.shadergenerator.annotations.IndexShaderBook
 import org.openrndr.extra.shadergenerator.annotations.ShaderBook

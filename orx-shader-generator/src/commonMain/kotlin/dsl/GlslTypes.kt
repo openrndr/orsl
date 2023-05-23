@@ -1,6 +1,5 @@
-package org.openrndr.extra.shadergenerator.phrases.dsl
+package org.openrndr.extra.shadergenerator.dsl
 
-import org.openrndr.extra.shadergenerator.phrases.dsl.structs.Struct
 import org.openrndr.math.*
 
 inline fun <reified T> zero(): String {
@@ -47,7 +46,7 @@ inline fun <reified T> staticTypeOrNull(): String? {
         Matrix33::class -> "mat3"
         Matrix44::class -> "mat4"
         Sampler2D::class -> "sampler2D"
-        else -> null
+        else -> T::class.simpleName
     }
 }
 fun dynamicTypeOrNull(v: Any): String? {

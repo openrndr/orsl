@@ -79,9 +79,9 @@ class ShaderFunctionProcessor(val codeGenerator: CodeGenerator, val logger: KSPL
             file.appendText("import $annotationPackage.ShaderBookIndex\n\n")
             file.appendText("import kotlin.reflect.KFunction2\n")
             file.appendText("import org.openrndr.math.*\n")
-            file.appendText("import org.openrndr.extra.shadergenerator.phrases.dsl.FunctionSymbol1\n")
-            file.appendText("import org.openrndr.extra.shadergenerator.phrases.dsl.Generator\n")
-            file.appendText("import org.openrndr.extra.shadergenerator.phrases.dsl.Symbol\n")
+            file.appendText("import org.openrndr.extra.shadergenerator.dsl.FunctionSymbol1\n")
+            file.appendText("import org.openrndr.extra.shadergenerator.dsl.Generator\n")
+            file.appendText("import org.openrndr.extra.shadergenerator.dsl.Symbol\n")
 
             file.appendText("""interface ${generatedClassName}: Generator  {
                 |${functionsFromProperties.joinToString("\n") { it.toKotlin() }}

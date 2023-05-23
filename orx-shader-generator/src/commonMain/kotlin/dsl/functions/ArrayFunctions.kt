@@ -1,6 +1,7 @@
-package org.openrndr.extra.shadergenerator.phrases.dsl.functions
+package org.openrndr.extra.shadergenerator.dsl.functions
 
-import org.openrndr.extra.shadergenerator.phrases.dsl.*
+import org.openrndr.extra.shadergenerator.dsl.*
+import org.openrndr.extra.shadergenerator.dsl.hash
 import kotlin.math.max
 import kotlin.math.min
 

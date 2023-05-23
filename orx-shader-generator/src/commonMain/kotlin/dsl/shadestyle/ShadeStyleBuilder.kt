@@ -1,11 +1,9 @@
-package org.openrndr.extra.shadergenerator.phrases.dsl.shadestyle
+package org.openrndr.extra.shadergenerator.dsl.shadestyle
 
-import org.openrndr.extra.shadergenerator.phrases.dsl.ShaderBuilder
-import org.openrndr.extra.shadergenerator.phrases.dsl.Symbol
-import org.openrndr.extra.shadergenerator.phrases.dsl.staticType
-import org.openrndr.extra.shadergenerator.phrases.dsl.symbol
-import org.openrndr.extra.shadergenerator.phrases.phrases.HashPhrasesFunctions
-import org.openrndr.extra.shadergenerator.phrases.phrases.SimplexPhrasesFunctions
+import org.openrndr.extra.shadergenerator.dsl.ShaderBuilder
+import org.openrndr.extra.shadergenerator.dsl.*
+import org.openrndr.extra.shadergenerator.phrases.HashPhrasesFunctions
+import org.openrndr.extra.shadergenerator.phrases.SimplexPhrasesFunctions
 import org.openrndr.math.Matrix44
 import org.openrndr.math.Vector2
 import org.openrndr.math.Vector3
@@ -16,9 +14,18 @@ open class ShadeStyleBuilder : ShaderBuilder() {
     class Parameter<T>(val type: String) {
         operator fun getValue(any: Any?, property: KProperty<*>) = symbol<T>(property.name, type)
     }
+
+    class ArrayParameter<T>(val type: String, val length: Int) {
+        operator fun getValue(any: Any?, property: KProperty<*>) = arraySymbol<T>(property.name, length, type)
+    }
+
     inline fun <reified T> parameter(): Parameter<T> {
         return Parameter(staticType<T>())
     }
+    inline fun <reified T> arrayParameter(length: Int): ArrayParameter<T> {
+        return ArrayParameter(staticType<T>(), length)
+    }
+
 }
 
 class FragmentTransformBuilder() : ShadeStyleBuilder(), HashPhrasesFunctions,

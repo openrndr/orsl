@@ -1,14 +1,12 @@
 import org.openrndr.application
 import org.openrndr.color.ColorRGBa
-import org.openrndr.draw.loadImage
 import org.openrndr.draw.shadeStyle
 import org.openrndr.drawImage
-import org.openrndr.extra.shadergenerator.phrases.MyShaderPhrases
-import org.openrndr.extra.shadergenerator.phrases.MyShaderPhrasesIndex
-import org.openrndr.extra.shadergenerator.phrases.PhraseResolver
+import org.openrndr.extra.shadergenerator.dsl.Sampler2D
+import org.openrndr.extra.shadergenerator.dsl.shadestyle.fragmentTransform
+import org.openrndr.extra.shadergenerator.dsl.times
 import org.openrndr.extra.shadergenerator.phrases.dsl.*
-import org.openrndr.extra.shadergenerator.phrases.dsl.shadestyle.fragmentTransform
-import org.openrndr.extra.shadergenerator.phrases.phrases.*
+import org.openrndr.extra.shadergenerator.phrases.*
 import org.openrndr.math.*
 
 
@@ -23,6 +21,7 @@ fun main() {
                 drawer.shadeStyle = shadeStyle {
                     @Suppress("LocalVariableName")
                     fragmentTransform {
+                        push()
                         val va_texCoord0 by parameter<Vector2>()
                         val p_time by parameter<Double>()
                         val p_texture by parameter<Sampler2D>()
@@ -35,6 +34,7 @@ fun main() {
                         val w by function<IntVector2, _> { (it * 1.0).length }
                         val s by ((-p_window .. p_window )  * (-p_window .. p_window)).weightedAverageBy(f, w)
                         x_fill = s
+                        pop()
                     }
                     parameter("time", seconds)
                     parameter("texture", image)

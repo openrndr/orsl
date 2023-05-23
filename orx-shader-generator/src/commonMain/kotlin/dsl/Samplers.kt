@@ -1,4 +1,4 @@
-package org.openrndr.extra.shadergenerator.phrases.dsl
+package org.openrndr.extra.shadergenerator.dsl
 
 interface Sampler2D
 interface SamplerBuffer

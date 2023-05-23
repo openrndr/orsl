@@ -1,8 +1,7 @@
-package org.openrndr.extra.shadergenerator.phrases.dsl.functions
+package org.openrndr.extra.shadergenerator.dsl.functions
 
-import org.openrndr.extra.shadergenerator.phrases.dsl.FunctionSymbol1
-import org.openrndr.extra.shadergenerator.phrases.dsl.Symbol
-import org.openrndr.extra.shadergenerator.phrases.dsl.functionSymbol
+import org.openrndr.extra.shadergenerator.dsl.Symbol
+import org.openrndr.extra.shadergenerator.dsl.functionSymbol
 import org.openrndr.math.Vector2
 import org.openrndr.math.Vector3
 import org.openrndr.math.Vector4
@@ -44,11 +43,18 @@ interface Vector4Functions {
         @JvmName("yzSv4")
         get() = functionSymbol(this, "$0.yz")
 
+    @Suppress("FunctionName")
+    @JvmName("vec4Sv2Sv2")
     fun Vector4(xy: Symbol<Vector2>, zw: Symbol<Vector2>) : Symbol<Vector4> =
         functionSymbol(xy, zw, "vec4($0, $1)")
 
-    fun Vector3(xyz: Symbol<Vector3>, w: Symbol<Vector2>) : Symbol<Vector4> =
+    @Suppress("FunctionName")
+    @JvmName("vec4Sv2Sd")
+    fun Vector4(xyz: Symbol<Vector3>, w: Symbol<Double>) : Symbol<Vector4> =
         functionSymbol(xyz, w, "vec4($0, $1)")
 
-
+    @Suppress("FunctionName")
+    @JvmName("vec4Sv2Vd")
+    fun Vector4(xyz: Symbol<Vector3>, w: Double) : Symbol<Vector4> =
+        functionSymbol(xyz, w, "vec4($0, $1)")
 }
