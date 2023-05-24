@@ -49,6 +49,7 @@ interface DoubleFunctions {
     @JvmName("plusSdSd")
     operator fun Symbol<Double>.plus(right: Symbol<Double>): Symbol<Double> = functionSymbol(this, right, "($0 + $1)")
 
+
     @JvmName("plusVdSd")
     operator fun Double.plus(right: Symbol<Double>): Symbol<Double> = functionSymbol(this, right, "($0 + $1)")
 
@@ -84,6 +85,9 @@ interface DoubleFunctions {
 
     @JvmName("divSdSd")
     operator fun Symbol<Double>.div(right: Symbol<Double>): Symbol<Double> = functionSymbol(this, right, "($0 / $1)")
+
+    @JvmName("divSdVd")
+    operator fun Symbol<Double>.div(right: Double): Symbol<Double> = functionSymbol(this, right, "($0 / $1)")
 
     @JvmName("divVdSd")
     operator fun Double.div(right: Symbol<Double>): Symbol<Double> = functionSymbol(this, right, "($0 / $1)")

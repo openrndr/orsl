@@ -4,11 +4,12 @@ import org.openrndr.draw.Struct
 import org.openrndr.draw.typeDef
 import org.openrndr.extra.shadergenerator.dsl.functions.*
 import org.openrndr.extra.shadergenerator.dsl.functions.Functions.*
+import org.openrndr.extra.shadergenerator.phrases.dsl.functions.Matrix33Functions
 import org.openrndr.math.*
 import kotlin.reflect.KProperty
 
 open class ShaderBuilder : Generator, Functions, DoubleFunctions, ArrayFunctions, Sampler2DFunctions, IntFunctions,
-    Vector2Functions, Vector3Functions, Vector4Functions,
+    Vector2Functions, Vector3Functions, Vector4Functions, Matrix33Functions, Matrix44Functions,
     IntVector2Functions {
     var code = ""
     var preamble = ""
@@ -224,6 +225,8 @@ open class ShaderBuilder : Generator, Functions, DoubleFunctions, ArrayFunctions
         val end = endP?.name ?: endV?.toString() ?: error("no end")
         return symbol("sumBy_${hash}($start, $end)")
     }
+
+
 
     inline fun <reified T, reified R> ArraySymbol<T>.map(noinline function: (x: Symbol<T>) -> FunctionSymbol1<T, R>): ArraySymbol<R> {
         val id = symbol<T>("$0")

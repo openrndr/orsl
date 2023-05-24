@@ -59,7 +59,8 @@ interface Vector3Functions {
     operator fun Double.times(right: Symbol<Vector3>): Symbol<Vector3> = functionSymbol(this, right, "($0 * $1)")
 
     @JvmName("timesSdSv3")
-    operator fun Symbol<Double>.times(right: Symbol<Vector3>): Symbol<Vector3> = functionSymbol(this, right, "($0 * $1)")
+    operator fun Symbol<Double>.times(right: Symbol<Vector3>): Symbol<Vector3> =
+        functionSymbol(this, right, "($0 * $1)")
 
 
     @JvmName("timesSv3Sd")
@@ -72,6 +73,10 @@ interface Vector3Functions {
 
     @JvmName("timesSv3Vv3")
     operator fun Symbol<Vector3>.times(right: Vector3): Symbol<Vector3> = functionSymbol(this, right, "($0 * $1)")
+
+
+    @JvmName("divSv3Vd")
+    operator fun Symbol<Vector3>.div(right: Double): Symbol<Vector3> = functionSymbol(this, right, "($0 / $1)")
 
 
     val Symbol<Vector3>.length: Symbol<Double>
@@ -102,5 +107,11 @@ interface Vector3Functions {
     @JvmName("vec3SdSv2")
     fun Vector3(x: Symbol<Double>, yz: Symbol<Vector2>): Symbol<Vector3> =
         functionSymbol(x, yz, "vec3($0, $1)")
+
+    @Suppress("FunctionName")
+    @JvmName("vec3SdSdSd")
+    fun Vector3(x: Symbol<Double>, y: Symbol<Double>, z: Symbol<Double>): Symbol<Vector3> =
+        functionSymbol(x, y, z, "vec3($0, $1, $2)")
+
 
 }

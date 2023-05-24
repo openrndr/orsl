@@ -24,6 +24,27 @@ interface Vector4Functions {
     @JvmName("powSv4Sv4")
     fun pow(x: Symbol<Vector4>, y: Symbol<Vector4>): Symbol<Vector4> = functionSymbol(x, y, "pow($0, $1)")
 
+
+    @JvmName("plusSv4Sv4")
+    operator fun Symbol<Vector4>.plus(right: Symbol<Vector4>): Symbol<Vector4> =
+        functionSymbol(this, right, "($0 + $1)")
+
+    @JvmName("plusSv4Vv4")
+    operator fun Symbol<Vector4>.plus(right: Vector4): Symbol<Vector4> = functionSymbol(this, right, "($0 + $1)")
+
+    @JvmName("minusSv4Sv4")
+    operator fun Symbol<Vector4>.minus(right: Symbol<Vector4>): Symbol<Vector4> =
+        functionSymbol(this, right, "($0 - $1)")
+
+    @JvmName("minusSv4Vv4")
+    operator fun Symbol<Vector4>.minus(right: Vector4): Symbol<Vector4> = functionSymbol(this, right, "($0 - $1)")
+
+
+    @JvmName("divSv4Vd")
+    operator fun Symbol<Vector4>.div(right: Double): Symbol<Vector4> = functionSymbol(this, right, "($0 / $1)")
+
+
+
     val Symbol<Vector4>.length: Symbol<Double>
         @JvmName("lengthSv4")
         get() = functionSymbol(this, "length($0)")
@@ -75,4 +96,7 @@ interface Vector4Functions {
     @JvmName("vec4Sv2Vd")
     fun Vector4(xyz: Symbol<Vector3>, w: Double) : Symbol<Vector4> =
         functionSymbol(xyz, w, "vec4($0, $1)")
+
+
+
 }

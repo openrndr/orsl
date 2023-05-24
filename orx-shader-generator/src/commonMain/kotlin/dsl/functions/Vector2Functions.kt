@@ -26,24 +26,33 @@ interface Vector2Functions {
     fun Symbol<Vector2>.dot(right: Symbol<Vector2>): Symbol<Vector2> = functionSymbol(this, right, "dot($0, $1)")
 
     @JvmName("plusSv2Sv2")
-    operator fun Symbol<Vector2>.plus(right: Symbol<Vector2>): Symbol<Vector2> = functionSymbol(this, right, "($0 + $1)")
+    operator fun Symbol<Vector2>.plus(right: Symbol<Vector2>): Symbol<Vector2> =
+        functionSymbol(this, right, "($0 + $1)")
 
     @JvmName("plusSv2Vv2")
     operator fun Symbol<Vector2>.plus(right: Vector2): Symbol<Vector2> = functionSymbol(this, right, "($0 + $1)")
+
+    @JvmName("minusSv2Sv2")
+    operator fun Symbol<Vector2>.minus(right: Symbol<Vector2>): Symbol<Vector2> =
+        functionSymbol(this, right, "($0 - $1)")
+
+    @JvmName("minusSv2Vv2")
+    operator fun Symbol<Vector2>.minus(right: Vector2): Symbol<Vector2> = functionSymbol(this, right, "($0 - $1)")
 
 
     @JvmName("timesSv2Vd")
     operator fun Symbol<Vector2>.times(right: Double): Symbol<Vector2> = functionSymbol(this, right, "($0 * $1)")
 
     @JvmName("timesSv2Sd")
-    operator fun Symbol<Vector2>.times(right: Symbol<Double>): Symbol<Vector2> = functionSymbol(this, right, "($0 * $1)")
+    operator fun Symbol<Vector2>.times(right: Symbol<Double>): Symbol<Vector2> =
+        functionSymbol(this, right, "($0 * $1)")
 
     @JvmName("timesSv2Sv2")
-    operator fun Symbol<Vector2>.times(right: Symbol<Vector2>): Symbol<Vector2> = functionSymbol(this, right, "($0 * $1)")
+    operator fun Symbol<Vector2>.times(right: Symbol<Vector2>): Symbol<Vector2> =
+        functionSymbol(this, right, "($0 * $1)")
 
     @JvmName("timesSv2Vv2")
     operator fun Symbol<Vector2>.times(right: Vector2): Symbol<Vector2> = functionSymbol(this, right, "($0 * $1)")
-
 
     val Symbol<Vector2>.length: Symbol<Double>
         @JvmName("lengthSv2")
@@ -63,4 +72,10 @@ interface Vector2Functions {
     val Symbol<Vector2>.xx: Symbol<Vector2>
         @JvmName("xxSv2")
         get() = functionSymbol(this, "$0.xx")
+
+    @Suppress("FunctionName")
+    @JvmName("vec2SdSd")
+    fun Vector2(x: Symbol<Double>, y: Symbol<Double>): Symbol<Vector2> =
+        functionSymbol(x, y, "vec2($0, $1)")
+
 }
