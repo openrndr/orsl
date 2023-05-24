@@ -4,6 +4,7 @@ import org.openrndr.draw.*
 import org.openrndr.extra.camera.Orbital
 import org.openrndr.extra.meshgenerators.sphereMesh
 import org.openrndr.extra.shadergenerator.dsl.Symbol
+import org.openrndr.extra.shadergenerator.dsl.functions.fbm
 import org.openrndr.extra.shadergenerator.dsl.structs.getValue
 import org.openrndr.extra.shadergenerator.dsl.shadestyle.fragmentTransform
 import org.openrndr.extra.shadergenerator.dsl.shadestyle.vertexTransform
@@ -38,6 +39,10 @@ fun main() {
                 drawer.shadeStyle = shadeStyle {
                     vertexTransform {
                         val p_time by parameter<Double>()
+
+                        val s by function<Double, Double> { cos(it) }
+                        val fs by fbm(s)
+                        val z by fs(p_time)
                         x_position += simplex34( Vector4(x_position, p_time)) * 0.1
                     }
 

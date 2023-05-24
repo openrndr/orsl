@@ -2,7 +2,9 @@ import org.openrndr.application
 import org.openrndr.color.ColorRGBa
 import org.openrndr.draw.shadeStyle
 import org.openrndr.drawImage
+import org.openrndr.extra.camera.Camera2D
 import org.openrndr.extra.shadergenerator.dsl.Sampler2D
+import org.openrndr.extra.shadergenerator.dsl.functions.fbm
 import org.openrndr.extra.shadergenerator.dsl.shadestyle.fragmentTransform
 import org.openrndr.extra.shadergenerator.dsl.times
 import org.openrndr.extra.shadergenerator.phrases.dsl.*
@@ -12,30 +14,21 @@ import org.openrndr.math.*
 fun main() {
     application {
         program {
-            val image = drawImage(512, 512) {
-                drawer.fill = ColorRGBa.GREEN
-                drawer.circle(drawer.bounds.center, 200.0)
-            }
+            extend(Camera2D())
             extend {
                 drawer.shadeStyle = shadeStyle {
                     @Suppress("LocalVariableName")
                     fragmentTransform {
-                        val va_texCoord0 by parameter<Vector2>()
                         val p_time by parameter<Double>()
-                        val p_texture by parameter<Sampler2D>()
-                        val p_window by parameter<Int>()
-
-                        val f by function<IntVector2, _> {
-                            p_texture[va_texCoord0 + (it * 0.1 * cos(p_time))]
+                        val va_texCoord0 by parameter<Vector2>()
+                        val s2 by function<Vector2, Double> {
+                            simplex13(Vector3(it, p_time))
                         }
-
-                        val w by function<IntVector2, _> { (it * 1.0).length }
-                        val s by ((-p_window..p_window) * (-p_window..p_window)).weightedAverageBy(f, w)
-                        x_fill = s
+                        val fs2 by fbm(s2, lacunarity = 1.9543, octaves = 8)
+                        val c = fs2(va_texCoord0 * 10.0) * 0.5 + 0.5
+                        x_fill = Vector4(c, c, c, 1.0)
                     }
-                    parameter("time", seconds)
-                    parameter("texture", image)
-                    parameter("window", 1)
+                    parameter("time", seconds * 0.1)
                 }
                 drawer.circle(drawer.bounds.center, 200.0)
             }

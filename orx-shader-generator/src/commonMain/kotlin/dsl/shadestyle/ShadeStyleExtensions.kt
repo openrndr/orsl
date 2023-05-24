@@ -21,16 +21,20 @@ private fun preprocessor(): PhraseResolver {
 
 fun ShadeStyle.fragmentTransform(f: FragmentTransformBuilder.() -> Unit) {
     val builder = FragmentTransformBuilder()
+    builder.push()
     builder.f()
     val prep = preprocessor()
     fragmentPreamble = prep.preprocessShader(builder.preamble)
     fragmentTransform = prep.preprocessShader(builder.code)
+    builder.pop()
 }
 
 fun ShadeStyle.vertexTransform(f: VertexTransformBuilder.() -> Unit) {
     val builder = VertexTransformBuilder()
+    builder.push()
     builder.f()
     val prep = preprocessor()
     vertexPreamble = prep.preprocessShader(builder.preamble)
     vertexTransform = prep.preprocessShader(builder.code)
+    builder.pop()
 }
