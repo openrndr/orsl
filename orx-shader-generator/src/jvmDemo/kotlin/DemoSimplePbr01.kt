@@ -4,13 +4,9 @@ import org.openrndr.draw.*
 import org.openrndr.extra.camera.Orbital
 import org.openrndr.extra.meshgenerators.sphereMesh
 import org.openrndr.extra.shadergenerator.dsl.Symbol
-import org.openrndr.extra.shadergenerator.dsl.functions.fbm
 import org.openrndr.extra.shadergenerator.dsl.structs.getValue
 import org.openrndr.extra.shadergenerator.dsl.shadestyle.fragmentTransform
-import org.openrndr.extra.shadergenerator.dsl.shadestyle.vertexTransform
 import org.openrndr.extra.shadergenerator.dsl.structs.setValue
-import org.openrndr.extra.shadergenerator.phrases.dsl.functions.gradient
-import org.openrndr.extra.shadergenerator.phrases.dsl.functions.jacobian
 import org.openrndr.math.Vector3
 import org.openrndr.math.Vector4
 
@@ -37,15 +33,6 @@ fun main() {
             extend(Orbital())
             extend {
                 drawer.shadeStyle = shadeStyle {
-                    vertexTransform {
-                        val p_time by parameter<Double>()
-
-                        val s by function<Double, Double> { cos(it) }
-                        val fs by fbm(s)
-                        val z by fs(p_time)
-                        x_position += simplex34( Vector4(x_position, p_time)) * 0.1
-                    }
-
                     fragmentTransform {
                         val p_material by parameter<Material>()
                         val p_cameraPosition by parameter<Vector3>()
@@ -54,16 +41,6 @@ fun main() {
                             val x2 by x * x
                             x2 * x2 * x
                         }
-
-                        val s13 by function<Vector3, Double> { simplex13(it) }
-                        val g13 by gradient(s13)
-
-                        g13(p_cameraPosition)
-
-
-                        val s3 by function<Vector3, Vector3> { simplex33(it) }
-                        val g3 by jacobian(s3)
-                        g3(p_cameraPosition)
 
                         val D_GGX by function<Double, Double, Vector3, Double> { linearRoughness, NoH, h ->
                             val oneMinusNoHSquared by 1.0 - NoH * NoH
@@ -99,11 +76,10 @@ fun main() {
                         val d by v_viewNormal.dot(Vector3(0.0, 1.0, 0.0))
 
                         val baseColor by p_material.color.xyz
-                        val roughness by p_material.roughness //* (cos(v_worldPosition.y*100.0)*0.5+0.5)
+                        val roughness by p_material.roughness
                         val linearRoughness by roughness * roughness
 
-                        val m = abs(simplex13(v_worldPosition))
-                        val metallic by p_material.metallic * m
+                        val metallic by p_material.metallic
                         val intensity by 1.0
 
                         val diffuseColor by (1.0 - metallic) * baseColor
@@ -132,8 +108,6 @@ fun main() {
                         val gamma by Vector3(1.0 / 2.2, 1.0 / 2.2, 1.0 / 2.2)
                         x_fill = Vector4(pow(color, gamma), 1.0)
                     }
-
-                    //println(fragmentPreamble)
                 }
                 drawer.shadeStyle?.parameter("material", sphereMaterial)
 

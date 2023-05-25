@@ -19,7 +19,7 @@ fun ShaderBuilder.fbm(
 float lx_ = x__;
 float amplitude_ = 1.0;
 for (int i_ = 0; i_ < ${octaves}; ++i_) {     
-    sum_ += amplitude * ${function(symbol("lx_")).name};
+    sum_ += amplitude_ * ${function(symbol("lx_")).name};
     lx_ *= $lacunarity;
     amplitude_ *= $gain;
 }"""
