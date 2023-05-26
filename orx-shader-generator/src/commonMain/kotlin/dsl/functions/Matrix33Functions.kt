@@ -4,6 +4,7 @@ import org.openrndr.extra.shadergenerator.dsl.Generator
 import org.openrndr.extra.shadergenerator.dsl.Symbol
 import org.openrndr.extra.shadergenerator.dsl.functionSymbol
 import org.openrndr.math.Matrix33
+import org.openrndr.math.Matrix44
 import org.openrndr.math.Vector3
 import kotlin.jvm.JvmName
 
@@ -12,6 +13,18 @@ interface Matrix33Functions : Generator  {
 
     @JvmName("timesSm3Sv3")
     operator fun Symbol<Matrix33>.times(right: Symbol<Vector3>): Symbol<Vector3> =
+        functionSymbol(this, right, "($0 * $1)")
+
+    @JvmName("timesSm3Sm3")
+    operator fun Symbol<Matrix33>.times(right: Symbol<Matrix33>): Symbol<Matrix33> =
+        functionSymbol(this, right, "($0 * $1)")
+
+    @JvmName("timesSm3Sd")
+    operator fun Symbol<Matrix33>.times(right: Symbol<Double>): Symbol<Matrix33> =
+        functionSymbol(this, right, "($0 * $1)")
+
+    @JvmName("timesSm3Vd")
+    operator fun Symbol<Matrix33>.times(right: Double): Symbol<Matrix33> =
         functionSymbol(this, right, "($0 * $1)")
 
 

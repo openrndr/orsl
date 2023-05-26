@@ -86,7 +86,7 @@ fun ShaderBuilder.jacobian(
     }
 }
 
-@JvmName("jacobianSv4")
+@JvmName("jacobianSv4Sv4")
 fun ShaderBuilder.jacobian(
     function: (x: Symbol<Vector4>) -> FunctionSymbol1<Vector4, Vector4>,
     eps: Double = 1E-6

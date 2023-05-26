@@ -89,8 +89,12 @@ interface Vector3Functions {
         @JvmName("xSv3")
         get() = functionSymbol(this, "$0.x")
     val Symbol<Vector3>.y: Symbol<Double>
-        @JvmName("ySv3")
+        @JvmName("zSv3")
         get() = functionSymbol(this, "$0.y")
+    val Symbol<Vector3>.z: Symbol<Double>
+        @JvmName("ySv3")
+        get() = functionSymbol(this, "$0.z")
+
     val Symbol<Vector3>.xy: Symbol<Vector2>
         @JvmName("xySv3")
         get() = functionSymbol(this, "$0.xy")

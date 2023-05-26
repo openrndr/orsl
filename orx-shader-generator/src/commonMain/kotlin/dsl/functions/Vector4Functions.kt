@@ -57,6 +57,14 @@ interface Vector4Functions {
     val Symbol<Vector4>.y: Symbol<Double>
         @JvmName("ySv4")
         get() = functionSymbol(this, "$0.y")
+
+    val Symbol<Vector4>.z: Symbol<Double>
+        @JvmName("zSv4")
+        get() = functionSymbol(this, "$0.z")
+
+    val Symbol<Vector4>.w: Symbol<Double>
+        @JvmName("wSv4")
+        get() = functionSymbol(this, "$0.w")
     val Symbol<Vector4>.xy: Symbol<Vector2>
         @JvmName("xySv4")
         get() = functionSymbol(this, "$0.xy")
