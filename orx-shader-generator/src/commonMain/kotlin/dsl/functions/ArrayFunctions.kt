@@ -26,7 +26,7 @@ interface ArrayFunctions : Generator {
     }
     return result;
 }""")
-        return arraySymbol("drop_$hash(${this@drop.name})", length, type)
+        return arraySymbol("drop_$hash(${this@drop.name})", newLength, type)
     }
 
     fun <T> ArraySymbol<T>.dropLast(n: Int) : ArraySymbol<T> {
