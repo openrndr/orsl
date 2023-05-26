@@ -39,6 +39,28 @@ interface Vector4Functions {
     @JvmName("minusSv4Vv4")
     operator fun Symbol<Vector4>.minus(right: Vector4): Symbol<Vector4> = functionSymbol(this, right, "($0 - $1)")
 
+    @JvmName("timesSv4Vd")
+    operator fun Symbol<Vector4>.times(right: Double): Symbol<Vector4> = functionSymbol(this, right, "($0 * $1)")
+
+    @JvmName("timesVdSv4")
+    operator fun Double.times(right: Symbol<Vector4>): Symbol<Vector4> = functionSymbol(this, right, "($0 * $1)")
+
+    @JvmName("timesSdSv4")
+    operator fun Symbol<Double>.times(right: Symbol<Vector4>): Symbol<Vector4> =
+        functionSymbol(this, right, "($0 * $1)")
+
+
+    @JvmName("timesSv4Sd")
+    operator fun Symbol<Vector4>.times(right: Symbol<Double>): Symbol<Vector4> =
+        functionSymbol(this, right, "($0 * $1)")
+
+    @JvmName("timesSv4Sv4")
+    operator fun Symbol<Vector4>.times(right: Symbol<Vector4>): Symbol<Vector4> =
+        functionSymbol(this, right, "($0 * $1)")
+
+    @JvmName("timesSv4Vv4")
+    operator fun Symbol<Vector4>.times(right: Vector4): Symbol<Vector4> = functionSymbol(this, right, "($0 * $1)")
+
 
     @JvmName("divSv4Vd")
     operator fun Symbol<Vector4>.div(right: Double): Symbol<Vector4> = functionSymbol(this, right, "($0 / $1)")

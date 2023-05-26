@@ -7,7 +7,6 @@ import org.openrndr.extra.shadergenerator.phrases.dsl.functions.gradient
 import org.openrndr.math.Vector2
 import org.openrndr.math.Vector3
 import org.openrndr.math.Vector4
-import kotlin.test.assertEquals
 
 class TestGradient : AbstractApplicationTestFixture() {
     @Test
