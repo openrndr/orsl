@@ -1,14 +1,8 @@
 import org.openrndr.application
-import org.openrndr.color.ColorRGBa
 import org.openrndr.draw.shadeStyle
-import org.openrndr.drawImage
 import org.openrndr.extra.camera.Camera2D
-import org.openrndr.extra.shadergenerator.dsl.Sampler2D
 import org.openrndr.extra.shadergenerator.dsl.functions.fbm
 import org.openrndr.extra.shadergenerator.dsl.shadestyle.fragmentTransform
-import org.openrndr.extra.shadergenerator.dsl.times
-import org.openrndr.extra.shadergenerator.phrases.dsl.*
-import org.openrndr.extra.shadergenerator.phrases.*
 import org.openrndr.extra.shadergenerator.phrases.dsl.functions.perturb
 import org.openrndr.math.*
 

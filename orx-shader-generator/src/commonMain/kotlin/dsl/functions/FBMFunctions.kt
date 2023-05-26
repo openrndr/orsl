@@ -129,7 +129,7 @@ fun ShaderBuilder.billow(
 vec3 lx_ = x__;
 float amplitude_ = 1.0;
 for (int i_ = 0; i_ < ${octaves}; ++i_) {     
-    sum_ += amplitude_ * abs(${function(symbol("lx_")).name} * 2.0 + 1.0));
+    sum_ += amplitude_ * abs(${function(symbol("lx_")).name} * 2.0 + 1.0);
     lx_ *= $lacunarity;
     amplitude_ *= $gain;
 }"""
