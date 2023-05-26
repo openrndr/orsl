@@ -9,6 +9,7 @@ import org.openrndr.extra.shadergenerator.dsl.structs.getValue
 import org.openrndr.math.Vector2
 import org.openrndr.math.Vector3
 import org.openrndr.shape.Circle
+import kotlin.test.assertEquals
 
 class TestStruct : Struct<TestStruct>() {
     var v3 by field<Vector3>()
@@ -85,4 +86,68 @@ class TestStructSupport : AbstractApplicationTestFixture() {
         val sphere = sphereMesh()
         program.drawer.vertexBuffer(sphere, DrawPrimitive.TRIANGLES)
     }
+
+    @Test
+    fun arrayOfstructTake() {
+        val struct = TestStruct()
+        struct.v3 = Vector3.ONE
+        struct.v3a = arrayOf(Vector3.UNIT_X, Vector3.UNIT_Y, Vector3.UNIT_Z, Vector3.ONE)
+
+        val structs = arrayOf(struct, struct, struct, struct)
+
+        val ss = shadeStyle {
+            fragmentTransform {
+                val p_structs by arrayParameter<TestStruct>(4)
+                val na by p_structs.take(3)
+                assertEquals(3, na.length)
+            }
+            parameter("structs", structs)
+        }
+        program.drawer.shadeStyle = ss
+        program.drawer.circle(Vector2(0.0, 0.0), 40.0)
+    }
+
+    @Test
+    fun arrayOfstructTakeLast() {
+        val struct = TestStruct()
+        struct.v3 = Vector3.ONE
+        struct.v3a = arrayOf(Vector3.UNIT_X, Vector3.UNIT_Y, Vector3.UNIT_Z, Vector3.ONE)
+
+        val structs = arrayOf(struct, struct, struct, struct)
+
+        val ss = shadeStyle {
+            fragmentTransform {
+                val p_structs by arrayParameter<TestStruct>(4)
+                val na by p_structs.takeLast(3)
+                assertEquals(3, na.length)
+            }
+            parameter("structs", structs)
+        }
+        program.drawer.shadeStyle = ss
+        program.drawer.circle(Vector2(0.0, 0.0), 40.0)
+    }
+
+    @Test
+    fun arrayOfStructMap() {
+        val struct = TestStruct()
+        struct.v3 = Vector3.ONE
+        struct.v3a = arrayOf(Vector3.UNIT_X, Vector3.UNIT_Y, Vector3.UNIT_Z, Vector3.ONE)
+
+        val structs = arrayOf(struct, struct, struct, struct)
+
+        val ss = shadeStyle {
+            fragmentTransform {
+                val f by function<TestStruct, Double> {
+                    it.v3.x + it.v3.y
+                }
+                val p_structs by arrayParameter<TestStruct>(4)
+                val na by p_structs.map(f)
+                assertEquals(4, na.length)
+            }
+            parameter("structs", structs)
+        }
+        program.drawer.shadeStyle = ss
+        program.drawer.circle(Vector2(0.0, 0.0), 40.0)
+    }
+
 }
