@@ -46,6 +46,15 @@ kotlin {
                 implementation(libs.orx.camera)
             }
         }
+
+        @Suppress("UNUSED_VARIABLE")
+        val jvmTest by getting {
+            dependencies {
+                implementation(libs.openrndr.gl3.core)
+                implementation(libs.kotlin.coroutines)
+                implementation(libs.orx.mesh.generators)
+            }
+        }
     }
 }
 
