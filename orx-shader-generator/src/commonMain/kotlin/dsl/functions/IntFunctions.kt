@@ -7,6 +7,7 @@ import kotlin.jvm.JvmName
 @Suppress("INAPPLICABLE_JVM_NAME")
 interface IntFunctions {
 
+
     @JvmName("absSi")
     fun abs(x: Symbol<Int>): Symbol<Int> = functionSymbol(x, "abs($0)")
 

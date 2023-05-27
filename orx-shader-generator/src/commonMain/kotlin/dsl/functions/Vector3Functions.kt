@@ -29,6 +29,15 @@ interface Vector3Functions {
     @JvmName("dotSv3Vv3")
     fun Symbol<Vector3>.dot(right: Vector3): Symbol<Double> = functionSymbol(this, right, "dot($0, $1)")
 
+
+    @JvmName("mixSv3Sv3Sb")
+    fun Symbol<Vector3>.mix(right: Symbol<Vector3>, factor: Symbol<Boolean>): Symbol<Vector3> = functionSymbol(this, right, factor, "mix($0, $1, ($2) ? 1.0 : 0.0)")
+
+    @JvmName("mixSv3Sv3Sd")
+    fun Symbol<Vector3>.mix(right: Symbol<Vector3>, factor: Symbol<Double>): Symbol<Vector3> = functionSymbol(this, right, factor, "mix($0, $1, $2)")
+
+
+
     @JvmName("unaryMinusSv3")
     operator fun Symbol<Vector3>.unaryMinus(): Symbol<Vector3> =
         functionSymbol(this, "(-$0)")
@@ -105,6 +114,12 @@ interface Vector3Functions {
     @JvmName("vec3Sv2Sd")
     fun Vector3(xy: Symbol<Vector2>, z: Symbol<Double>): Symbol<Vector3> =
         functionSymbol(xy, z, "vec3($0, $1)")
+
+    @Suppress("FunctionName")
+    @JvmName("vec3Sv2Vd")
+    fun Vector3(xy: Symbol<Vector2>, z: Double): Symbol<Vector3> =
+        functionSymbol(xy, z, "vec3($0, $1)")
+
 
     @Suppress("FunctionName")
     @JvmName("vec3SdSv2")

@@ -40,6 +40,22 @@ open class ShaderBuilder : Generator, Functions, DoubleFunctions, ArrayFunctions
         return ConstantProperty("int")
     }
 
+    operator fun Boolean.provideDelegate(thisRef: Any?, property: KProperty<*>): ConstantProperty<Boolean> {
+        emit("${staticType<Boolean>()} ${property.name} = $this;")
+        return ConstantProperty(staticType<Boolean>())
+    }
+
+    operator fun Vector4.provideDelegate(thisRef: Any?, property: KProperty<*>): ConstantProperty<Vector4> {
+        emit("${staticType<Vector4>()} ${property.name} = ${glsl(this)};")
+        return ConstantProperty(staticType<Vector4>())
+    }
+
+    operator fun Vector3.provideDelegate(thisRef: Any?, property: KProperty<*>): ConstantProperty<Vector3> {
+        emit("${staticType<Vector3>()} ${property.name} = ${glsl(this)};")
+        return ConstantProperty(staticType<Vector3>())
+    }
+
+
     inline operator fun <reified T : EuclideanVector<T>> T.provideDelegate(
         thisRef: Any?,
         property: KProperty<*>

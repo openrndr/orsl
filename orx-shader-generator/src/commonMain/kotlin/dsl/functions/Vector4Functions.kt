@@ -24,6 +24,12 @@ interface Vector4Functions {
     @JvmName("powSv4Sv4")
     fun pow(x: Symbol<Vector4>, y: Symbol<Vector4>): Symbol<Vector4> = functionSymbol(x, y, "pow($0, $1)")
 
+    @JvmName("mixSv4Sv4Sb")
+    fun Symbol<Vector4>.mix(right: Symbol<Vector4>, factor: Symbol<Boolean>): Symbol<Vector4> = functionSymbol(this, right, factor, "mix($0, $1, ($2) ? 1.0 : 0.0)")
+
+    @JvmName("mixSv4Sv4Sd")
+    fun Symbol<Vector4>.mix(right: Symbol<Vector4>, factor: Symbol<Double>): Symbol<Vector4> = functionSymbol(this, right, factor, "mix($0, $1, $2)")
+
 
     @JvmName("plusSv4Sv4")
     operator fun Symbol<Vector4>.plus(right: Symbol<Vector4>): Symbol<Vector4> =
@@ -126,7 +132,4 @@ interface Vector4Functions {
     @JvmName("vec4Sv2Vd")
     fun Vector4(xyz: Symbol<Vector3>, w: Double) : Symbol<Vector4> =
         functionSymbol(xyz, w, "vec4($0, $1)")
-
-
-
 }

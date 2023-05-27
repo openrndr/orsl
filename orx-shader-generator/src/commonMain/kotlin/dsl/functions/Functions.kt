@@ -16,6 +16,7 @@ interface Functions {
             val sb = ShaderBuilder()
             sb.push()
             val resultSym = sb.f(symbol("$0", "dc"))
+            generator.emitPreamble(sb.preamble)
             generator.emitPreamble(
                 """$returnType ${name}($parameter0Type x__) { 
 ${sb.code.replace("$0", "x__").prependIndent("    ")}                    
@@ -52,6 +53,7 @@ ${sb.code.replace("$0", "x__").prependIndent("    ")}
             val sb = ShaderBuilder()
             sb.push()
             val resultSym = sb.f(symbol("$0", "dc"), symbol("$1", "dc"))
+            generator.emitPreamble(sb.preamble)
             generator.emitPreamble(
                 """$returnType ${name}($parameter0Type x__, $parameter1Type y__) { 
 ${sb.code.replace("$0", "x__").replace("$1", "y__").prependIndent("    ")}                    
@@ -105,6 +107,7 @@ ${sb.code.replace("$0", "x__").replace("$1", "y__").prependIndent("    ")}
             val sb = ShaderBuilder()
             sb.push()
             val resultSym = sb.f(symbol("$0", "dc"), symbol("$1", "dc"), symbol("$2", "dc"))
+            generator.emitPreamble(sb.preamble)
             generator.emitPreamble(
                 """$returnType ${name}($parameter0Type x__, $parameter1Type y__, $parameter2Type z__) { 
 ${sb.code.replace("$0", "x__").replace("$1", "y__").replace("$2", "z__").prependIndent("    ")}                    
@@ -168,6 +171,7 @@ ${sb.code.replace("$0", "x__").replace("$1", "y__").replace("$2", "z__").prepend
             val sb = ShaderBuilder()
             sb.push()
             val resultSym = sb.f(symbol("$0", "dc"), symbol("$1", "dc"), symbol("$2", "dc"), symbol("$3", "dc"))
+            generator.emitPreamble(sb.preamble)
             generator.emitPreamble(
                 """$returnType ${name}($parameter0Type x__, $parameter1Type y__, $parameter2Type z__, $parameter3Type w__) { 
 ${
