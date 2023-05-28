@@ -124,6 +124,15 @@ inline fun <reified T0, reified T1, reified T2, reified R> functionSymbol(
     Function3Symbol(v0 = v0, v1 = v1, p2 = p2, function = function, type = staticType<R>())
 
 
+inline fun <reified T0, reified T1, reified T2, reified R> functionSymbolSVV(
+    p0: Symbol<T0>,
+    v1: T1,
+    v2: T2,
+    function: String
+): Symbol<R> =
+    Function3Symbol(p0 = p0, v1 = v1, v2 = v2, function = function, type = staticType<R>())
+
+
 data class Function4Symbol<T0, T1, T2, T3, R>(
     val v0: T0? = null,
     val p0: Symbol<T0>? = null,
@@ -163,3 +172,12 @@ inline fun <reified T0, reified T1, reified T2, reified T3, reified R> functionS
     function: String
 ): Symbol<R> =
     Function4Symbol(p0 = p0, p1 = p1, p2 = p2, v3 = v3, function = function, type = staticType<R>())
+
+inline fun <reified T0, reified T1, reified T2, reified T3, reified R> functionSymbol(
+    p0: Symbol<T0>,
+    p1: Symbol<T1>,
+    v2: T2,
+    v3: T3,
+    function: String
+): Symbol<R> =
+    Function4Symbol(p0 = p0, p1 = p1, v2 = v2, v3 = v3, function = function, type = staticType<R>())

@@ -3,8 +3,8 @@ package org.openrndr.extra.shadergenerator.phrases.dsl.functions
 import org.openrndr.extra.shadergenerator.dsl.Generator
 import org.openrndr.extra.shadergenerator.dsl.Symbol
 import org.openrndr.extra.shadergenerator.dsl.functionSymbol
+import org.openrndr.extra.shadergenerator.dsl.functionSymbolSVV
 import org.openrndr.math.Matrix33
-import org.openrndr.math.Matrix44
 import org.openrndr.math.Vector3
 import kotlin.jvm.JvmName
 
@@ -43,7 +43,7 @@ interface Matrix33Functions : Generator  {
 
     @JvmName("setSm3ViSv3")
     operator fun Symbol<Matrix33>.set(column: Int, value: Symbol<Vector3>): Symbol<Vector3> =
-        functionSymbol(this, column, value, function = "$0[$1] = $2")
+        functionSymbolSVV(this, column, value, function = "$0[$1] = $2")
 
     fun Matrix33.Companion.fromColumnVectors(x: Symbol<Vector3>, y: Symbol<Vector3>, z: Symbol<Vector3>): Symbol<Matrix33> =
         functionSymbol(x, y, z, "mat3($0, $1, $2)")

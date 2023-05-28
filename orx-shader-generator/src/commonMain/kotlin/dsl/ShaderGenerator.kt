@@ -127,6 +127,26 @@ open class ShaderBuilder : Generator, Functions, DoubleFunctions, ArrayFunctions
     }
 
 
+    @PublishedApi
+    internal var tempId = 0;
+    inline fun <reified T> Symbol<T>.elseIf(precondition: Symbol<Boolean>, noinline f: ShaderBuilder.() -> Symbol<T>): Symbol<T> {
+        val sb = ShaderBuilder()
+        sb.push()
+        val result = sb.f()
+        sb.pop()
+        emitPreamble(sb.preamble)
+        emit("""${staticType<T>()} temp_$tempId; 
+if (${precondition.name}) {
+    ${sb.code}
+    temp_$tempId = ${result.name};
+} else { 
+    temp_$tempId = ${this@elseIf.name};
+}""")
+        val s = symbol<T>("temp_$tempId")
+        tempId++
+        return s
+    }
+
     inline fun <reified T, reified R> function(noinline f: ShaderBuilder.(Symbol<T>) -> Symbol<R>): FunctionPropertyProvider<T, R> =
         FunctionPropertyProvider(
             this@ShaderBuilder,
