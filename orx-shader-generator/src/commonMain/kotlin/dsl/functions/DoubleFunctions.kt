@@ -19,6 +19,9 @@ interface DoubleFunctions {
     @JvmName("absSd")
     fun abs(x: Symbol<Double>): Symbol<Double> = functionSymbol(x, "abs($0)")
 
+    @JvmName("floorSd")
+    fun floor(x: Symbol<Double>): Symbol<Double> = functionSymbol(x, "floor($0)")
+
     @JvmName("sqrtSd")
     fun sqrt(x: Symbol<Double>): Symbol<Double> = functionSymbol(x, "sqrt($0)")
 
@@ -33,6 +36,13 @@ interface DoubleFunctions {
 
     @JvmName("maxSdSd")
     fun max(a: Symbol<Double>, b: Symbol<Double>): Symbol<Double> = functionSymbol(a, b, "max($0, $1)")
+
+
+    @JvmName("modSdVd")
+    fun Symbol<Double>.mod(n : Double) : Symbol<Double> = functionSymbol(this, n, "mod($0, $1)")
+
+    @JvmName("modSdVd")
+    fun Symbol<Double>.mod(n : Symbol<Double>) : Symbol<Double> = functionSymbol(this, n, "mod($0, $1)")
 
 
     @JvmName("smoothstepSdSdSd")
@@ -66,9 +76,12 @@ interface DoubleFunctions {
     @JvmName("minusVdSd")
     operator fun Double.minus(right: Symbol<Double>): Symbol<Double> = functionSymbol(this, right, "($0 - $1)")
 
-
     @JvmName("minusSdSd")
     operator fun Symbol<Double>.minus(right: Symbol<Double>): Symbol<Double> = functionSymbol(this, right, "($0 - $1)")
+
+    @JvmName("minusSdVd")
+    operator fun Symbol<Double>.minus(right: Double): Symbol<Double> = functionSymbol(this, right, "($0 - $1)")
+
 
     @JvmName("timesSdSd")
     operator fun Symbol<Double>.times(right: Symbol<Double>): Symbol<Double> = functionSymbol(this, right, "($0 * $1)")
