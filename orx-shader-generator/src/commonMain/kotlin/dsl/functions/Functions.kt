@@ -15,12 +15,14 @@ interface Functions {
         init {
             val sb = ShaderBuilder()
             sb.push()
-            val resultSym = sb.f(symbol("$0", "dc"))
+            val hash = hash(name, parameter0Type)
+            val p0 = "$,,${hash}_0"
+            val resultSym = sb.f(symbol(p0, parameter0Type))
             generator.emitPreamble(sb.preamble)
             generator.emitPreamble(
                 """$returnType ${name}($parameter0Type x__) { 
-${sb.code.replace("$0", "x__").prependIndent("    ")}                    
-    return ${resultSym.name.replace("$0", "x__")};
+${sb.code.replace(p0, "x__").prependIndent("    ")}                    
+    return ${resultSym.name.replace(p0, "x__")};
 }"""
             )
             sb.pop()
@@ -52,12 +54,15 @@ ${sb.code.replace("$0", "x__").prependIndent("    ")}
         init {
             val sb = ShaderBuilder()
             sb.push()
-            val resultSym = sb.f(symbol("$0", "dc"), symbol("$1", "dc"))
+            val hash = hash(name, parameter0Type, parameter1Type)
+            val p0 = "$,,${hash}_0"
+            val p1 = "$,,${hash}_1"
+            val resultSym = sb.f(symbol(p0, parameter0Type), symbol(p1, parameter1Type))
             generator.emitPreamble(sb.preamble)
             generator.emitPreamble(
                 """$returnType ${name}($parameter0Type x__, $parameter1Type y__) { 
-${sb.code.replace("$0", "x__").replace("$1", "y__").prependIndent("    ")}                    
-    return ${resultSym.name.replace("$0", "x__").replace("$1", "y__")};
+${sb.code.replace(p0, "x__").replace(p1, "y__").prependIndent("    ")}                    
+    return ${resultSym.name.replace(p0, "x__").replace(p1, "y__")};
 }"""
             )
             sb.pop()
@@ -94,6 +99,7 @@ ${sb.code.replace("$0", "x__").replace("$1", "y__").prependIndent("    ")}
         operator fun provideDelegate(any: Any?, property: KProperty<*>): Function3Property<T0, T1, T2, R> =
             Function3Property(property.name, generator, parameter0Type, parameter1Type, parameter2Type, returnType, f)
     }
+
     class Function3Property<T0, T1, T2, R>(
         name: String,
         private val generator: Generator,
@@ -106,12 +112,17 @@ ${sb.code.replace("$0", "x__").replace("$1", "y__").prependIndent("    ")}
         init {
             val sb = ShaderBuilder()
             sb.push()
-            val resultSym = sb.f(symbol("$0", "dc"), symbol("$1", "dc"), symbol("$2", "dc"))
+            val hash = hash(name, parameter0Type, parameter1Type)
+            val p0 = "$,,${hash}_0"
+            val p1 = "$,,${hash}_1"
+            val p2 = "$,,${hash}_2"
+            val resultSym =
+                sb.f(symbol(p0, parameter0Type), symbol(p1, parameter1Type), symbol(p2, parameter2Type))
             generator.emitPreamble(sb.preamble)
             generator.emitPreamble(
                 """$returnType ${name}($parameter0Type x__, $parameter1Type y__, $parameter2Type z__) { 
-${sb.code.replace("$0", "x__").replace("$1", "y__").replace("$2", "z__").prependIndent("    ")}                    
-    return ${resultSym.name.replace("$0", "x__").replace("$1", "y__").replace("$2", "z__")};
+${sb.code.replace(p0, "x__").replace(p1, "y__").replace(p2, "z__").prependIndent("    ")}                    
+    return ${resultSym.name.replace(p0, "x__").replace(p1, "y__").replace(p2, "z__")};
 }"""
             )
             sb.pop()
@@ -170,15 +181,20 @@ ${sb.code.replace("$0", "x__").replace("$1", "y__").replace("$2", "z__").prepend
         init {
             val sb = ShaderBuilder()
             sb.push()
-            val resultSym = sb.f(symbol("$0", "dc"), symbol("$1", "dc"), symbol("$2", "dc"), symbol("$3", "dc"))
+            val hash = hash(name, parameter0Type, parameter1Type)
+            val p0 = "$,,${hash}_0"
+            val p1 = "$,,${hash}_1"
+            val p2 = "$,,${hash}_2"
+            val p3 = "$,,${hash}_3"
+            val resultSym = sb.f(symbol(p0, "dc"), symbol(p1, "dc"), symbol(p2, "dc"), symbol(p3, "dc"))
             generator.emitPreamble(sb.preamble)
             generator.emitPreamble(
                 """$returnType ${name}($parameter0Type x__, $parameter1Type y__, $parameter2Type z__, $parameter3Type w__) { 
 ${
-                    sb.code.replace("$0", "x__").replace("$1", "y__").replace("$2", "z__").replace("$3", "w__")
+                    sb.code.replace(p0, "x__").replace(p1, "y__").replace(p2, "z__").replace(p3, "w__")
                         .prependIndent("    ")
                 }                    
-    return ${resultSym.name.replace("$0", "x__").replace("$1", "y__").replace("$2", "z__").replace("$3", "z__")};
+    return ${resultSym.name.replace(p0, "x__").replace(p1, "y__").replace(p2, "z__").replace(p3, "z__")};
 }"""
             )
             sb.pop()

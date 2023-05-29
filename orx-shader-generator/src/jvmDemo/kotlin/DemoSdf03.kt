@@ -30,15 +30,10 @@ fun main() {
                         p.length - s
                     }
 
-                    val smin by function<Double, Double, Double> { a, b ->
-                        val k by 0.3
-                        val d by a - b
-                        val h by max(k - abs(d), 0.0) / k
-                        val m by min(a, b)
-                        val r by m - h * h * h * k * (1.0 / 6.0)
-                        r
-                        // here I run into a generator bug when returning
-                        // min(a, b) - h * h * h * k * (1.0 / 6.0)
+                    val smin by function<Double, Double, Double> { a, bparam ->
+                        val k by cos(p_time) * 0.2 + 0.25
+                        val h by max(k - abs(a - bparam), 0.0) / k
+                        min(a, bparam) - h * h * h * k * (1.0 / 6.0)
                     }
 
                     val scene by function<Vector3, Double> {
@@ -51,7 +46,7 @@ fun main() {
                             val fy by floor(g_position.y + 0.5 + it.y * -1.0)
                             val fv by Vector2(fx, fy).length
                             val zOff by cos(fv + p_time)
-                            val radius by sin(fx + fy * 0.025 + p_time*2.0) * 0.25 + 0.75
+                            val radius by sin(fx + fy * 0.025 + p_time * 2.0) * 0.25 + 0.75
 
                             val modPosition by Vector3(
                                 it.x + (g_position.x + 0.5).mod(1.0) - 0.5,
@@ -60,7 +55,7 @@ fun main() {
                             )
 
                             val coord by modPosition
-                            sdSphere(coord, radius * 0.9)
+                            sdSphere(coord, radius * 0.8)
                         }
 
                         val initialDistance by 10.0
