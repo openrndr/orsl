@@ -16,10 +16,12 @@ import org.openrndr.math.transforms.normalMatrix
 class MarchResult : Struct<MarchResult>() {
     var position by field<Vector3>()
     var hit by field<Boolean>()
+    var travel by field<Double>()
 }
 
 var Symbol<MarchResult>.position by MarchResult::position
 var Symbol<MarchResult>.hit by MarchResult::hit
+var Symbol<MarchResult>.travel by MarchResult::travel
 
 fun ShaderBuilder.march(
     scene: (x: Symbol<Vector3>) -> FunctionSymbol1<Vector3, Double>

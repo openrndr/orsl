@@ -23,4 +23,17 @@ interface IntVector2Functions {
     operator fun Symbol<IntVector2>.times(right: Symbol<Double>): Symbol<Vector2> =
         functionSymbol(this, right, "($0 * $1)")
 
+
+    val Symbol<IntVector2>.x: Symbol<Int>
+        @JvmName("xSiv2")
+        get() = functionSymbol(this, "$0.x")
+    val Symbol<IntVector2>.y: Symbol<Int>
+        @JvmName("ySiv2")
+        get() = functionSymbol(this, "$0.y")
+    val Symbol<IntVector2>.yx: Symbol<IntVector2>
+        @JvmName("yxSiv2")
+        get() = functionSymbol(this, "$0.yx")
+    val Symbol<IntVector2>.xx: Symbol<IntVector2>
+        @JvmName("xxSiv2")
+        get() = functionSymbol(this, "$0.xx")
 }

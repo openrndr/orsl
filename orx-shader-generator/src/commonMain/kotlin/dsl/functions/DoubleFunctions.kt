@@ -37,6 +37,9 @@ interface DoubleFunctions {
     @JvmName("maxSdSd")
     fun max(a: Symbol<Double>, b: Symbol<Double>): Symbol<Double> = functionSymbol(a, b, "max($0, $1)")
 
+    @JvmName("maxSdVd")
+    fun max(a: Symbol<Double>, b: Double): Symbol<Double> = functionSymbol(a, b, "max($0, $1)")
+
 
     @JvmName("modSdVd")
     fun Symbol<Double>.mod(n : Double) : Symbol<Double> = functionSymbol(this, n, "mod($0, $1)")

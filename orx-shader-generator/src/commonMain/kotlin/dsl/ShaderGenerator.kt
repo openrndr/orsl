@@ -104,6 +104,13 @@ open class ShaderBuilder : Generator, Functions, DoubleFunctions, ArrayFunctions
         this.preamble += code + "\n"
     }
 
+
+    inline fun <reified T> global(): GlobalProperty<T> {
+        val glslType = staticType<T>()
+        return GlobalProperty(this@ShaderBuilder, glslType)
+    }
+
+
     inline fun <reified T> variable(): VariableProperty<T> {
         val glslType = staticType<T>()
         return VariableProperty(this@ShaderBuilder, glslType)
@@ -240,6 +247,63 @@ if (${precondition.name}) {
 
         return symbol("sumBy_${hash}($startX, $endX, $startY, $endY)")
     }
+
+    inline fun <reified R> BoxRange2.minBy(noinline function: (x: Symbol<IntVector2>) -> FunctionSymbol1<IntVector2, R>): Symbol<R> {
+        val id = symbol<IntVector2>("$0")
+        val functionId = function(id)
+        val returnType = staticType<R>()
+        val hash = hash(functionId.name, this, returnType)
+        emitPreamble(
+            """$returnType minBy_${hash}(int startX, int endX, int startY, int endY) {
+    $returnType minV = ${functionId.function.replace("$0", "ivec2(startX, startY)")};
+    for (int j = startY; j < endY; ++j) {
+       for (int i = startX; i < endX; ++i) {
+           minV = min(minV, ${functionId.function.replace("$0", "ivec2(i, j)")});
+       }
+    }
+    return minV;
+}"""
+        )
+        val startX = xrange.startP?.name ?: xrange.startV?.toString() ?: error("no startX")
+        val startY = yrange.startP?.name ?: yrange.startV?.toString() ?: error("no startY")
+        val endX = xrange.endP?.name ?: xrange.endV?.toString() ?: error("no endX")
+        val endY = yrange.endP?.name ?: yrange.endV?.toString() ?: error("no endY")
+
+        return symbol("minBy_${hash}($startX, $endX, $startY, $endY)")
+    }
+
+    inline fun <reified R> BoxRange2.foldBy(init: Symbol<R>, accumulate: (acc:Symbol<R>, elem:Symbol<R>) -> Function2Symbol<R, R,R>, noinline function: (x: Symbol<IntVector2>) -> FunctionSymbol1<IntVector2, R>): Symbol<R> {
+        val id = symbol<IntVector2>("$0")
+
+
+        val accId = symbol<R>("$0")
+        val elemId = symbol<R>("$1")
+
+        val accFunctionId = accumulate(accId, elemId)
+        val functionId = function(id)
+        val returnType = staticType<R>()
+        val hash = hash(functionId.name, this, returnType)
+        emitPreamble(
+            """$returnType foldBy_${hash}(${staticType<R>()} init, int startX, int endX, int startY, int endY) {
+    $returnType acc = init;
+    for (int j = startY; j < endY; ++j) {
+       for (int i = startX; i < endX; ++i) {
+            $returnType elem = ${functionId.function.replace("$0", "ivec2(i, j)")}; 
+            acc = ${accFunctionId.function.replace("$0", "acc").replace("$1", "elem")};
+       }
+    }
+    return acc;
+}"""
+        )
+        val startX = xrange.startP?.name ?: xrange.startV?.toString() ?: error("no startX")
+        val startY = yrange.startP?.name ?: yrange.startV?.toString() ?: error("no startY")
+        val endX = xrange.endP?.name ?: xrange.endV?.toString() ?: error("no endX")
+        val endY = yrange.endP?.name ?: yrange.endV?.toString() ?: error("no endY")
+
+        return symbol("foldBy_${hash}(${init.name}, $startX, $endX, $startY, $endY)")
+    }
+
+
 
 
     inline fun <reified R> Range.sumBy(noinline function: (x: Symbol<Int>) -> FunctionSymbol1<Int, R>): Symbol<R> {
