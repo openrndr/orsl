@@ -8,7 +8,7 @@ import kotlin.jvm.JvmName
 interface DoubleFunctions {
 
     @JvmName("saturateSd")
-    fun saturate(x: Symbol<Double>):Symbol<Double> = functionSymbol(x, "clamp($0, 0.0, 1.0)")
+    fun saturate(x: Symbol<Double>): Symbol<Double> = functionSymbol(x, "clamp($0, 0.0, 1.0)")
 
     @JvmName("cosSd")
     fun cos(x: Symbol<Double>): Symbol<Double> = functionSymbol(x, "cos($0)")
@@ -42,10 +42,10 @@ interface DoubleFunctions {
 
 
     @JvmName("modSdVd")
-    fun Symbol<Double>.mod(n : Double) : Symbol<Double> = functionSymbol(this, n, "mod($0, $1)")
+    fun Symbol<Double>.mod(n: Double): Symbol<Double> = functionSymbol(this, n, "mod($0, $1)")
 
     @JvmName("modSdVd")
-    fun Symbol<Double>.mod(n : Symbol<Double>) : Symbol<Double> = functionSymbol(this, n, "mod($0, $1)")
+    fun Symbol<Double>.mod(n: Symbol<Double>): Symbol<Double> = functionSymbol(this, n, "mod($0, $1)")
 
 
     @JvmName("smoothstepSdSdSd")
@@ -108,5 +108,30 @@ interface DoubleFunctions {
     @JvmName("divVdSd")
     operator fun Double.div(right: Symbol<Double>): Symbol<Double> = functionSymbol(this, right, "($0 / $1)")
 
+
+    @JvmName("gteSdSd")
+    infix fun Symbol<Double>.gte(right: Symbol<Double>): Symbol<Boolean> = functionSymbol(this, right, "($0 >= $1)")
+
+    @JvmName("gteSdVd")
+    infix fun Symbol<Double>.gte(right: Double): Symbol<Boolean> = functionSymbol(this, right, "($0 >= $1)")
+
+
+    @JvmName("gtSdSd")
+    infix fun Symbol<Double>.gt(right: Symbol<Double>): Symbol<Boolean> = functionSymbol(this, right, "($0 > $1)")
+
+    @JvmName("gtSdVd")
+    infix fun Symbol<Double>.gt(right: Double): Symbol<Boolean> = functionSymbol(this, right, "($0 > $1)")
+
+    @JvmName("ltSdSd")
+    infix fun Symbol<Double>.lt(right: Symbol<Double>): Symbol<Boolean> = functionSymbol(this, right, "($0 < $1)")
+
+    @JvmName("ltSdVd")
+    infix fun Symbol<Double>.lt(right: Double): Symbol<Boolean> = functionSymbol(this, right, "($0 < $1)")
+
+    @JvmName("lteSdSd")
+    infix fun Symbol<Double>.lte(right: Symbol<Double>): Symbol<Boolean> = functionSymbol(this, right, "($0 <= $1)")
+
+    @JvmName("lteSdVd")
+    infix fun Symbol<Double>.lte(right: Double): Symbol<Boolean> = functionSymbol(this, right, "($0 <= $1)")
 
 }

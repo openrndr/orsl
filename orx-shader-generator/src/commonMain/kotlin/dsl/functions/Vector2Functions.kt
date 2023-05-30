@@ -3,6 +3,7 @@ package org.openrndr.extra.shadergenerator.dsl.functions
 import org.openrndr.extra.shadergenerator.dsl.Symbol
 import org.openrndr.extra.shadergenerator.dsl.functionSymbol
 import org.openrndr.math.Vector2
+import org.openrndr.math.Vector3
 import kotlin.jvm.JvmName
 
 @Suppress("INAPPLICABLE_JVM_NAME")
@@ -24,6 +25,15 @@ interface Vector2Functions {
 
     @JvmName("dotSv2Sv2")
     fun Symbol<Vector2>.dot(right: Symbol<Vector2>): Symbol<Vector2> = functionSymbol(this, right, "dot($0, $1)")
+
+
+    @JvmName("mixSv2Sv2Sb")
+    fun Symbol<Vector2>.mix(right: Symbol<Vector2>, factor: Symbol<Boolean>): Symbol<Vector2> = functionSymbol(this, right, factor, "mix($0, $1, ($2) ? 1.0 : 0.0)")
+
+    @JvmName("mixSv2Sv2d")
+    fun Symbol<Vector2>.mix(right: Symbol<Vector2>, factor: Symbol<Double>): Symbol<Vector2> = functionSymbol(this, right, factor, "mix($0, $1, $2)")
+
+
 
     @JvmName("plusSv2Sv2")
     operator fun Symbol<Vector2>.plus(right: Symbol<Vector2>): Symbol<Vector2> =

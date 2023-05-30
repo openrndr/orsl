@@ -4,11 +4,12 @@ import org.openrndr.draw.Struct
 import org.openrndr.draw.typeDef
 import org.openrndr.extra.shadergenerator.dsl.functions.*
 import org.openrndr.extra.shadergenerator.dsl.functions.Functions.*
+import org.openrndr.extra.shadergenerator.phrases.dsl.functions.BooleanFunctions
 import org.openrndr.extra.shadergenerator.phrases.dsl.functions.Matrix33Functions
 import org.openrndr.math.*
 import kotlin.reflect.KProperty
 
-open class ShaderBuilder : Generator, Functions, DoubleFunctions, ArrayFunctions, Sampler2DFunctions, IntFunctions,
+open class ShaderBuilder : Generator, Functions, BooleanFunctions, DoubleFunctions, ArrayFunctions, Sampler2DFunctions, IntFunctions,
     Vector2Functions, Vector3Functions, Vector4Functions, Matrix33Functions, Matrix44Functions,
     IntVector2Functions {
     var code = ""

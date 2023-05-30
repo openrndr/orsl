@@ -22,7 +22,7 @@ class GlobalProperty<T>(val generator: Generator, val type:String) {
     operator fun getValue(any: Any?, property: KProperty<*>): Symbol<T> = symbol(property.name, type)
 
     operator fun setValue(any: Any?, property: KProperty<*>, value: Symbol<T>) {
-        generator.emit("${property.name} = ${value.name};")
+        activeGenerator().emit("${property.name} = ${value.name};")
     }
 }
 
