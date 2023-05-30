@@ -5,6 +5,8 @@ import org.openrndr.extra.shadergenerator.phrases.PhraseResolver
 import org.openrndr.extra.shadergenerator.phrases.dsl.ArrayPhrases
 import org.openrndr.extra.shadergenerator.phrases.dsl.ArrayPhrasesIndex
 import org.openrndr.extra.shadergenerator.phrases.*
+import org.openrndr.extra.shadergenerator.phrases.phrases.ValueNoiseDerPhrases
+import org.openrndr.extra.shadergenerator.phrases.phrases.ValueNoiseDerPhrasesIndex
 
 private fun preprocessor(): PhraseResolver {
     val resolver = PhraseResolver()
@@ -16,6 +18,7 @@ private fun preprocessor(): PhraseResolver {
     resolver.indices.add(SimplexPhrasesIndex(SimplexPhrases()))
     resolver.indices.add(ConstPhrasesIndex(ConstPhrases()))
     resolver.indices.add(EasingPhrasesIndex(EasingPhrases()))
+    resolver.indices.add(ValueNoiseDerPhrasesIndex(ValueNoiseDerPhrases()))
     return resolver
 }
 

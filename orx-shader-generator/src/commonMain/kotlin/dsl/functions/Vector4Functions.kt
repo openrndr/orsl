@@ -105,6 +105,11 @@ interface Vector4Functions {
         @JvmName("xyzSv4")
         get() = functionSymbol(this, "$0.xyz")
 
+    val Symbol<Vector4>.yzw: Symbol<Vector3>
+        @JvmName("yzwSv4")
+        get() = functionSymbol(this, "$0.xyz")
+
+
 
     @Suppress("FunctionName")
     @JvmName("vec4Sv2Sv2")
