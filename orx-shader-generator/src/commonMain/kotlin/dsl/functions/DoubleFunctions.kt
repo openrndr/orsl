@@ -2,6 +2,7 @@ package org.openrndr.extra.shadergenerator.dsl.functions
 
 import org.openrndr.extra.shadergenerator.dsl.Symbol
 import org.openrndr.extra.shadergenerator.dsl.functionSymbol
+import org.openrndr.math.Vector2
 import kotlin.jvm.JvmName
 
 @Suppress("INAPPLICABLE_JVM_NAME")
@@ -133,5 +134,10 @@ interface DoubleFunctions {
 
     @JvmName("lteSdVd")
     infix fun Symbol<Double>.lte(right: Double): Symbol<Boolean> = functionSymbol(this, right, "($0 <= $1)")
+
+
+    @JvmName("mixSdSdSd")
+    fun Symbol<Double>.mix(right: Symbol<Double>, factor: Symbol<Double>): Symbol<Double> = functionSymbol(this, right, factor, "mix($0, $1, $2)")
+
 
 }

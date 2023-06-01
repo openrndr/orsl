@@ -17,11 +17,13 @@ class MarchResult : Struct<MarchResult>() {
     var position by field<Vector3>()
     var hit by field<Boolean>()
     var travel by field<Double>()
+    var normal by field<Vector3>()
 }
 
 var Symbol<MarchResult>.position by MarchResult::position
 var Symbol<MarchResult>.hit by MarchResult::hit
 var Symbol<MarchResult>.travel by MarchResult::travel
+var Symbol<MarchResult>.normal by MarchResult::normal
 
 fun ShaderBuilder.march(
     scene: (x: Symbol<Vector3>) -> FunctionSymbol1<Vector3, Double>
@@ -53,6 +55,38 @@ for (int i_ = 0; i_ < 200; ++i_) {
         result
     }
 }
+
+
+
+fun ShaderBuilder.calcAO(
+    scene: (x: Symbol<Vector3>) -> FunctionSymbol1<Vector3, Double>
+): Functions.Function2PropertyProvider<Vector3, Vector3, Double> {
+    return Functions.Function2PropertyProvider(
+        this@calcAO, staticType<Vector3>(),
+        staticType<Vector3>(),
+
+        staticType<Double>()
+    ) { position, direction ->
+        emit(
+            """float occ_ = 0.0;
+float sca_ = 1.0;
+vec3 position_ = x__;
+vec3 direction_ = y__;
+for (int i_ = 0; i_ < 5; ++i_) {     
+    float h_ = 0.01 + 0.15 * float(i_)/4.0;
+    float d_ = ${scene(symbol("position_ + h_ * direction_")).name};
+    occ_ += (h_ - d_) * sca_;
+    sca_ *= 0.95;    
+}
+
+float r = clamp(1.0 - 1.5 * occ_, 0.0, 1.0);
+"""
+        )
+
+        symbol("r")
+    }
+}
+
 
 fun main() {
     application {

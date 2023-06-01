@@ -13,9 +13,11 @@ import org.openrndr.math.transforms.normalMatrix
 class BlendMaterial : Struct<BlendMaterial>() {
     var distance by field<Double>()
     var color by field<Vector3>()
+    var specular by field<Double>()
 }
 var Symbol<BlendMaterial>.color by BlendMaterial::color
 var Symbol<BlendMaterial>.distance by BlendMaterial::distance
+var Symbol<BlendMaterial>.specular by BlendMaterial::specular
 
 fun main() {
     application {
@@ -49,9 +51,11 @@ fun main() {
                         val bm by BlendMaterial()
                         bm.distance = sf.x
                         bm.color = a.color.mix(b.color, sf.y)
+                        bm.specular = a.specular.mix(b.specular, sf.y)
                         bm
                     }
                     var g_color by global<Vector3>()
+                    var g_specular by global<Double>()
 
                     val scene by function<Vector3, Double> {
                         // the generator doesn't support closures, abuse globals instead
@@ -80,6 +84,7 @@ fun main() {
                             val c = cos( (fx+ fy) * Math.PI * 0.5) * 0.5 + 0.5
 
                             bm.color = Vector3(c,c,c)
+                            bm.specular = (cos( (fx+ fy) * Math.PI * 0.25) * 0.5 + 0.5) * 160.0
                             bm
                         }
 
@@ -93,17 +98,42 @@ fun main() {
                         // find smooth minimum in 3x3 grid
                         val d by ((-window..window) * (-window..window)).foldBy(initialDistance, smin, gd)
                         g_color = d.color
+                        g_specular = d.specular
+
                         val d2 by sdSphere(it, radius * 50.0)
-                        min(d.distance, -d2)
+
+                        d.distance.elseIf(-d2 lte d.distance) {
+                            g_color = Vector3(one, one, one)
+                            g_specular = one
+                            -d2
+                        }
+
+
+
                     }
+
 
                     val sceneNormal by gradient(scene, 1E-3)
                     val marcher by march(scene)
                     val result by marcher(rayOrigin, rayDir)
 
                     val normal by sceneNormal(result.position).normalized
-                    val shade = normal.dot(Vector3(0.0, 0.0, 1.0))
-                    val finalColor by g_color * shade
+
+                    val light by Vector3(0.1,0.3,0.6).normalized
+                    val hlf by (light- rayDir).normalized
+                    val diffuse by saturate(normal.dot(hlf))
+
+                    val d16 by 160.0
+                    val d5 by 5.0
+                    val specular by pow( saturate( normal.dot(hlf)), 1.0 + g_specular)*
+                    diffuse *
+                            (0.04 + 0.96*pow( saturate(1.0+hlf.dot(rayDir)), d5 ));
+
+                    val aoCalcer by calcAO(scene)
+
+                    val w by Vector3(0.5, 0.5,0.5)
+                    val lw by Vector3(0.5, 0.5, 0.5)
+                    val finalColor by g_color*0.65 * diffuse + w * aoCalcer(result.position, normal) * 0.5 + lw * 6.0 * specular
 
                     x_fill = Vector4(finalColor, 1.0)
                 }
