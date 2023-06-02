@@ -27,9 +27,17 @@ class GlobalProperty<T>(val generator: Generator, val type:String) {
 }
 
 
-class VariableProperty<T>(val generator: Generator, val type:String) {
+class VariableProperty<T>(val generator: Generator, val type:String,
+                          val initialValue: T?, val initialSymbol: Symbol<T>?) {
     operator fun provideDelegate(any: Any?, property: KProperty<*>) : VariableProperty<T> {
-        generator.emitPreamble("${type} ${property.name};")
+        if (initialValue == null && initialSymbol == null) {
+            generator.emit("${type} ${property.name};")
+        } else if (initialValue != null) {
+            generator.emit("${type} ${property.name} = ${glsl(initialValue)};")
+        } else if (initialSymbol != null) {
+            generator.emit("${type} ${property.name} = ${initialSymbol.name};")
+        }
+
         return this
     }
     operator fun getValue(any: Any?, property: KProperty<*>): Symbol<T> = symbol(property.name, type)

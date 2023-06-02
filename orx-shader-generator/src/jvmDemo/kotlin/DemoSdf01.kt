@@ -27,36 +27,29 @@ var Symbol<MarchResult>.normal by MarchResult::normal
 
 fun ShaderBuilder.march(
     scene: (x: Symbol<Vector3>) -> FunctionSymbol1<Vector3, Double>
-): Functions.Function2PropertyProvider<Vector3, Vector3, MarchResult> {
-    return Functions.Function2PropertyProvider(
-        this@march, staticType<Vector3>(),
-        staticType<Vector3>(),
+) = Functions.Function2PropertyProvider<Vector3, Vector3, _>(
+    this@march, staticType<Vector3>(),
+    staticType<Vector3>(),
+    staticType<MarchResult>()
+) { origin, direction ->
+    val result by MarchResult()
+    val False by false
+    val True by true
+    result.hit = False
+    var position by variable(origin)
 
-        staticType<MarchResult>()
-    ) { position, direction ->
-        val result by MarchResult()
-        val False by false
-        result.hit = False
-        emit(
-            """float sum_ = 0.0;
-vec3 position_ = x__;
-vec3 direction_ = y__;
-for (int i_ = 0; i_ < 200; ++i_) {     
-    float distance_ = ${scene(symbol("position_")).name};
-    
-    if (abs(distance_) < 1E-2) {
-        result.hit = true;
-        result.position = position_;
-        break;
+    val i by variable<Int>()
+    i.for_(0 until 200) {
+        val distance by scene(position)
+        position += direction * distance
+        doIf(abs(distance) lt 1E-2) {
+            result.hit = True
+            result.position = position
+            break_()
+        }
     }
-    position_ += distance_ * direction_ * 0.5;
-}"""
-        )
-        result
-    }
+    result
 }
-
-
 
 fun ShaderBuilder.calcAO(
     scene: (x: Symbol<Vector3>) -> FunctionSymbol1<Vector3, Double>
@@ -66,24 +59,18 @@ fun ShaderBuilder.calcAO(
         staticType<Vector3>(),
 
         staticType<Double>()
-    ) { position, direction ->
-        emit(
-            """float occ_ = 0.0;
-float sca_ = 1.0;
-vec3 position_ = x__;
-vec3 direction_ = y__;
-for (int i_ = 0; i_ < 5; ++i_) {     
-    float h_ = 0.01 + 0.15 * float(i_)/4.0;
-    float d_ = ${scene(symbol("position_ + h_ * direction_")).name};
-    occ_ += (h_ - d_) * sca_;
-    sca_ *= 0.95;    
-}
+    ) { origin, direction ->
+        var occ by variable(0.0)
+        var sca by variable(1.0)
 
-float r = clamp(1.0 - 1.5 * occ_, 0.0, 1.0);
-"""
-        )
-
-        symbol("r")
+        val i by variable(0)
+        i.for_(0 until 5) {
+            val h by 0.01 + 0.15 * (i / 4.0)
+            val d by scene(origin + h * direction)
+            occ += (h - d) * sca
+            sca *= 0.95
+        }
+        saturate(1.0 - 1.5 * occ)
     }
 }
 

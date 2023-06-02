@@ -23,9 +23,9 @@ fun main() {
                             z
                         }
 
-                        val i by variable<Int>()
+                        val i by variable<Int>(0)
                         i.for_(0 until 10) {
-                            val j by variable<Int>()
+                            val j by variable<Int>(0)
                             j.for_(0 until 10) {
                                 doIf(i * j eq 4) {
                                     break_()

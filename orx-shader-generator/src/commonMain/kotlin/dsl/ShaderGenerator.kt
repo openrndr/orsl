@@ -115,7 +115,17 @@ open class ShaderBuilder : Generator, Functions, BooleanFunctions, DoubleFunctio
 
     inline fun <reified T> variable(): VariableProperty<T> {
         val glslType = staticType<T>()
-        return VariableProperty(this@ShaderBuilder, glslType)
+        return VariableProperty(this@ShaderBuilder, glslType, null, null)
+    }
+
+    inline fun <reified T> variable(initialValue: T): VariableProperty<T> {
+        val glslType = staticType<T>()
+        return VariableProperty(this@ShaderBuilder, glslType, initialValue, null)
+    }
+
+    inline fun <reified T> variable(initialValue: Symbol<T>): VariableProperty<T> {
+        val glslType = staticType<T>()
+        return VariableProperty(this@ShaderBuilder, glslType, null, initialValue)
     }
 
     inline fun <reified T> arrayVariable(length: Int): ArrayVariableProperty<T> {

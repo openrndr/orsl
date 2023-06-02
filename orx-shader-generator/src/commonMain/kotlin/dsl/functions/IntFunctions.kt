@@ -48,6 +48,14 @@ interface IntFunctions {
     @JvmName("divSiSi")
     operator fun Symbol<Int>.div(right: Symbol<Int>): Symbol<Int> = functionSymbol(this, right, "($0 / $1)")
 
+    @JvmName("divSiSd")
+    operator fun Symbol<Int>.div(right: Symbol<Double>): Symbol<Double> = functionSymbol(this, right, "($0 / $1)")
+
+    @JvmName("divSiVd")
+    operator fun Symbol<Int>.div(right: Double): Symbol<Double> = functionSymbol(this, right, "($0 / $1)")
+
+
+
     @JvmName("eqSiSi")
     infix fun Symbol<Int>.eq(right: Symbol<Int>) : Symbol<Boolean> = functionSymbol(this, right, "($0 == $1)")
 
