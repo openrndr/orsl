@@ -6,6 +6,7 @@ interface Symbol<T> {
     val type: String
 }
 
+interface IfSymbol<T>: Symbol<T>
 
 fun <T> symbol(name: String, type: String) = object : Symbol<T> {
     override val name = name
@@ -13,6 +14,11 @@ fun <T> symbol(name: String, type: String) = object : Symbol<T> {
 }
 
 inline fun <reified T> symbol(name: String) = object : Symbol<T> {
+    override val name = name
+    override val type = staticType<T>()
+}
+
+inline fun <reified T> ifSymbol(name: String) = object : IfSymbol<T> {
     override val name = name
     override val type = staticType<T>()
 }

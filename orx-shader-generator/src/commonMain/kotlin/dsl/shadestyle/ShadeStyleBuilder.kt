@@ -29,12 +29,12 @@ open class ShadeStyleBuilder : ShaderBuilder() {
     }
 
 
-    val c_boundsPosition by variable<Vector3>()
-    val c_boundsSize by variable<Vector3>()
-    val c_screenPosition by variable<Vector2>()
-    val c_contourPosition by variable<Double>()
-    val c_instance by variable<Int>()
-    val c_element by variable<Int>()
+    val c_boundsPosition by parameter<Vector3>()
+    val c_boundsSize by parameter<Vector3>()
+    val c_screenPosition by parameter<Vector2>()
+    val c_contourPosition by parameter<Double>()
+    val c_instance by parameter<Int>()
+    val c_element by parameter<Int>()
 }
 
 
@@ -55,15 +55,15 @@ class FragmentTransformBuilder() : ShadeStyleBuilder(), HashPhrasesFunctions, Va
     var x_fill by output<Vector4>()
     var x_stroke by output<Vector4>()
 
-    val v_worldNormal by variable<Vector3>()
-    val v_viewNormal by variable<Vector3>()
-    val v_worldPosition by variable<Vector3>()
-    val v_viewPosition by variable<Vector3>()
-    val v_clipPosition by variable<Vector4>()
+    val v_worldNormal by parameter<Vector3>()
+    val v_viewNormal by parameter<Vector3>()
+    val v_worldPosition by parameter<Vector3>()
+    val v_viewPosition by parameter<Vector3>()
+    val v_clipPosition by parameter<Vector4>()
 
-    val u_viewMatrix by variable<Matrix44>()
-    val u_modelMatrix by variable<Matrix44>()
-    val u_modelNormalMatrix by variable<Matrix44>()
-    val u_viewNormalMatrix by variable<Matrix44>()
+    val u_viewMatrix by parameter<Matrix44>()
+    val u_modelMatrix by parameter<Matrix44>()
+    val u_modelNormalMatrix by parameter<Matrix44>()
+    val u_viewNormalMatrix by parameter<Matrix44>()
 
 }

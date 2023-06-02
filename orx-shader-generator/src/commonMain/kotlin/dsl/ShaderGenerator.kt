@@ -9,7 +9,8 @@ import org.openrndr.extra.shadergenerator.phrases.dsl.functions.Matrix33Function
 import org.openrndr.math.*
 import kotlin.reflect.KProperty
 
-open class ShaderBuilder : Generator, Functions, BooleanFunctions, DoubleFunctions, ArrayFunctions, Sampler2DFunctions, IntFunctions,
+open class ShaderBuilder : Generator, Functions, BooleanFunctions, DoubleFunctions, ArrayFunctions, Sampler2DFunctions,
+    IntFunctions,
     Vector2Functions, Vector3Functions, Vector4Functions, Matrix33Functions, Matrix44Functions,
     IntVector2Functions {
     var code = ""
@@ -137,23 +138,116 @@ open class ShaderBuilder : Generator, Functions, BooleanFunctions, DoubleFunctio
 
     @PublishedApi
     internal var tempId = 0;
-    inline fun <reified T> Symbol<T>.elseIf(precondition: Symbol<Boolean>, noinline f: ShaderBuilder.() -> Symbol<T>): Symbol<T> {
+    inline fun <reified T> Symbol<T>.elseIf(
+        precondition: Symbol<Boolean>,
+        noinline f: ShaderBuilder.() -> Symbol<T>
+    ): Symbol<T> {
         val sb = ShaderBuilder()
         sb.push()
         val result = sb.f()
         sb.pop()
         emitPreamble(sb.preamble)
-        emit("""${staticType<T>()} temp_$tempId; 
+        emit(
+            """${staticType<T>()} temp_$tempId; 
 if (${precondition.name}) {
     ${sb.code}
     temp_$tempId = ${result.name};
 } else { 
     temp_$tempId = ${this@elseIf.name};
-}""")
+}"""
+        )
         val s = symbol<T>("temp_$tempId")
         tempId++
         return s
     }
+
+    inline fun Symbol<Int>.for_(range: Range, noinline f: ShaderBuilder.() -> Unit) {
+        val sb = ShaderBuilder()
+        sb.push()
+        val result = sb.f()
+        emitPreamble(sb.preamble)
+        emit(
+            """for (${this.name} = ${range.startV}; ${this.name} < ${range.endV}; ++ ${this.name}) {
+${sb.code.prependIndent("    ")}            
+}"""
+        )
+
+    }
+
+    inline fun break_() {
+        emit("break;")
+    }
+
+    inline fun continue_() {
+        emit("continue;")
+    }
+
+    inline fun <reified T> if_(precondition: Symbol<Boolean>, noinline f: ShaderBuilder.() -> Symbol<T>): IfSymbol<T> {
+        val sb = ShaderBuilder()
+        sb.push()
+        val result = sb.f()
+        sb.pop()
+        emitPreamble(sb.preamble)
+        emit(
+            """${staticType<T>()} temp_$tempId; 
+if (${precondition.name}) {
+    ${sb.code}
+    temp_$tempId = ${result.name};
+}"""
+        )
+        val s = ifSymbol<T>("temp_$tempId")
+        tempId++
+        return s
+    }
+
+    inline fun doIf(precondition: Symbol<Boolean>, noinline f: ShaderBuilder.() -> Unit) {
+        val sb = ShaderBuilder()
+        sb.push()
+        val result = sb.f()
+        sb.pop()
+        emitPreamble(sb.preamble)
+        emit(
+            """if (${precondition.name}) {
+${sb.code.prependIndent("    ")}
+}"""
+        )
+    }
+
+    inline infix fun <reified T> IfSymbol<T>.else_(noinline f: ShaderBuilder.() -> Symbol<T>): Symbol<T> {
+        val sb = ShaderBuilder()
+        sb.push()
+        val result = sb.f()
+        sb.pop()
+        emitPreamble(sb.preamble)
+        emit(
+            """else { ${sb.code}
+temp_${tempId - 1} = ${result.name};             
+}""".trimMargin()
+        )
+        val s = symbol<T>("temp_${tempId - 1}")
+        return s
+    }
+
+    inline fun <reified T> IfSymbol<T>.elseIf(
+        precondition: Symbol<Boolean>,
+        noinline f: ShaderBuilder.() -> Symbol<T>
+    ): IfSymbol<T> {
+        val sb = ShaderBuilder()
+        sb.push()
+        val result = sb.f()
+        sb.pop()
+
+        emitPreamble(sb.preamble)
+        emit(
+            """else if (${precondition.name}) {
+    ${sb.code.prependIndent("    ")}
+    temp_${tempId - 1} = ${result.name};
+}"""
+        )
+        val s = ifSymbol<T>("temp_${tempId - 1}")
+        return s
+    }
+
 
     inline fun <reified T, reified R> function(noinline f: ShaderBuilder.(Symbol<T>) -> Symbol<R>): FunctionPropertyProvider<T, R> =
         FunctionPropertyProvider(
@@ -192,7 +286,6 @@ if (${precondition.name}) {
             returnType = staticType<R>(),
             f
         )
-
 
 
     inline fun <reified R> BoxRange2.weightedAverageBy(
@@ -273,7 +366,11 @@ if (${precondition.name}) {
         return symbol("minBy_${hash}($startX, $endX, $startY, $endY)")
     }
 
-    inline fun <reified R> BoxRange2.foldBy(init: Symbol<R>, accumulate: (acc:Symbol<R>, elem:Symbol<R>) -> Function2Symbol<R, R,R>, noinline function: (x: Symbol<IntVector2>) -> FunctionSymbol1<IntVector2, R>): Symbol<R> {
+    inline fun <reified R> BoxRange2.foldBy(
+        init: Symbol<R>,
+        accumulate: (acc: Symbol<R>, elem: Symbol<R>) -> Function2Symbol<R, R, R>,
+        noinline function: (x: Symbol<IntVector2>) -> FunctionSymbol1<IntVector2, R>
+    ): Symbol<R> {
         val id = symbol<IntVector2>("$0")
 
 
@@ -305,8 +402,6 @@ if (${precondition.name}) {
     }
 
 
-
-
     inline fun <reified R> Range.sumBy(noinline function: (x: Symbol<Int>) -> FunctionSymbol1<Int, R>): Symbol<R> {
         val id = symbol<Int>("$0")
         val functionId = function(id)
@@ -326,7 +421,6 @@ if (${precondition.name}) {
         val end = endP?.name ?: endV?.toString() ?: error("no end")
         return symbol("sumBy_${hash}($start, $end)")
     }
-
 
 
     inline fun <reified T, reified R> ArraySymbol<T>.map(noinline function: (x: Symbol<T>) -> FunctionSymbol1<T, R>): ArraySymbol<R> {
