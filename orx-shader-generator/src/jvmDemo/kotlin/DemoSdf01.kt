@@ -39,14 +39,15 @@ fun ShaderBuilder.march(
     var position by variable(origin)
 
     val i by variable<Int>()
-    i.for_(0 until 200) {
+    i.for_(0 until 300) {
         val distance by scene(position)
-        position += direction * distance
+
         doIf(abs(distance) lt 1E-2) {
             result.hit = True
             result.position = position
             break_()
         }
+        position += direction * distance * 0.5
     }
     result
 }
@@ -114,12 +115,13 @@ fun main() {
 
                     val sceneNormal by gradient(scene, 1E-3)
                     val marcher by march(scene)
+                    val aoCalcer by calcAO(scene)
                     val result by marcher(rayOrigin, rayDir)
 
                     val n by 0.0
                     val c2 by n.elseIf(result.hit) {
                         val normal by sceneNormal(result.position).normalized
-                        normal.dot(Vector3(0.0, 0.0, 1.0))
+                        normal.dot(Vector3(0.0, 0.0, 1.0)) * 0.5 + aoCalcer(result.position, normal) * 0.25
                     }
 
                     x_fill = Vector4(c2, c2, c2, 1.0)
