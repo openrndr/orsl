@@ -160,7 +160,7 @@ open class ShaderBuilder : Generator, Functions, BooleanFunctions, DoubleFunctio
         emit(
             """${staticType<T>()} temp_$tempId; 
 if (${precondition.name}) {
-    ${sb.code}
+${sb.code.prependIndent("    ").trimEnd()}
     temp_$tempId = ${result.name};
 } else { 
     temp_$tempId = ${this@elseIf.name};
@@ -177,20 +177,39 @@ if (${precondition.name}) {
         val result = sb.f()
         emitPreamble(sb.preamble)
         emit(
-            """for (${this.name} = ${range.startV}; ${this.name} < ${range.endV}; ++ ${this.name}) {
-${sb.code.prependIndent("    ")}            
+            """for (${this.name} = ${range.startV}; ${this.name} < ${range.endV}; ++${this.name}) {
+${sb.code.prependIndent("    ").trimEnd()}            
 }"""
         )
 
     }
 
-    inline fun break_() {
+    fun break_() {
         emit("break;")
     }
 
-    inline fun continue_() {
+    fun continue_() {
         emit("continue;")
     }
+
+    inline fun <reified T> run(noinline f: ShaderBuilder.() -> Symbol<T>): Symbol<T> {
+        val sb = ShaderBuilder()
+        sb.push()
+        val result = sb.f()
+        sb.pop()
+        emitPreamble(sb.preamble)
+        emit(
+            """${staticType<T>()} temp_$tempId; 
+{
+${sb.code.prependIndent("    ").trimEnd()}
+    temp_$tempId = ${result.name};
+}"""
+        )
+        val s = ifSymbol<T>("temp_$tempId")
+        tempId++
+        return s
+    }
+
 
     inline fun <reified T> if_(precondition: Symbol<Boolean>, noinline f: ShaderBuilder.() -> Symbol<T>): IfSymbol<T> {
         val sb = ShaderBuilder()
@@ -201,7 +220,7 @@ ${sb.code.prependIndent("    ")}
         emit(
             """${staticType<T>()} temp_$tempId; 
 if (${precondition.name}) {
-    ${sb.code}
+${sb.code.prependIndent("    ").trimEnd()}
     temp_$tempId = ${result.name};
 }"""
         )
@@ -213,12 +232,12 @@ if (${precondition.name}) {
     inline fun doIf(precondition: Symbol<Boolean>, noinline f: ShaderBuilder.() -> Unit) {
         val sb = ShaderBuilder()
         sb.push()
-        val result = sb.f()
+        sb.f()
         sb.pop()
         emitPreamble(sb.preamble)
         emit(
             """if (${precondition.name}) {
-${sb.code.prependIndent("    ")}
+${sb.code.prependIndent("    ").trimEnd()}
 }"""
         )
     }
@@ -230,9 +249,10 @@ ${sb.code.prependIndent("    ")}
         sb.pop()
         emitPreamble(sb.preamble)
         emit(
-            """else { ${sb.code}
-temp_${tempId - 1} = ${result.name};             
-}""".trimMargin()
+            """else { 
+${sb.code.prependIndent("    ").trimEnd()}
+    temp_${tempId - 1} = ${result.name};             
+}"""
         )
         val s = symbol<T>("temp_${tempId - 1}")
         return s
@@ -250,7 +270,7 @@ temp_${tempId - 1} = ${result.name};
         emitPreamble(sb.preamble)
         emit(
             """else if (${precondition.name}) {
-    ${sb.code.prependIndent("    ")}
+${sb.code.prependIndent("    ").trimEnd()}
     temp_${tempId - 1} = ${result.name};
 }"""
         )

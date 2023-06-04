@@ -5,8 +5,10 @@ import org.openrndr.extra.shadergenerator.phrases.PhraseResolver
 import org.openrndr.extra.shadergenerator.phrases.dsl.ArrayPhrases
 import org.openrndr.extra.shadergenerator.phrases.dsl.ArrayPhrasesIndex
 import org.openrndr.extra.shadergenerator.phrases.*
-import org.openrndr.extra.shadergenerator.phrases.phrases.ValueNoiseDerPhrases
-import org.openrndr.extra.shadergenerator.phrases.phrases.ValueNoiseDerPhrasesIndex
+import org.openrndr.extra.shadergenerator.phrases.SdfPhrases
+import org.openrndr.extra.shadergenerator.phrases.SdfPhrasesIndex
+import org.openrndr.extra.shadergenerator.phrases.ValueNoiseDerPhrases
+import org.openrndr.extra.shadergenerator.phrases.ValueNoiseDerPhrasesIndex
 
 private fun preprocessor(): PhraseResolver {
     val resolver = PhraseResolver()
@@ -19,6 +21,8 @@ private fun preprocessor(): PhraseResolver {
     resolver.indices.add(ConstPhrasesIndex(ConstPhrases()))
     resolver.indices.add(EasingPhrasesIndex(EasingPhrases()))
     resolver.indices.add(ValueNoiseDerPhrasesIndex(ValueNoiseDerPhrases()))
+    resolver.indices.add(SdfPhrasesIndex(SdfPhrases()))
+    resolver.indices.add(FibonacciPhrasesIndex(FibonacciPhrases()))
     return resolver
 }
 

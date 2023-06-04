@@ -22,7 +22,6 @@ fun main() {
                             val z by 1.0
                             z
                         }
-
                         val i by variable<Int>(0)
                         i.for_(0 until 10) {
                             val j by variable<Int>(0)

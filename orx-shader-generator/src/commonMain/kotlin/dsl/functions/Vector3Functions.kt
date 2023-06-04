@@ -60,6 +60,10 @@ interface Vector3Functions {
     operator fun Vector3.minus(right: Symbol<Vector3>): Symbol<Vector3> = functionSymbol(this, right, "($0 - $1)")
 
 
+    @JvmName("timesVv3Sd")
+    operator fun Vector3.times(right: Symbol<Double>): Symbol<Vector3> = functionSymbol(this, right, "($0 * $1)")
+
+
     @JvmName("timesSv3Vd")
     operator fun Symbol<Vector3>.times(right: Double): Symbol<Vector3> = functionSymbol(this, right, "($0 * $1)")
 

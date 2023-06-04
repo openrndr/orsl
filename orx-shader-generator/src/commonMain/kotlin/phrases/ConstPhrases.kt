@@ -15,4 +15,7 @@ class ConstPhrases : ShaderBook{
     @ShaderPhrase
     val TWO_PI = "#define TWO_PI 6.2831853071795864769252867665590"
 
+    @ShaderPhrase
+    val PHI = "#define PHI 1.61803398875"
+
 }

@@ -21,7 +21,7 @@ interface Functions {
             generator.emitPreamble(sb.preamble)
             generator.emitPreamble(
                 """$returnType ${name}($parameter0Type x__) { 
-${sb.code.replace(p0, "x__").prependIndent("    ")}                    
+${sb.code.replace(p0, "x__").prependIndent("    ").trimEnd()}                    
     return ${resultSym.name.replace(p0, "x__")};
 }"""
             )
@@ -61,7 +61,7 @@ ${sb.code.replace(p0, "x__").prependIndent("    ")}
             generator.emitPreamble(sb.preamble)
             generator.emitPreamble(
                 """$returnType ${name}($parameter0Type x__, $parameter1Type y__) { 
-${sb.code.replace(p0, "x__").replace(p1, "y__").prependIndent("    ")}                    
+${sb.code.replace(p0, "x__").replace(p1, "y__").prependIndent("    ").trimEnd()}                    
     return ${resultSym.name.replace(p0, "x__").replace(p1, "y__")};
 }"""
             )
@@ -121,7 +121,7 @@ ${sb.code.replace(p0, "x__").replace(p1, "y__").prependIndent("    ")}
             generator.emitPreamble(sb.preamble)
             generator.emitPreamble(
                 """$returnType ${name}($parameter0Type x__, $parameter1Type y__, $parameter2Type z__) { 
-${sb.code.replace(p0, "x__").replace(p1, "y__").replace(p2, "z__").prependIndent("    ")}                    
+${sb.code.replace(p0, "x__").replace(p1, "y__").replace(p2, "z__").prependIndent("    ").trimEnd()}                    
     return ${resultSym.name.replace(p0, "x__").replace(p1, "y__").replace(p2, "z__")};
 }"""
             )
@@ -192,7 +192,7 @@ ${sb.code.replace(p0, "x__").replace(p1, "y__").replace(p2, "z__").prependIndent
                 """$returnType ${name}($parameter0Type x__, $parameter1Type y__, $parameter2Type z__, $parameter3Type w__) { 
 ${
                     sb.code.replace(p0, "x__").replace(p1, "y__").replace(p2, "z__").replace(p3, "w__")
-                        .prependIndent("    ")
+                        .prependIndent("    ").trimEnd()
                 }                    
     return ${resultSym.name.replace(p0, "x__").replace(p1, "y__").replace(p2, "z__").replace(p3, "z__")};
 }"""

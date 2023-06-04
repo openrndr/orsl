@@ -4,6 +4,8 @@ import org.openrndr.extra.camera.Orbital
 import org.openrndr.extra.shadergenerator.dsl.*
 import org.openrndr.extra.shadergenerator.dsl.shadestyle.fragmentTransform
 import org.openrndr.extra.shadergenerator.phrases.dsl.functions.gradient
+import org.openrndr.extra.shadergenerator.phrases.sdf.march
+import org.openrndr.extra.shadergenerator.phrases.sdf.position
 import org.openrndr.math.*
 import org.openrndr.math.transforms.normalMatrix
 

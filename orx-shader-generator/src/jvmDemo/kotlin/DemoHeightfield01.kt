@@ -7,6 +7,10 @@ import org.openrndr.extra.shadergenerator.dsl.shadestyle.fragmentTransform
 import org.openrndr.extra.shadergenerator.dsl.structs.getValue
 import org.openrndr.extra.shadergenerator.dsl.structs.setValue
 import org.openrndr.extra.shadergenerator.phrases.dsl.functions.gradient
+import org.openrndr.extra.shadergenerator.phrases.sdf.MarchResult
+import org.openrndr.extra.shadergenerator.phrases.sdf.hit
+import org.openrndr.extra.shadergenerator.phrases.sdf.position
+import org.openrndr.extra.shadergenerator.phrases.sdf.travel
 import org.openrndr.math.*
 import org.openrndr.math.transforms.normalMatrix
 
@@ -88,8 +92,6 @@ fun main() {
 
 
                     val normal by function<Vector3, Double, Vector3> {
-
-
                         pos, t ->
                         val z by 0.0
                         val eps by Vector2(0.001 *t, z)

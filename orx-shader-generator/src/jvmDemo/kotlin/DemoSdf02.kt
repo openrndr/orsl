@@ -7,6 +7,9 @@ import org.openrndr.extra.shadergenerator.dsl.shadestyle.fragmentTransform
 import org.openrndr.extra.shadergenerator.dsl.structs.getValue
 import org.openrndr.extra.shadergenerator.dsl.structs.setValue
 import org.openrndr.extra.shadergenerator.phrases.dsl.functions.gradient
+import org.openrndr.extra.shadergenerator.phrases.sdf.hit
+import org.openrndr.extra.shadergenerator.phrases.sdf.march
+import org.openrndr.extra.shadergenerator.phrases.sdf.position
 import org.openrndr.math.Matrix44
 import org.openrndr.math.Vector2
 import org.openrndr.math.Vector3
