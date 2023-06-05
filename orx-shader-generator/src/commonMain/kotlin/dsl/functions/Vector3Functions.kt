@@ -2,6 +2,8 @@ package org.openrndr.extra.shadergenerator.dsl.functions
 
 import org.openrndr.extra.shadergenerator.dsl.Symbol
 import org.openrndr.extra.shadergenerator.dsl.functionSymbol
+import org.openrndr.extra.shadergenerator.dsl.glsl
+import org.openrndr.extra.shadergenerator.dsl.symbol
 import org.openrndr.math.Vector2
 import org.openrndr.math.Vector3
 import kotlin.jvm.JvmName
@@ -142,3 +144,8 @@ interface Vector3Functions {
 
 
 }
+
+val Vector3.symbol: Symbol<Vector3>
+    get() {
+        return symbol<Vector3>(glsl(this)!!)
+    }
