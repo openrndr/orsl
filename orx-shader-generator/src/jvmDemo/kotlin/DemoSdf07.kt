@@ -1,19 +1,15 @@
 import org.openrndr.application
 import org.openrndr.draw.*
 import org.openrndr.extra.camera.Orbital
-import org.openrndr.extra.shadergenerator.dsl.*
 import org.openrndr.extra.shadergenerator.dsl.functions.symbol
 import org.openrndr.extra.shadergenerator.dsl.shadestyle.fragmentTransform
-import org.openrndr.extra.shadergenerator.dsl.structs.getValue
-import org.openrndr.extra.shadergenerator.dsl.structs.setValue
 import org.openrndr.extra.shadergenerator.phrases.dsl.functions.gradient
 import org.openrndr.extra.shadergenerator.phrases.dsl.functions.symbol
 import org.openrndr.extra.shadergenerator.phrases.sdf.*
-import org.openrndr.extra.shadergenerator.phrases.sdf.calcSoftShadow
 import org.openrndr.math.*
 import org.openrndr.math.transforms.normalMatrix
 
-// attempt to decouple organize materials a bit better
+// attempt to decouple the organisation of materials from the distance functions
 
 fun main() {
     application {
@@ -46,12 +42,16 @@ fun main() {
                     update = true.symbol
                     matQuantize = true.symbol
 
-                    val shadowScene by function<Vector3, Double> {
-                        val min_ by function<Double, Double, Double> { a, b ->
-                            doIf((update eq true) and (b lt a)) {
-                                f_matQuantize = matQuantize
-                                f_matSpecular = matSpecular
-                                f_matColor = matColor
+                    // this is a Kotlin function that produces a shader function
+                    // the evaluation of shade is static
+                    fun scene(shade: Boolean) = function<Vector3, Double> {
+                        val min by function<Double, Double, Double> { a, b ->
+                            if (shade) {
+                                doIf(b lt a) {
+                                    f_matQuantize = matQuantize
+                                    f_matSpecular = matSpecular
+                                    f_matColor = matColor
+                                }
                             }
                             min(a, b)
                         }
@@ -68,22 +68,29 @@ fun main() {
                             cos(it.y + p_time * 0.932)
                         ) * 1.0
 
-
-                        matColor = Vector3(1.0, 0.0, 0.0).symbol
-                        matQuantize = true.symbol
-                        matSpecular = 160.0.symbol
+                        if (shade) {
+                            matColor = Vector3(1.0, 0.0, 0.0).symbol
+                            matQuantize = true.symbol
+                            matSpecular = 160.0.symbol
+                        }
 
                         var d by variable<Double>()
-                        d = min_(1E6.symbol, sdSphere(coord, radius) + value13D(it * 3.0).x)
-                        matQuantize = false.symbol
-                        matSpecular = 4.0.symbol
-                        matColor = Vector3(0.05, 0.05, 0.05).symbol
-                        d = min_(d, -sdSphere(it, radius * 50.0))
+                        d = min(1E6.symbol, sdSphere(coord, radius) + value13D(it * 3.0).x)
+
+                        if (shade) {
+                            matQuantize = false.symbol
+                            matSpecular = 4.0.symbol
+                            matColor = Vector3(0.05, 0.05, 0.05).symbol
+                        }
+                        d = min(d, -sdSphere(it, radius * 50.0))
                         d
                     }
 
+                    // use that kotlin function to create two variations of the scene distance function
+                    val shadeScene by scene(true)
+                    val shadowScene by scene(false)
 
-                    val marcher by march(shadowScene, tolerance = 1E-4, stepScale = 0.4)
+                    val marcher by march(shadeScene, tolerance = 1E-4, stepScale = 0.4)
                     val result by marcher(rayOrigin, rayDir)
 
                     val normal by run {
@@ -107,7 +114,7 @@ fun main() {
 
                     val amb by run {
                         val aoCalcer by calcAO(
-                            shadowScene,
+                            shadeScene,
                             intensity = 0.5,
                             distance = 1.0,
                             iterations = 32,
