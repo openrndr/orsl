@@ -2,6 +2,8 @@ package org.openrndr.extra.shadergenerator.dsl.functions
 
 import org.openrndr.extra.shadergenerator.dsl.Symbol
 import org.openrndr.extra.shadergenerator.dsl.functionSymbol
+import org.openrndr.extra.shadergenerator.dsl.glsl
+import org.openrndr.extra.shadergenerator.dsl.symbol
 import kotlin.jvm.JvmName
 
 @Suppress("INAPPLICABLE_JVM_NAME")
@@ -92,3 +94,6 @@ interface IntFunctions {
     @JvmName("lteSiVi")
     infix fun Symbol<Int>.lte(right: Int) : Symbol<Boolean> = functionSymbol(this, right, "($0 <= $1)")
 }
+
+val Int.symbol: Symbol<Int>
+    get() = symbol(glsl(this)!!)

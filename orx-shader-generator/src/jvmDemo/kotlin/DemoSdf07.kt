@@ -30,17 +30,15 @@ fun main() {
                     val rayDir by (p_viewMatrix * Vector4(fixedCoord - Vector2(0.5), -1.0, 0.0)).xyz.normalized
                     val rayOrigin by p_origin
 
+                    var matQuantize by global<Boolean>()
                     var f_matQuantize by global<Boolean>()
+
                     var matColor by global<Vector3>()
                     var f_matColor by global<Vector3>()
-                    var matQuantize by global<Boolean>()
+
                     var matSpecular by global<Double>()
                     var f_matSpecular by global<Double>()
 
-                    var update by global<Boolean>()
-
-                    update = true.symbol
-                    matQuantize = true.symbol
 
                     // this is a Kotlin function that produces a shader function
                     // the evaluation of shade is static
@@ -69,18 +67,28 @@ fun main() {
                         ) * 1.0
 
                         if (shade) {
-                            matColor = Vector3(1.0, 0.0, 0.0).symbol
+                            matColor = Vector3.ZERO.symbol
+                            matQuantize = false.symbol
+                            matSpecular = 160.0.symbol
+                        }
+                        var d by variable<Double>()
+                        d = min(1E6.symbol, sdSphere(coord, radius))
+
+                        if (shade) {
+                            matColor = coord.normalized * 0.5 + Vector3(0.5)
                             matQuantize = true.symbol
                             matSpecular = 160.0.symbol
                         }
-
-                        var d by variable<Double>()
-                        d = min(1E6.symbol, sdSphere(coord, radius) + value13D(it * 3.0).x)
+                        d = min(d, sdSphere(coord, radius) + value13D(it * 3.0).x)
 
                         if (shade) {
-                            matQuantize = false.symbol
-                            matSpecular = 4.0.symbol
-                            matColor = Vector3(0.05, 0.05, 0.05).symbol
+                            matQuantize = cos(it.y * 1.0) lt 0.0
+                            matSpecular = cos(it.x * 0.1)*50.0 + 60.0
+
+                            matColor = run {
+                                val s by (cos(it.y + p_time) * 0.5 + 0.5) * 0.5
+                                Vector3(s, s, s)
+                            }
                         }
                         d = min(d, -sdSphere(it, radius * 50.0))
                         d
@@ -90,16 +98,20 @@ fun main() {
                     val shadeScene by scene(true)
                     val shadowScene by scene(false)
 
-                    val marcher by march(shadeScene, tolerance = 1E-4, stepScale = 0.4)
+                    val marcher by march(shadowScene, tolerance = 1E-4, stepScale = 0.3)
+
                     val result by marcher(rayOrigin, rayDir)
+                    // this needs to be assigned to a value otherwise shadeScene is not called
+                    val d2 by shadeScene(result.position)
 
                     val normal by run {
-                        val sceneNormal by gradient(shadowScene, 1E-3)
+                        val sceneNormal by gradient(shadowScene, 2E-3)
                         sceneNormal(result.position).normalized
                     }
 
-                    val c by 24
-                    val qnormal by if_(f_matQuantize) { sphericalDistribution(normal, c).xyz } else_ {
+                    val qnormal by if_(f_matQuantize) {
+                        sphericalDistribution(normal, 24.symbol).xyz
+                    } else_ {
                         normal
                     }
 
@@ -110,12 +122,12 @@ fun main() {
 
                     val specular by pow(saturate(qnormal.dot(hlf)), f_matSpecular) *
                             diffuse *
-                            (0.04 + 0.96 * pow(saturate(1.0 + hlf.dot(rayDir)), 5.0.symbol));
+                            (0.04 + 0.96 * pow(saturate(1.0 + hlf.dot(rayDir)), 5.0.symbol)) * 10.0
 
                     val amb by run {
                         val aoCalcer by calcAO(
                             shadeScene,
-                            intensity = 0.5,
+                            intensity = 2.0,
                             distance = 1.0,
                             iterations = 32,
                             falloff = 0.85
@@ -123,10 +135,13 @@ fun main() {
                         aoCalcer(result.position, qnormal)
                     }
 
-                    val w by Vector3.ONE * 0.25
-                    val lw by Vector3(0.5, 0.5, 0.5)
-                    val finalColor by f_matColor * diffuse + w * amb + lw  * specular
+                    val finalColor by f_matColor * diffuse +
+                            Vector3.ONE * 0.04 * amb +
+                            Vector3.ONE * 3.0 * specular
+
                     x_fill = Vector4(finalColor * 1.0, 1.0)
+                    val ip by 1.0 / 2.2
+                    x_fill = pow(x_fill, Vector4(ip, ip, ip, 1.0))
                 }
                 parameter("time", seconds)
 
