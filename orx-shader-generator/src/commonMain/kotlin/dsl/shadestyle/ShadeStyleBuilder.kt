@@ -9,7 +9,7 @@ import org.openrndr.math.Vector3
 import org.openrndr.math.Vector4
 import kotlin.reflect.KProperty
 
-open class ShadeStyleBuilder : ShaderBuilder() {
+open class ShadeStyleBuilder : ShaderBuilder(), TransformPhrasesFunctions {
     class Parameter<T>(val type: String) {
         operator fun getValue(any: Any?, property: KProperty<*>) = symbol<T>(property.name, type)
     }

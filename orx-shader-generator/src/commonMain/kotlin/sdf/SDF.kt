@@ -52,37 +52,6 @@ fun ShaderBuilder.march(
 }
 
 
-fun ShaderBuilder.march2(
-    shadowScene: (x: Symbol<Vector3>) -> FunctionSymbol1<Vector3, Double>,
-    materialScene: (x: Symbol<Vector3>) -> FunctionSymbol1<Vector3, Double>,
-    iterations: Int = 300,
-    tolerance: Double = 1E-2,
-    stepScale: Double = 0.5
-) = Functions.Function2PropertyProvider<Vector3, Vector3, _>(
-    this@march2, staticType<Vector3>(),
-    staticType<Vector3>(),
-    staticType<MarchResult>()
-) { origin, direction ->
-    val result by MarchResult()
-    val False by false
-    val True by true
-    result.hit = False
-    var position by variable(origin)
-
-    val i by variable<Int>()
-    i.for_(0 until iterations) {
-        val distance by shadowScene(position)
-        doIf(abs(distance) lt tolerance) {
-            result.hit = True
-            result.position = position
-            break_()
-        }
-        position += direction * distance * stepScale
-    }
-    result
-}
-
-
 
 
 fun ShaderBuilder.calcAO(

@@ -197,15 +197,16 @@ ${sb.code.prependIndent("    ").trimEnd()}
         sb.push()
         val result = sb.f()
         sb.pop()
+        val hash = hash(this.code, this.preamble)
         emitPreamble(sb.preamble)
         emit(
-            """${staticType<T>()} temp_$tempId; 
+            """${staticType<T>()} temp_${hash}_$tempId; 
 {
 ${sb.code.prependIndent("    ").trimEnd()}
-    temp_$tempId = ${result.name};
+    temp_${hash}_$tempId = ${result.name};
 }"""
         )
-        val s = ifSymbol<T>("temp_$tempId")
+        val s = ifSymbol<T>("temp_${hash}_$tempId")
         tempId++
         return s
     }
@@ -214,6 +215,7 @@ ${sb.code.prependIndent("    ").trimEnd()}
     inline fun <reified T> if_(precondition: Symbol<Boolean>, noinline f: ShaderBuilder.() -> Symbol<T>): IfSymbol<T> {
         val sb = ShaderBuilder()
         sb.push()
+        sb.tempId = tempId * 31
         val result = sb.f()
         sb.pop()
         emitPreamble(sb.preamble)
@@ -244,6 +246,7 @@ ${sb.code.prependIndent("    ").trimEnd()}
 
     inline infix fun <reified T> IfSymbol<T>.else_(noinline f: ShaderBuilder.() -> Symbol<T>): Symbol<T> {
         val sb = ShaderBuilder()
+        sb.tempId = tempId * 31
         sb.push()
         val result = sb.f()
         sb.pop()
@@ -263,6 +266,7 @@ ${sb.code.prependIndent("    ").trimEnd()}
         noinline f: ShaderBuilder.() -> Symbol<T>
     ): IfSymbol<T> {
         val sb = ShaderBuilder()
+        sb.tempId = tempId * 31
         sb.push()
         val result = sb.f()
         sb.pop()
