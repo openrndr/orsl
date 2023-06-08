@@ -1,6 +1,6 @@
 [versions]
 ksp = "1.8.21-1.0.11"
-kotlinPoet = "1.13.1"
+kotlinPoet = "1.14.2"
 kotlinApi = "1.8"
 kotlinLanguage = "1.8"
 kotlin = "1.8.21"
@@ -65,7 +65,7 @@ openrndr-svg = { group = "org.openrndr", name = "openrndr-svg", version.ref = "o
 openrndr-gl3-core = { group = "org.openrndr", name = "openrndr-gl3", version.ref = "openrndr" }
 orx-mesh-generators = { group = "org.openrndr.extra", name = "orx-mesh-generators", version.ref = "orx" }
 orx-camera = { group = "org.openrndr.extra", name = "orx-camera", version.ref = "orx" }
-
+orx-olive = { group = "org.openrndr.extra", name = "orx-olive", version.ref = "orx" }
 
 tensorflow = { group = "org.tensorflow", name = "tensorflow-core-api", version.ref = "tensorflow" }
 boofcv = { group = "org.boofcv", name = "boofcv-core", version.ref = "boofcv" }

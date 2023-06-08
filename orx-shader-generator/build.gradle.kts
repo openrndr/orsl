@@ -44,6 +44,7 @@ kotlin {
             dependencies {
                 implementation(libs.orx.mesh.generators)
                 implementation(libs.orx.camera)
+                implementation(libs.orx.olive)
             }
         }
 
