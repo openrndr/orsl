@@ -23,6 +23,7 @@ private fun preprocessor(): PhraseResolver {
     resolver.indices.add(ValueNoiseDerPhrasesIndex(ValueNoiseDerPhrases()))
     resolver.indices.add(SdfPhrasesIndex(SdfPhrases()))
     resolver.indices.add(FibonacciPhrasesIndex(FibonacciPhrases()))
+    resolver.indices.add(TransformPhrasesIndex(TransformPhrases()))
     return resolver
 }
 
