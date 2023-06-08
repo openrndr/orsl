@@ -7,21 +7,7 @@ plugins {
 }
 
 kotlin {
-
-
     sourceSets {
-
-        this.forEach {
-            println(it.name)
-        }
-
-//        val commonKsp by creating {
-//            this.kotlin.srcDir("build/generated/metadata/commonMain")
-//        }
-
-
-//        val generatedByKspCommonMainKotlinMetadata by creating { }
-
         @Suppress("UNUSED_VARIABLE")
         val commonMain by getting {
             dependencies {
@@ -30,13 +16,7 @@ kotlin {
                 implementation(libs.openrndr.filter)
                 implementation(libs.kotlin.reflect)
                 implementation(project(":orx-shader-generator-annotations"))
-                //api("generatedByKspCommonMainKotlinMetadata")
-               // configurations.get("ksp").dependencies.add(project(":orx-shader-generator-processor"))
-
-//                implementation("generatedByKspCommonMainKotlinMetadata")
-                //implementation()
             }
-
         }
 
         @Suppress("UNUSED_VARIABLE")
@@ -61,22 +41,17 @@ kotlin {
 
 dependencies {
     add("kspCommonMainMetadata", project(":orx-shader-generator-processor"))
-//    add("kspJvm", project(":orx-shader-generator-processor"))
-//    add("kspJs", project(":orx-shader-generator-processor"))
-//    ksp(project(":orx-shader-generator-processor"))
 }
-
-/*
-dependencies {
-    add("kspCommonMainMetadata", project(":test-processor"))
-}
-*/
 
 tasks.withType<KotlinCompile<*>>().all {
     if (name != "kspCommonMainKotlinMetadata") {
         dependsOn("kspCommonMainKotlinMetadata")
     }
 }
+tasks.findByName("jsSourcesJar")!!.dependsOn("kspCommonMainKotlinMetadata")
+tasks.findByName("jvmSourcesJar")!!.dependsOn("kspCommonMainKotlinMetadata")
+tasks.findByName("sourcesJar")!!.dependsOn("kspCommonMainKotlinMetadata")
+
 kotlin.sourceSets.commonMain {
     kotlin.srcDir("build/generated/ksp/metadata/commonMain/kotlin")
 }
