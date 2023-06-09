@@ -1,7 +1,6 @@
 import org.openrndr.application
 import org.openrndr.draw.shadeStyle
 import org.openrndr.extra.camera.Camera2D
-import org.openrndr.extra.shadergenerator.dsl.functions.fbm
 import org.openrndr.extra.shadergenerator.dsl.shadestyle.fragmentTransform
 
 import org.openrndr.math.*

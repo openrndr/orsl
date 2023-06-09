@@ -15,6 +15,6 @@ Add `orx-shader-generator` to your openrndr-template project.
 Module                             | Description
 -----------------------------------|-----------------
 `orx-glsl-parser`                  | Antlr based GLSL parser
-`orx-shader-generator`             | DSLs, shader phrases, shader preprocessor.
+[`orx-shader-generator`](orx-shader-generator/README.md)             | DSLs, shader phrases, shader preprocessor.
 `orx-shader-generator-annotations` | 
 `orx-shader-generator-processor`   | KSP based annotation processor
