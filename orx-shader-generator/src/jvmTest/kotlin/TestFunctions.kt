@@ -2,6 +2,7 @@
 
 import org.junit.jupiter.api.Test
 import org.openrndr.draw.shadeStyle
+import org.openrndr.extra.shadergenerator.dsl.functions.function
 import org.openrndr.extra.shadergenerator.dsl.functions.symbol
 import org.openrndr.extra.shadergenerator.dsl.shadestyle.fragmentTransform
 
@@ -113,4 +114,31 @@ class TestFunctions : AbstractApplicationTestFixture() {
         program.drawer.circle(program.drawer.bounds.center, 100.0)
     }
 
+    @Test
+    fun functionInsideFunctio() {
+        val ss = shadeStyle {
+            fragmentTransform {
+
+                val a by function<Double, Double> { x ->
+                    val b by function<Double, Double> { y ->
+                        val c by function<Double, Double> { z ->
+                            z + 1
+                        }
+                        c(y) + 1
+                    }
+                    b(x) + 1
+                }
+                val c by function<Double, Double> { z ->
+                    z + 1
+                }
+
+                val x by a(0.0.symbol)
+                val y by a(1.0.symbol)
+                val z by a(2.0.symbol)
+                emit("omg")
+            }
+        }
+        program.drawer.shadeStyle = ss
+        program.drawer.circle(program.drawer.bounds.center, 100.0)
+    }
 }

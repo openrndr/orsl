@@ -2,6 +2,7 @@
 
 import org.junit.jupiter.api.Test
 import org.openrndr.draw.shadeStyle
+import org.openrndr.extra.shadergenerator.dsl.functions.function
 import org.openrndr.extra.shadergenerator.dsl.shadestyle.fragmentTransform
 
 class TestFor : AbstractApplicationTestFixture() {

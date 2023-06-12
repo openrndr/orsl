@@ -2,6 +2,7 @@ import org.junit.jupiter.api.Test
 import org.openrndr.draw.*
 import org.openrndr.extra.meshgenerators.sphereMesh
 import org.openrndr.extra.shadergenerator.dsl.Symbol
+import org.openrndr.extra.shadergenerator.dsl.functions.function
 import org.openrndr.extra.shadergenerator.dsl.shadestyle.fragmentTransform
 import org.openrndr.extra.shadergenerator.dsl.shadestyle.vertexTransform
 import org.openrndr.extra.shadergenerator.dsl.structs.get

@@ -3,9 +3,54 @@ package org.openrndr.extra.shadergenerator.dsl.functions
 import org.openrndr.extra.shadergenerator.dsl.*
 import kotlin.reflect.KProperty
 
+
+inline fun <reified T, reified R> Generator.function(useHash: Boolean = true, noinline f: ShaderBuilder.(Symbol<T>) -> Symbol<R>): Functions.FunctionPropertyProvider<T, R> =
+    Functions.FunctionPropertyProvider(
+        useHash,
+        this,
+        parameter0Type = staticType<T>(),
+        returnType = staticType<R>(),
+        f
+    )
+
+inline fun <reified T0, reified T1, reified R> Generator.function(useHash: Boolean = true, noinline f: ShaderBuilder.(Symbol<T0>, Symbol<T1>) -> Symbol<R>): Functions.Function2PropertyProvider<T0, T1, R> =
+    Functions.Function2PropertyProvider(
+        useHash,
+        this,
+        parameter0Type = staticType<T0>(),
+        parameter1Type = staticType<T1>(),
+        returnType = staticType<R>(),
+        f
+    )
+
+inline fun <reified T0, reified T1, reified T2, reified R> Generator.function(useHash: Boolean = true,noinline f: ShaderBuilder.(Symbol<T0>, Symbol<T1>, Symbol<T2>) -> Symbol<R>): Functions.Function3PropertyProvider<T0, T1, T2, R> =
+    Functions.Function3PropertyProvider(
+        useHash,
+        this,
+        parameter0Type = staticType<T0>(),
+        parameter1Type = staticType<T1>(),
+        parameter2Type = staticType<T2>(),
+        returnType = staticType<R>(),
+        f
+    )
+
+inline fun <reified T0, reified T1, reified T2, reified T3, reified R> Generator.function(useHash: Boolean = true, noinline f: ShaderBuilder.(Symbol<T0>, Symbol<T1>, Symbol<T2>, Symbol<T3>) -> Symbol<R>): Functions.Function4PropertyProvider<T0, T1, T2, T3, R> =
+    Functions.Function4PropertyProvider(
+        useHash,
+        this,
+        parameter0Type = staticType<T0>(),
+        parameter1Type = staticType<T1>(),
+        parameter2Type = staticType<T2>(),
+        parameter3Type = staticType<T3>(),
+        returnType = staticType<R>(),
+        f
+    )
+
+
 @Suppress("INAPPLICABLE_JVM_NAME")
 interface Functions {
     class FunctionProperty<T, R>(
+        useHash: Boolean,
         name: String,
         generator: Generator,
         parameter0Type: String,
@@ -20,10 +65,14 @@ interface Functions {
             val hash = hash(name, parameter0Type)
             val p0 = "$,,${hash}_0"
             val resultSym = sb.f(symbol(p0, parameter0Type))
-            functionHash = hash(name, returnType, resultSym.name, resultSym.type, sb.code, sb.preamble, sb.tempId)
+            functionHash = if (useHash)
+                hash(name, returnType, resultSym.name, resultSym.type, sb.code, sb.preamble, sb.tempId)
+            else 0U
 
-            generator.emitPreamble("#ifndef f_${name}_${functionHash}")
-            generator.emitPreamble("#define f_${name}_${functionHash}")
+            if (useHash) {
+                generator.emitPreamble("#ifndef f_${name}_${functionHash}")
+                generator.emitPreamble("#define f_${name}_${functionHash}")
+            }
             generator.emitPreamble(sb.preamble)
             generator.emitPreamble(
                 """$returnType ${name}_${functionHash}($parameter0Type x__) { 
@@ -31,7 +80,9 @@ ${sb.code.replace(p0, "x__").prependIndent("    ").trimEnd()}
     return ${resultSym.name.replace(p0, "x__")};
 }"""
             )
-            generator.emitPreamble("#endif")
+            if (useHash) {
+                generator.emitPreamble("#endif")
+            }
             sb.pop()
         }
 
@@ -47,16 +98,18 @@ ${sb.code.replace(p0, "x__").prependIndent("    ").trimEnd()}
     }
 
     class FunctionPropertyProvider<T, R>(
+        private val useHash: Boolean,
         private val generator: Generator,
         private val parameter0Type: String,
         private val returnType: String,
         private val f: ShaderBuilder.(Symbol<T>) -> Symbol<R>
     ) {
         operator fun provideDelegate(any: Any?, property: KProperty<*>): FunctionProperty<T, R> =
-            FunctionProperty(property.name, generator, parameter0Type, returnType, f)
+            FunctionProperty(useHash, property.name, generator, parameter0Type, returnType, f)
     }
 
     class Function2Property<T0, T1, R>(
+        useHash: Boolean,
         name: String,
         private val generator: Generator,
         parameter0Type: String,
@@ -74,7 +127,7 @@ ${sb.code.replace(p0, "x__").prependIndent("    ").trimEnd()}
             val p1 = "$,,${hash}_1"
             val resultSym = sb.f(symbol(p0, parameter0Type), symbol(p1, parameter1Type))
             generator.emitPreamble(sb.preamble)
-            functionHash = hash(
+            functionHash = if (useHash) hash(
                 name,
                 returnType,
                 parameter0Type,
@@ -84,16 +137,21 @@ ${sb.code.replace(p0, "x__").prependIndent("    ").trimEnd()}
                 sb.code,
                 sb.preamble,
                 sb.tempId
-            )
-            generator.emitPreamble("#ifndef f_${name}_${functionHash}")
-            generator.emitPreamble("#define f_${name}_${functionHash}")
+            ) else 0U
+
+            if (useHash) {
+                generator.emitPreamble("#ifndef f_${name}_${functionHash}")
+                generator.emitPreamble("#define f_${name}_${functionHash}")
+            }
             generator.emitPreamble(
                 """$returnType ${name}_${functionHash}($parameter0Type x__, $parameter1Type y__) { 
 ${sb.code.replace(p0, "x__").replace(p1, "y__").prependIndent("    ").trimEnd()}                    
     return ${resultSym.name.replace(p0, "x__").replace(p1, "y__")};
 }"""
             )
-            generator.emitPreamble("#endif")
+            if (useHash) {
+                generator.emitPreamble("#endif")
+            }
             sb.pop()
         }
 
@@ -113,6 +171,7 @@ ${sb.code.replace(p0, "x__").replace(p1, "y__").prependIndent("    ").trimEnd()}
     }
 
     class Function2PropertyProvider<T0, T1, R>(
+        private val useHash: Boolean,
         private val generator: Generator,
         private val parameter0Type: String,
         private val parameter1Type: String,
@@ -120,11 +179,12 @@ ${sb.code.replace(p0, "x__").replace(p1, "y__").prependIndent("    ").trimEnd()}
         private val f: ShaderBuilder.(Symbol<T0>, Symbol<T1>) -> Symbol<R>
     ) {
         operator fun provideDelegate(any: Any?, property: KProperty<*>): Function2Property<T0, T1, R> =
-            Function2Property(property.name, generator, parameter0Type, parameter1Type, returnType, f)
+            Function2Property(useHash, property.name, generator, parameter0Type, parameter1Type, returnType, f)
     }
 
     // Function3
     class Function3PropertyProvider<T0, T1, T2, R>(
+        private val useHash: Boolean,
         private val generator: Generator,
         private val parameter0Type: String,
         private val parameter1Type: String,
@@ -133,10 +193,11 @@ ${sb.code.replace(p0, "x__").replace(p1, "y__").prependIndent("    ").trimEnd()}
         private val f: ShaderBuilder.(Symbol<T0>, Symbol<T1>, Symbol<T2>) -> Symbol<R>
     ) {
         operator fun provideDelegate(any: Any?, property: KProperty<*>): Function3Property<T0, T1, T2, R> =
-            Function3Property(property.name, generator, parameter0Type, parameter1Type, parameter2Type, returnType, f)
+            Function3Property(useHash, property.name, generator, parameter0Type, parameter1Type, parameter2Type, returnType, f)
     }
 
     class Function3Property<T0, T1, T2, R>(
+        useHash: Boolean,
         name: String,
         private val generator: Generator,
         parameter0Type: String,
@@ -156,7 +217,7 @@ ${sb.code.replace(p0, "x__").replace(p1, "y__").prependIndent("    ").trimEnd()}
             val resultSym =
                 sb.f(symbol(p0, parameter0Type), symbol(p1, parameter1Type), symbol(p2, parameter2Type))
 
-            functionHash = hash(
+            functionHash = if (useHash) hash(
                 name,
                 returnType,
                 parameter0Type,
@@ -167,10 +228,12 @@ ${sb.code.replace(p0, "x__").replace(p1, "y__").prependIndent("    ").trimEnd()}
                 sb.code,
                 sb.preamble,
                 sb.tempId
-            )
+            ) else 0U
 
-            generator.emitPreamble("#ifndef f_${name}_${functionHash}")
-            generator.emitPreamble("#define f_${name}_${functionHash}")
+            if (useHash) {
+                generator.emitPreamble("#ifndef f_${name}_${functionHash}")
+                generator.emitPreamble("#define f_${name}_${functionHash}")
+            }
             generator.emitPreamble(sb.preamble)
             generator.emitPreamble(
                 """$returnType ${name}_${functionHash}($parameter0Type x__, $parameter1Type y__, $parameter2Type z__) { 
@@ -178,7 +241,9 @@ ${sb.code.replace(p0, "x__").replace(p1, "y__").replace(p2, "z__").prependIndent
     return ${resultSym.name.replace(p0, "x__").replace(p1, "y__").replace(p2, "z__")};
 }"""
             )
-            generator.emitPreamble("#endif")
+            if (useHash) {
+                generator.emitPreamble("#endif")
+            }
             sb.pop()
         }
 
@@ -199,6 +264,7 @@ ${sb.code.replace(p0, "x__").replace(p1, "y__").replace(p2, "z__").prependIndent
     }
 
     class Function4PropertyProvider<T0, T1, T2, T3, R>(
+        private val useHash: Boolean,
         private val generator: Generator,
         private val parameter0Type: String,
         private val parameter1Type: String,
@@ -209,6 +275,7 @@ ${sb.code.replace(p0, "x__").replace(p1, "y__").replace(p2, "z__").prependIndent
     ) {
         operator fun provideDelegate(any: Any?, property: KProperty<*>): Function4Property<T0, T1, T2, T3, R> =
             Function4Property(
+                useHash,
                 property.name,
                 generator,
                 parameter0Type,
@@ -223,6 +290,7 @@ ${sb.code.replace(p0, "x__").replace(p1, "y__").replace(p2, "z__").prependIndent
     // Function4
 
     class Function4Property<T0, T1, T2, T3, R>(
+        useHash: Boolean,
         name: String,
         private val generator: Generator,
         parameter0Type: String,

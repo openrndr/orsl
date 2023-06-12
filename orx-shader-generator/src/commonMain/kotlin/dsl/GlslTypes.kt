@@ -1,5 +1,6 @@
 package org.openrndr.extra.shadergenerator.dsl
 
+import org.openrndr.color.ColorRGBa
 import org.openrndr.math.*
 
 inline fun <reified T> zero(): String {
@@ -46,6 +47,7 @@ inline fun <reified T> staticTypeOrNull(): String? {
         Matrix33::class -> "mat3"
         Matrix44::class -> "mat4"
         Sampler2D::class -> "sampler2D"
+        ColorRGBa::class -> "vec4"
         else -> T::class.simpleName
     }
 }
@@ -87,6 +89,7 @@ fun glsl(v: Any?): String? {
         is IntVector3 -> "ivec3(${v.x}, ${v.y}, ${v.z})"
         is Vector4 -> "vec4(${v.x}, ${v.y}, ${v.z}, ${v.w})"
         is IntVector4 -> "ivec4(${v.x}, ${v.y}, ${v.z}, ${v.w})"
+        is ColorRGBa -> "vec4(${v.r}, ${v.g}, ${v.b}, ${v.alpha})"
         else -> error("type not supported ${v::class}")
     }
 }

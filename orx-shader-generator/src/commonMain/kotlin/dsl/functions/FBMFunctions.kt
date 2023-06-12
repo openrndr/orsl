@@ -13,7 +13,7 @@ fun ShaderBuilder.fbm(
     gain: Double = 0.5,
     lacunarity: Double = 2.0,
 ): Functions.FunctionPropertyProvider<Double, Double> {
-    return Functions.FunctionPropertyProvider(this@fbm, staticType<Double>(), staticType<Double>()) {
+    return Functions.FunctionPropertyProvider(true, this@fbm, staticType<Double>(), staticType<Double>()) {
         emit(
             """float sum_ = 0.0;
 float lx_ = x__;
@@ -35,7 +35,7 @@ fun ShaderBuilder.billow(
     gain: Double = 0.5,
     lacunarity: Double = 2.0,
 ): Functions.FunctionPropertyProvider<Double, Double> {
-    return Functions.FunctionPropertyProvider(this@billow, staticType<Double>(), staticType<Double>()) {
+    return Functions.FunctionPropertyProvider(true, this@billow, staticType<Double>(), staticType<Double>()) {
         emit(
             """float sum_ = 0.0;
 float lx_ = x__;
@@ -57,7 +57,7 @@ fun ShaderBuilder.fbm(
     gain: Double = 0.5,
     lacunarity: Double = 2.0,
 ): Functions.FunctionPropertyProvider<Vector2, Double> {
-    return Functions.FunctionPropertyProvider(this@fbm, staticType<Vector2>(), staticType<Double>()) {
+    return Functions.FunctionPropertyProvider(true, this@fbm, staticType<Vector2>(), staticType<Double>()) {
         emit(
             """float sum_ = 0.0;
 vec2 lx_ = x__;
@@ -79,7 +79,7 @@ fun ShaderBuilder.billow(
     gain: Double = 0.5,
     lacunarity: Double = 2.0,
 ): Functions.FunctionPropertyProvider<Vector2, Double> {
-    return Functions.FunctionPropertyProvider(this@billow, staticType<Vector2>(), staticType<Double>()) {
+    return Functions.FunctionPropertyProvider(true, this@billow, staticType<Vector2>(), staticType<Double>()) {
         emit(
             """float sum_ = 0.0;
 vec2 lx_ = x__;
@@ -101,7 +101,7 @@ fun ShaderBuilder.fbm(
     gain: Double = 0.5,
     lacunarity: Double = 2.0,
 ): Functions.FunctionPropertyProvider<Vector3, Double> {
-    return Functions.FunctionPropertyProvider(this@fbm, staticType<Vector3>(), staticType<Double>()) {
+    return Functions.FunctionPropertyProvider(true, this@fbm, staticType<Vector3>(), staticType<Double>()) {
         emit(
             """float sum_ = 0.0;
 vec3 lx_ = x__;
@@ -123,7 +123,7 @@ fun ShaderBuilder.billow(
     gain: Double = 0.5,
     lacunarity: Double = 2.0,
 ): Functions.FunctionPropertyProvider<Vector3, Double> {
-    return Functions.FunctionPropertyProvider(this@billow, staticType<Vector3>(), staticType<Double>()) {
+    return Functions.FunctionPropertyProvider(true, this@billow, staticType<Vector3>(), staticType<Double>()) {
         emit(
             """float sum_ = 0.0;
 vec3 lx_ = x__;
@@ -145,7 +145,7 @@ fun ShaderBuilder.fbm(
     gain: Double = 0.5,
     lacunarity: Double = 2.0,
 ): Functions.FunctionPropertyProvider<Vector4, Double> {
-    return Functions.FunctionPropertyProvider(this@fbm, staticType<Vector4>(), staticType<Double>()) {
+    return Functions.FunctionPropertyProvider(true, this@fbm, staticType<Vector4>(), staticType<Double>()) {
         emit(
             """float sum_ = 0.0;
 vec4 lx_ = x__;
@@ -167,7 +167,7 @@ fun ShaderBuilder.billow(
     gain: Double = 0.5,
     lacunarity: Double = 2.0,
 ): Functions.FunctionPropertyProvider<Vector4, Double> {
-    return Functions.FunctionPropertyProvider(this@billow, staticType<Vector4>(), staticType<Double>()) {
+    return Functions.FunctionPropertyProvider(true, this@billow, staticType<Vector4>(), staticType<Double>()) {
         emit(
             """float sum_ = 0.0;
 vec4 lx_ = x__;

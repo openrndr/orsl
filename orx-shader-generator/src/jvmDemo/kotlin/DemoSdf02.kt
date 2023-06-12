@@ -3,6 +3,7 @@ import org.openrndr.draw.*
 import org.openrndr.extra.camera.Orbital
 import org.openrndr.extra.shadergenerator.dsl.*
 import org.openrndr.extra.shadergenerator.dsl.functions.Functions
+import org.openrndr.extra.shadergenerator.dsl.functions.function
 import org.openrndr.extra.shadergenerator.dsl.shadestyle.fragmentTransform
 import org.openrndr.extra.shadergenerator.dsl.structs.getValue
 import org.openrndr.extra.shadergenerator.dsl.structs.setValue

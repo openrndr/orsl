@@ -4,6 +4,7 @@ import org.openrndr.draw.*
 import org.openrndr.extra.camera.Orbital
 import org.openrndr.extra.meshgenerators.sphereMesh
 import org.openrndr.extra.shadergenerator.dsl.Symbol
+import org.openrndr.extra.shadergenerator.dsl.functions.function
 import org.openrndr.extra.shadergenerator.dsl.structs.getValue
 import org.openrndr.extra.shadergenerator.dsl.shadestyle.fragmentTransform
 import org.openrndr.extra.shadergenerator.dsl.structs.setValue
@@ -37,41 +38,7 @@ fun main() {
                         val p_material by parameter<Material>()
                         val p_cameraPosition by parameter<Vector3>()
 
-                        val pow5 by function<Double, Double> { x ->
-                            val x2 by x * x
-                            x2 * x2 * x
-                        }
 
-                        val D_GGX by function<Double, Double, Vector3, Double> { linearRoughness, NoH, h ->
-                            val oneMinusNoHSquared by 1.0 - NoH * NoH
-                            val a by (NoH * linearRoughness)
-                            val k by linearRoughness / (oneMinusNoHSquared + a * a)
-                            val d by k * k * (1.0 / Math.PI)
-                            d
-                        }
-
-                        val V_SmithGGXCorrelated by function<Double, Double, Double, Double> { linearRoughness, NoV, NoL ->
-                            val a2 by linearRoughness * linearRoughness
-                            val GGXV by NoL * sqrt((NoV - a2 * NoV) * NoV + a2)
-                            val GGXL by NoV * sqrt((NoL - a2 * NoL) * NoL + a2)
-                            0.5 / (GGXV + GGXL)
-                        }
-
-                        val F_Schlick by function<Vector3, Double, Vector3> { f0, VoH ->
-                            f0 + (Vector3.ONE - f0) * pow5(1.0 - VoH)
-                        }
-
-                        val F_Schlick3 by function<Double, Double, Double, Double> { f0, f90, VoH ->
-                            f0 + (f90 - f0) * pow5(1.0 - VoH)
-                        }
-
-                        val Fd_Burley by function<Double, Double, Double, Double, Double> { linearRoughness, NoV, NoL, LoH ->
-                            val f90 by 0.5 + 2.0 * linearRoughness * LoH * LoH
-                            val one by 1.0
-                            val lightScatter by F_Schlick3(one, f90, NoL)
-                            val viewScatter by F_Schlick3(one, f90, NoV)
-                            lightScatter * viewScatter * (1.0 / Math.PI)
-                        }
 
                         val d by v_viewNormal.dot(Vector3(0.0, 1.0, 0.0))
 
@@ -97,7 +64,7 @@ fun main() {
                         val NoH by saturate(n.dot(h))
                         val LoH by saturate(l.dot(h))
 
-                        val D by D_GGX(linearRoughness, NoH, h)
+                        val D by D_GGX(linearRoughness, NoH)
                         val V by V_SmithGGXCorrelated(linearRoughness, NoV, NoL)
                         val F by F_Schlick(f0, LoH)
 
@@ -107,6 +74,7 @@ fun main() {
 
                         val gamma by Vector3(1.0 / 2.2, 1.0 / 2.2, 1.0 / 2.2)
                         x_fill = Vector4(pow(color, gamma), 1.0)
+
                     }
                 }
                 drawer.shadeStyle?.parameter("material", sphereMaterial)

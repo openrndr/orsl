@@ -4,20 +4,24 @@ import org.openrndr.draw.Struct
 import org.openrndr.draw.typeDef
 import org.openrndr.extra.shadergenerator.dsl.functions.*
 import org.openrndr.extra.shadergenerator.dsl.functions.Functions.*
-import org.openrndr.extra.shadergenerator.phrases.dsl.functions.BooleanFunctions
-import org.openrndr.extra.shadergenerator.phrases.dsl.functions.Matrix33Functions
+import org.openrndr.extra.shadergenerator.dsl.functions.BooleanFunctions
+import org.openrndr.extra.shadergenerator.dsl.functions.Matrix33Functions
+import org.openrndr.extra.shadergenerator.dsl.functions.SamplerFunctions
+import org.openrndr.extra.shadergenerator.phrases.dsl.functions.ColorRGBaFunctions
 import org.openrndr.math.*
 import kotlin.reflect.KProperty
 
-open class ShaderBuilder : Generator, Functions, BooleanFunctions, DoubleFunctions, ArrayFunctions, Sampler2DFunctions,
-    IntFunctions,
+open class ShaderBuilder : Generator, Functions, BooleanFunctions, DoubleFunctions, ArrayFunctions, SamplerFunctions,
+    IntFunctions, ColorRGBaFunctions,
     Vector2Functions, Vector3Functions, Vector4Functions, Matrix33Functions, Matrix44Functions,
     IntVector2Functions {
     var code = ""
     var preamble = ""
 
     override fun emit(code: String) {
-        this.code += code + "\n"
+        if (code.isNotBlank()) {
+            this.code += code.trimEnd() + "\n"
+        }
     }
 
     infix fun Int.until(to: Int): Range {
@@ -102,8 +106,17 @@ open class ShaderBuilder : Generator, Functions, BooleanFunctions, DoubleFunctio
 
 //    inline operator fun <reified T:Struct<T>> Symbol<T>
 
+    private val emitted = mutableSetOf<String>()
+
     override fun emitPreamble(code: String) {
-        this.preamble += code + "\n"
+        if (code.isNotBlank()) {
+            if (code !in emitted) {
+                this.preamble += code.trimEnd() + "\n"
+                if (code.split("\n").size > 1) {
+                    emitted.add(code)
+                }
+            }
+        }
     }
 
 
@@ -147,7 +160,7 @@ open class ShaderBuilder : Generator, Functions, BooleanFunctions, DoubleFunctio
 
 
     @PublishedApi
-    internal var tempId = 0;
+    internal var tempId = 1;
     inline fun <reified T> Symbol<T>.elseIf(
         precondition: Symbol<Boolean>,
         noinline f: ShaderBuilder.() -> Symbol<T>
@@ -171,7 +184,7 @@ ${sb.code.prependIndent("    ").trimEnd()}
         return s
     }
 
-    inline fun Symbol<Int>.for_(range: Range, noinline f: ShaderBuilder.() -> Unit) {
+    fun Symbol<Int>.for_(range: Range, f: ShaderBuilder.() -> Unit) {
         val sb = ShaderBuilder()
         sb.push()
         val result = sb.f()
@@ -194,6 +207,7 @@ ${sb.code.prependIndent("    ").trimEnd()}
 
     inline fun <reified T> run(noinline f: ShaderBuilder.() -> Symbol<T>): Symbol<T> {
         val sb = ShaderBuilder()
+        sb.tempId = tempId * 31
         sb.push()
         val result = sb.f()
         sb.pop()
@@ -231,7 +245,7 @@ ${sb.code.prependIndent("    ").trimEnd()}
         return s
     }
 
-    inline fun doIf(precondition: Symbol<Boolean>, noinline f: ShaderBuilder.() -> Unit) {
+    fun doIf(precondition: Symbol<Boolean>, f: ShaderBuilder.() -> Unit) {
         val sb = ShaderBuilder()
         sb.push()
         sb.f()
@@ -283,43 +297,6 @@ ${sb.code.prependIndent("    ").trimEnd()}
     }
 
 
-    inline fun <reified T, reified R> function(noinline f: ShaderBuilder.(Symbol<T>) -> Symbol<R>): FunctionPropertyProvider<T, R> =
-        FunctionPropertyProvider(
-            this@ShaderBuilder,
-            parameter0Type = staticType<T>(),
-            returnType = staticType<R>(),
-            f
-        )
-
-    inline fun <reified T0, reified T1, reified R> function(noinline f: ShaderBuilder.(Symbol<T0>, Symbol<T1>) -> Symbol<R>): Function2PropertyProvider<T0, T1, R> =
-        Function2PropertyProvider(
-            this@ShaderBuilder,
-            parameter0Type = staticType<T0>(),
-            parameter1Type = staticType<T1>(),
-            returnType = staticType<R>(),
-            f
-        )
-
-    inline fun <reified T0, reified T1, reified T2, reified R> function(noinline f: ShaderBuilder.(Symbol<T0>, Symbol<T1>, Symbol<T2>) -> Symbol<R>): Function3PropertyProvider<T0, T1, T2, R> =
-        Function3PropertyProvider(
-            this@ShaderBuilder,
-            parameter0Type = staticType<T0>(),
-            parameter1Type = staticType<T1>(),
-            parameter2Type = staticType<T2>(),
-            returnType = staticType<R>(),
-            f
-        )
-
-    inline fun <reified T0, reified T1, reified T2, reified T3, reified R> function(noinline f: ShaderBuilder.(Symbol<T0>, Symbol<T1>, Symbol<T2>, Symbol<T3>) -> Symbol<R>): Function4PropertyProvider<T0, T1, T2, T3, R> =
-        Function4PropertyProvider(
-            this@ShaderBuilder,
-            parameter0Type = staticType<T0>(),
-            parameter1Type = staticType<T1>(),
-            parameter2Type = staticType<T2>(),
-            parameter3Type = staticType<T3>(),
-            returnType = staticType<R>(),
-            f
-        )
 
 
     inline fun <reified R> BoxRange2.weightedAverageBy(

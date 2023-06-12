@@ -1,8 +1,6 @@
 package org.openrndr.extra.shadergenerator.dsl.functions
 
-import org.openrndr.extra.shadergenerator.dsl.Symbol
-import org.openrndr.extra.shadergenerator.dsl.functionSymbol
-import org.openrndr.extra.shadergenerator.dsl.functionSymbolSVV
+import org.openrndr.extra.shadergenerator.dsl.*
 import org.openrndr.math.Vector2
 import org.openrndr.math.Vector3
 import org.openrndr.math.Vector4
@@ -144,3 +142,8 @@ interface Vector4Functions {
     fun Vector4(xy: Symbol<Vector2>, z: Double, w: Double) : Symbol<Vector4> =
         functionSymbolSVV(xy, z, w, "vec4($0, $1, $2)")
 }
+
+val Vector4.symbol: Symbol<Vector4>
+    get() {
+        return symbol<Vector4>(glsl(this)!!)
+    }

@@ -3,6 +3,7 @@ import org.openrndr.color.ColorRGBa
 import org.openrndr.draw.shadeStyle
 import org.openrndr.drawImage
 import org.openrndr.extra.shadergenerator.dsl.Sampler2D
+import org.openrndr.extra.shadergenerator.dsl.functions.function
 import org.openrndr.extra.shadergenerator.dsl.shadestyle.fragmentTransform
 import org.openrndr.extra.shadergenerator.dsl.times
 import org.openrndr.extra.shadergenerator.phrases.dsl.*

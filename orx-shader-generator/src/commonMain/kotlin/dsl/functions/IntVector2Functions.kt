@@ -2,7 +2,10 @@ package org.openrndr.extra.shadergenerator.dsl.functions
 
 import org.openrndr.extra.shadergenerator.dsl.Symbol
 import org.openrndr.extra.shadergenerator.dsl.functionSymbol
+import org.openrndr.extra.shadergenerator.dsl.glsl
+import org.openrndr.extra.shadergenerator.dsl.symbol
 import org.openrndr.math.IntVector2
+import org.openrndr.math.Matrix44
 import org.openrndr.math.Vector2
 import kotlin.jvm.JvmName
 
@@ -37,3 +40,8 @@ interface IntVector2Functions {
         @JvmName("xxSiv2")
         get() = functionSymbol(this, "$0.xx")
 }
+
+val IntVector2.symbol: Symbol<IntVector2>
+    get() {
+        return symbol<IntVector2>(glsl(this)!!)
+    }

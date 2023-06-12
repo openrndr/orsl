@@ -43,3 +43,8 @@ interface Matrix44Functions : Generator {
     fun Matrix44.Companion.fromColumnVectors(x: Symbol<Vector4>, y: Symbol<Vector4>, z: Symbol<Vector4>, w: Symbol<Vector4>): Symbol<Matrix44> =
         functionSymbol(x, y, z, w,"mat4($0, $1, $2, $3)")
 }
+
+val Matrix44.symbol: Symbol<Matrix44>
+    get() {
+        return symbol<Matrix44>(glsl(this)!!)
+    }

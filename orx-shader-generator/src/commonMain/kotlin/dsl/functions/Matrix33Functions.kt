@@ -1,10 +1,8 @@
-package org.openrndr.extra.shadergenerator.phrases.dsl.functions
+package org.openrndr.extra.shadergenerator.dsl.functions
 
-import org.openrndr.extra.shadergenerator.dsl.Generator
-import org.openrndr.extra.shadergenerator.dsl.Symbol
-import org.openrndr.extra.shadergenerator.dsl.functionSymbol
-import org.openrndr.extra.shadergenerator.dsl.functionSymbolSVV
+import org.openrndr.extra.shadergenerator.dsl.*
 import org.openrndr.math.Matrix33
+import org.openrndr.math.Matrix44
 import org.openrndr.math.Vector3
 import kotlin.jvm.JvmName
 
@@ -49,3 +47,8 @@ interface Matrix33Functions : Generator  {
         functionSymbol(x, y, z, "mat3($0, $1, $2)")
 
 }
+
+val Matrix33.symbol: Symbol<Matrix33>
+    get() {
+        return symbol<Matrix33>(glsl(this)!!)
+    }

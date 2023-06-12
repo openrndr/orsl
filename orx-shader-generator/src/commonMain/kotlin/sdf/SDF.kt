@@ -28,6 +28,7 @@ fun ShaderBuilder.march(
     tolerance: Double = 1E-2,
     stepScale: Double = 0.5
 ) = Functions.Function2PropertyProvider<Vector3, Vector3, _>(
+    true,
     this@march, staticType<Vector3>(),
     staticType<Vector3>(),
     staticType<MarchResult>()
@@ -62,7 +63,7 @@ fun ShaderBuilder.calcAO(
     falloff : Double = 0.95,
     intensity: Double = 1.5
 ): Functions.Function2PropertyProvider<Vector3, Vector3, Double> {
-    return Functions.Function2PropertyProvider(
+    return Functions.Function2PropertyProvider(true,
         this@calcAO, staticType<Vector3>(),
         staticType<Vector3>(),
         staticType<Double>()
@@ -86,6 +87,7 @@ fun ShaderBuilder.calcSoftShadow(
     iterations: Int = 32,
 ): Functions.Function4PropertyProvider<Vector3, Vector3, Double, Double, Double> {
     return Functions.Function4PropertyProvider(
+        true,
         this@calcSoftShadow, staticType<Vector3>(),
         staticType<Vector3>(),
         staticType<Double>(),
@@ -122,7 +124,7 @@ fun ShaderBuilder.calcShadow(
     iterations: Int = 32,
 ): Functions.Function4PropertyProvider<Vector3, Vector3, Double, Double, Double> {
     return Functions.Function4PropertyProvider(
-        this@calcShadow, staticType<Vector3>(),
+        true, this@calcShadow, staticType<Vector3>(),
         staticType<Vector3>(),
         staticType<Double>(),
         staticType<Double>(),

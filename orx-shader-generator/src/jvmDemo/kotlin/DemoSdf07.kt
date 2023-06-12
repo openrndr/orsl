@@ -1,10 +1,11 @@
 import org.openrndr.application
 import org.openrndr.draw.*
 import org.openrndr.extra.camera.Orbital
+import org.openrndr.extra.shadergenerator.dsl.functions.function
 import org.openrndr.extra.shadergenerator.dsl.functions.symbol
 import org.openrndr.extra.shadergenerator.dsl.shadestyle.fragmentTransform
 import org.openrndr.extra.shadergenerator.phrases.dsl.functions.gradient
-import org.openrndr.extra.shadergenerator.phrases.dsl.functions.symbol
+
 import org.openrndr.extra.shadergenerator.phrases.sdf.*
 import org.openrndr.math.*
 import org.openrndr.math.transforms.normalMatrix

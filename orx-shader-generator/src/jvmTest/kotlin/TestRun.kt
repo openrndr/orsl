@@ -2,6 +2,8 @@
 
 import org.junit.jupiter.api.Test
 import org.openrndr.draw.shadeStyle
+import org.openrndr.extra.shadergenerator.dsl.functions.function
+import org.openrndr.extra.shadergenerator.dsl.functions.symbol
 import org.openrndr.extra.shadergenerator.dsl.shadestyle.fragmentTransform
 
 class TestRun : AbstractApplicationTestFixture() {
@@ -14,6 +16,26 @@ class TestRun : AbstractApplicationTestFixture() {
                     z
                 }
                 x_fill = Vector4(c, c, c, 1.0)
+            }
+        }
+        program.drawer.shadeStyle = ss
+        program.drawer.circle(program.drawer.bounds.center, 100.0)
+    }
+
+    @Test
+    fun runInsideRun() {
+        val ss = shadeStyle {
+            fragmentTransform {
+                val a by run {
+                     run {
+                        run {
+                            run {
+                                1.0.symbol
+                            }
+                        }
+                    }
+                }
+                x_fill = Vector4(a, a, a, 1.0)
             }
         }
         program.drawer.shadeStyle = ss

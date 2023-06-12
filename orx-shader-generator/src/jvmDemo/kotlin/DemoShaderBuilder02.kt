@@ -5,6 +5,7 @@ import org.openrndr.draw.parameter
 import org.openrndr.draw.shadeStyle
 import org.openrndr.drawImage
 import org.openrndr.extra.shadergenerator.dsl.Symbol
+import org.openrndr.extra.shadergenerator.dsl.functions.function
 import org.openrndr.extra.shadergenerator.dsl.structs.getValue
 import org.openrndr.extra.shadergenerator.dsl.structs.setValue
 import org.openrndr.extra.shadergenerator.dsl.shadestyle.fragmentTransform
