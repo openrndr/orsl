@@ -4,6 +4,7 @@ import org.openrndr.extra.shadergenerator.dsl.Symbol
 import org.openrndr.extra.shadergenerator.dsl.functionSymbol
 import org.openrndr.extra.shadergenerator.dsl.glsl
 import org.openrndr.extra.shadergenerator.dsl.symbol
+import org.openrndr.math.IntVector2
 import org.openrndr.math.Vector2
 import org.openrndr.math.Vector3
 import kotlin.jvm.JvmName
@@ -62,6 +63,11 @@ interface Vector2Functions {
     @JvmName("timesSv2Sv2")
     operator fun Symbol<Vector2>.times(right: Symbol<Vector2>): Symbol<Vector2> =
         functionSymbol(this, right, "($0 * $1)")
+
+    @JvmName("timesSv2Siv2")
+    operator fun Symbol<Vector2>.times(right: Symbol<IntVector2>): Symbol<Vector2> =
+        functionSymbol(this, right, "($0 * $1)")
+
 
     @JvmName("timesSv2Vv2")
     operator fun Symbol<Vector2>.times(right: Vector2): Symbol<Vector2> = functionSymbol(this, right, "($0 * $1)")

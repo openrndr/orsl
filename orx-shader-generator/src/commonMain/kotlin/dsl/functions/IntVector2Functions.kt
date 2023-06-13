@@ -16,7 +16,7 @@ interface IntVector2Functions {
     fun abs(x: Symbol<IntVector2>): Symbol<IntVector2> = functionSymbol(x, "abs($0)")
 
     @JvmName("divVdSv2")
-    operator fun Double.div(right: Symbol<IntVector2>): Symbol<Vector2> = functionSymbol(this, right, "($0 / $1")
+    operator fun Double.div(right: Symbol<IntVector2>): Symbol<Vector2> = functionSymbol(this, right, "($0 / $1)")
 
 
     @JvmName("timesSiv2Vd")
@@ -39,6 +39,12 @@ interface IntVector2Functions {
     val Symbol<IntVector2>.xx: Symbol<IntVector2>
         @JvmName("xxSiv2")
         get() = functionSymbol(this, "$0.xx")
+
+    @Suppress("FunctionName")
+    @JvmName("ivec2SiSi")
+    fun IntVector2(x: Symbol<Int>, y: Symbol<Int>): Symbol<IntVector2> =
+        functionSymbol(x, y, "ivec2($0, $1)")
+
 }
 
 val IntVector2.symbol: Symbol<IntVector2>
