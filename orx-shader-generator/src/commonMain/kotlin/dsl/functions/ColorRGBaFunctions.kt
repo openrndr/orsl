@@ -91,3 +91,8 @@ interface ColorRGBaFunctions: Generator {
         return ConstantProperty(staticType<ColorRGBa>())
     }
 }
+
+val ColorRGBa.symbol: Symbol<ColorRGBa>
+    get() {
+        return symbol<ColorRGBa>(glsl(this)!!)
+    }
