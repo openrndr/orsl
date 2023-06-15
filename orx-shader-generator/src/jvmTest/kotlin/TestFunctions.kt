@@ -135,7 +135,6 @@ class TestFunctions : AbstractApplicationTestFixture() {
                 val x by a(0.0.symbol)
                 val y by a(1.0.symbol)
                 val z by a(2.0.symbol)
-                emit("omg")
             }
         }
         program.drawer.shadeStyle = ss
