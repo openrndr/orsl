@@ -10,20 +10,15 @@ import kotlin.jvm.JvmName
 
 @Suppress("INAPPLICABLE_JVM_NAME")
 interface Vector3Functions {
-    @JvmName("cosSv3")
-    fun cos(x: Symbol<Vector3>): Symbol<Vector3> = functionSymbol(x, "cos($0)")
-
-    @JvmName("sinSv3")
-    fun sin(x: Symbol<Vector3>): Symbol<Vector3> = functionSymbol(x, "sin($0)")
 
     @JvmName("absSv3")
     fun abs(x: Symbol<Vector3>): Symbol<Vector3> = functionSymbol(x, "abs($0)")
 
-    @JvmName("sqrtSv3")
-    fun sqrt(x: Symbol<Vector3>): Symbol<Vector3> = functionSymbol(x, "sqrt($0)")
+    @JvmName("cosSv3")
+    fun cos(x: Symbol<Vector3>): Symbol<Vector3> = functionSymbol(x, "cos($0)")
 
-    @JvmName("powSv3Sv3")
-    fun pow(x: Symbol<Vector3>, y: Symbol<Vector3>): Symbol<Vector3> = functionSymbol(x, y, "pow($0, $1)")
+    @JvmName("crossSv3")
+    fun Symbol<Vector3>.cross(right: Symbol<Vector3>): Symbol<Vector3> = functionSymbol(this, right, "cross($0, $1)")
 
     @JvmName("dotSv3Sv3")
     fun Symbol<Vector3>.dot(right: Symbol<Vector3>): Symbol<Double> = functionSymbol(this, right, "dot($0, $1)")
@@ -31,13 +26,20 @@ interface Vector3Functions {
     @JvmName("dotSv3Vv3")
     fun Symbol<Vector3>.dot(right: Vector3): Symbol<Double> = functionSymbol(this, right, "dot($0, $1)")
 
-
     @JvmName("mixSv3Sv3Sb")
     fun Symbol<Vector3>.mix(right: Symbol<Vector3>, factor: Symbol<Boolean>): Symbol<Vector3> = functionSymbol(this, right, factor, "mix($0, $1, ($2) ? 1.0 : 0.0)")
 
     @JvmName("mixSv3Sv3Sd")
     fun Symbol<Vector3>.mix(right: Symbol<Vector3>, factor: Symbol<Double>): Symbol<Vector3> = functionSymbol(this, right, factor, "mix($0, $1, $2)")
 
+    @JvmName("powSv3Sv3")
+    fun pow(x: Symbol<Vector3>, y: Symbol<Vector3>): Symbol<Vector3> = functionSymbol(x, y, "pow($0, $1)")
+
+    @JvmName("sinSv3")
+    fun sin(x: Symbol<Vector3>): Symbol<Vector3> = functionSymbol(x, "sin($0)")
+
+    @JvmName("sqrtSv3")
+    fun sqrt(x: Symbol<Vector3>): Symbol<Vector3> = functionSymbol(x, "sqrt($0)")
 
 
     @JvmName("unaryMinusSv3")

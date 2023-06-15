@@ -4,6 +4,7 @@ import org.openrndr.extra.shadergenerator.dsl.ShaderBuilder
 import org.openrndr.extra.shadergenerator.dsl.*
 import org.openrndr.extra.shadergenerator.dsl.functions.extra.PbrFunctions
 import org.openrndr.extra.shadergenerator.phrases.*
+import org.openrndr.extra.shadergenerator.phrases.dsl.functions.FragmentDerivativeFunctions
 import org.openrndr.math.Matrix44
 import org.openrndr.math.Vector2
 import org.openrndr.math.Vector3
@@ -49,7 +50,7 @@ class VertexTransformBuilder() : ShadeStyleBuilder(), HashPhrasesFunctions, Simp
 
 
 class FragmentTransformBuilder() : ShadeStyleBuilder(), HashPhrasesFunctions, ValueNoiseDerPhrasesFunctions,
-    SimplexPhrasesFunctions, SdfPhrasesFunctions, FibonacciPhrasesFunctions, PbrFunctions {
+    SimplexPhrasesFunctions, SdfPhrasesFunctions, FibonacciPhrasesFunctions, PbrFunctions, FragmentDerivativeFunctions {
     var color by output<Vector4>()
     var x_fill by output<Vector4>()
     var x_stroke by output<Vector4>()

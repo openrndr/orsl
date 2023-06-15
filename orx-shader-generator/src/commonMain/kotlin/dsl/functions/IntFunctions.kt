@@ -1,9 +1,11 @@
 package org.openrndr.extra.shadergenerator.dsl.functions
 
+import org.openrndr.color.ColorRGBa
 import org.openrndr.extra.shadergenerator.dsl.Symbol
 import org.openrndr.extra.shadergenerator.dsl.functionSymbol
 import org.openrndr.extra.shadergenerator.dsl.glsl
 import org.openrndr.extra.shadergenerator.dsl.symbol
+import org.openrndr.math.Vector3
 import kotlin.jvm.JvmName
 
 @Suppress("INAPPLICABLE_JVM_NAME")
@@ -93,6 +95,72 @@ interface IntFunctions {
 
     @JvmName("lteSiVi")
     infix fun Symbol<Int>.lte(right: Int) : Symbol<Boolean> = functionSymbol(this, right, "($0 <= $1)")
+
+    /**
+     * find the index of the most significant bit set to 1 in an integer
+     * @since GLSL 4.00
+     */
+    @JvmName("findMSBSi")
+    fun Symbol<Int>.findMSB(): Symbol<Int> = functionSymbol(this, "findMSB($0)")
+
+
+    /**
+     * find the index of the least significant bit set to 1 in an integer
+     * @since GLSL 4.00
+     */
+    @JvmName("findLSBSi")
+    fun Symbol<Int>.findLSB(): Symbol<Int> = functionSymbol(this, "findLSB($0)")
+
+    /**
+     * produce a floating point using an encoding supplied as an integer
+     * @since GLSL 3.30
+     */
+    @JvmName("bitsToFloatSi")
+    fun Symbol<Int>.bitsToFloat(): Symbol<Double> = functionSymbol(this, "intBitsToFloat($0)")
+
+    /**
+     * counts the number of 1-bits in an integer
+     * @since GLSL 4.00
+     */
+    @JvmName("bitCountSi")
+    fun Symbol<Int>.bitCount(): Symbol<Int> = functionSymbol(this, "bitCount($0)")
+
+    /**
+     * extract a range of bits from an integer
+     * @param offset Specifies the index of the first bit to extract.
+     * @param bits Specifies the number of bits to extract.
+     * @since GLSL 4.00
+     */
+    @JvmName("bitfieldExtractSiSiSi")
+    fun Symbol<Int>.bitfieldExtract(offset: Symbol<Int>, bits: Symbol<Int>): Symbol<Int> =
+        functionSymbol(this, offset, bits, "bitfieldExtract($0, $1, $2)")
+
+    /**
+     *  insert a range of bits into an integer
+     *  @param insert Specifies the value of the bits to insert.
+     *  @param offset Specifies the index of the first bit to insert.
+     *  @param bits Specifies the number of bits to insert.
+     *  @since GLSL 4.00
+     */
+    @JvmName("bitfieldInsertSiSiSiSi")
+    fun Symbol<Int>.bitfieldInsert(insert: Symbol<Int>, offset: Symbol<Int>, bits: Symbol<Int>): Symbol<Int> =
+        functionSymbol(this, insert, offset, bits, "bitfieldInsert($0)")
+
+    /**
+     * reverse the order of bits in an integer
+     * @since GLSL 4.00
+     */
+    @JvmName("bitfieldReverseSi")
+    fun Symbol<Int>.bitfieldReverse(): Symbol<Int> =
+        functionSymbol(this, "bitfieldReverse($0)")
+
+    val Symbol<Int>.uint: Symbol<UInt>
+        @JvmName("intSi")
+        get() = functionSymbol(this, "uint($0)")
+
+    val Symbol<Int>.double: Symbol<Double>
+        @JvmName("doubleSi")
+        get() = functionSymbol(this, "float($0)")
 }
 
 val Int.symbol: Symbol<Int>

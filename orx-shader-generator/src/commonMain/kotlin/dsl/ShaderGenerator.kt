@@ -12,7 +12,7 @@ import org.openrndr.math.*
 import kotlin.reflect.KProperty
 
 open class ShaderBuilder : Generator, Functions, BooleanFunctions, DoubleFunctions, ArrayFunctions, SamplerFunctions,
-    IntFunctions, ColorRGBaFunctions,
+    IntFunctions, ColorRGBaFunctions,  UIntFunctions,
     Vector2Functions, Vector3Functions, Vector4Functions, Matrix33Functions, Matrix44Functions,
     IntVector2Functions {
     var code = ""

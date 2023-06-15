@@ -24,11 +24,12 @@ interface Vector4Functions {
     fun pow(x: Symbol<Vector4>, y: Symbol<Vector4>): Symbol<Vector4> = functionSymbol(x, y, "pow($0, $1)")
 
     @JvmName("mixSv4Sv4Sb")
-    fun Symbol<Vector4>.mix(right: Symbol<Vector4>, factor: Symbol<Boolean>): Symbol<Vector4> = functionSymbol(this, right, factor, "mix($0, $1, ($2) ? 1.0 : 0.0)")
+    fun Symbol<Vector4>.mix(right: Symbol<Vector4>, factor: Symbol<Boolean>): Symbol<Vector4> =
+        functionSymbol(this, right, factor, "mix($0, $1, ($2) ? 1.0 : 0.0)")
 
     @JvmName("mixSv4Sv4Sd")
-    fun Symbol<Vector4>.mix(right: Symbol<Vector4>, factor: Symbol<Double>): Symbol<Vector4> = functionSymbol(this, right, factor, "mix($0, $1, $2)")
-
+    fun Symbol<Vector4>.mix(right: Symbol<Vector4>, factor: Symbol<Double>): Symbol<Vector4> =
+        functionSymbol(this, right, factor, "mix($0, $1, $2)")
 
     @JvmName("plusSv4Sv4")
     operator fun Symbol<Vector4>.plus(right: Symbol<Vector4>): Symbol<Vector4> =
@@ -54,7 +55,6 @@ interface Vector4Functions {
     operator fun Symbol<Double>.times(right: Symbol<Vector4>): Symbol<Vector4> =
         functionSymbol(this, right, "($0 * $1)")
 
-
     @JvmName("timesSv4Sd")
     operator fun Symbol<Vector4>.times(right: Symbol<Double>): Symbol<Vector4> =
         functionSymbol(this, right, "($0 * $1)")
@@ -69,7 +69,6 @@ interface Vector4Functions {
 
     @JvmName("divSv4Vd")
     operator fun Symbol<Vector4>.div(right: Double): Symbol<Vector4> = functionSymbol(this, right, "($0 / $1)")
-
 
 
     val Symbol<Vector4>.length: Symbol<Double>
@@ -108,38 +107,37 @@ interface Vector4Functions {
         get() = functionSymbol(this, "$0.xyz")
 
 
-
     @Suppress("FunctionName")
     @JvmName("vec4Sv2Sv2")
-    fun Vector4(xy: Symbol<Vector2>, zw: Symbol<Vector2>) : Symbol<Vector4> =
+    fun Vector4(xy: Symbol<Vector2>, zw: Symbol<Vector2>): Symbol<Vector4> =
         functionSymbol(xy, zw, "vec4($0, $1)")
 
 
     @Suppress("FunctionName")
     @JvmName("vec4SdSdSdSd")
-    fun Vector4(x: Symbol<Double>, y: Symbol<Double>, z: Symbol<Double>, w: Symbol<Double>) : Symbol<Vector4> =
+    fun Vector4(x: Symbol<Double>, y: Symbol<Double>, z: Symbol<Double>, w: Symbol<Double>): Symbol<Vector4> =
         functionSymbol(x, y, z, w, "vec4($0, $1, $2, $3)")
 
 
     @Suppress("FunctionName")
     @JvmName("vec4SdSdSdVd")
-    fun Vector4(x: Symbol<Double>, y: Symbol<Double>, z: Symbol<Double>, w: Double) : Symbol<Vector4> =
+    fun Vector4(x: Symbol<Double>, y: Symbol<Double>, z: Symbol<Double>, w: Double): Symbol<Vector4> =
         functionSymbol(x, y, z, w, "vec4($0, $1, $2, $3)")
 
 
     @Suppress("FunctionName")
     @JvmName("vec4Sv2Sd")
-    fun Vector4(xyz: Symbol<Vector3>, w: Symbol<Double>) : Symbol<Vector4> =
+    fun Vector4(xyz: Symbol<Vector3>, w: Symbol<Double>): Symbol<Vector4> =
         functionSymbol(xyz, w, "vec4($0, $1)")
 
     @Suppress("FunctionName")
     @JvmName("vec4Sv3Vd")
-    fun Vector4(xyz: Symbol<Vector3>, w: Double) : Symbol<Vector4> =
+    fun Vector4(xyz: Symbol<Vector3>, w: Double): Symbol<Vector4> =
         functionSymbol(xyz, w, "vec4($0, $1)")
 
     @Suppress("FunctionName")
     @JvmName("vec4Sv2VdVd")
-    fun Vector4(xy: Symbol<Vector2>, z: Double, w: Double) : Symbol<Vector4> =
+    fun Vector4(xy: Symbol<Vector2>, z: Double, w: Double): Symbol<Vector4> =
         functionSymbolSVV(xy, z, w, "vec4($0, $1, $2)")
 }
 
