@@ -4,8 +4,8 @@ import org.openrndr.color.ColorRGBa
 import org.openrndr.extra.shadergenerator.dsl.Generator
 import org.openrndr.extra.shadergenerator.dsl.Symbol
 import org.openrndr.extra.shadergenerator.dsl.functionSymbol
-import org.openrndr.extra.shadergenerator.phrases.dsl.Image2D
-import org.openrndr.extra.shadergenerator.phrases.dsl.IntImage2D
+import org.openrndr.extra.shadergenerator.dsl.Image2D
+import org.openrndr.extra.shadergenerator.dsl.IntImage2D
 import org.openrndr.math.IntVector2
 import org.openrndr.math.IntVector4
 import org.openrndr.math.Vector4

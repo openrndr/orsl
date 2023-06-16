@@ -1,11 +1,6 @@
 package org.openrndr.extra.shadergenerator.dsl.functions
 
-import org.openrndr.extra.shadergenerator.dsl.Symbol
-import org.openrndr.extra.shadergenerator.dsl.functionSymbol
-import org.openrndr.extra.shadergenerator.dsl.glsl
-import org.openrndr.extra.shadergenerator.dsl.symbol
-import org.openrndr.extra.shadergenerator.phrases.dsl.UIntVector2
-import org.openrndr.extra.shadergenerator.phrases.dsl.UIntVector3
+import org.openrndr.extra.shadergenerator.dsl.*
 import org.openrndr.math.*
 import kotlin.jvm.JvmName
 

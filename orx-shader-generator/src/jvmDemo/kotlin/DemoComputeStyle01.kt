@@ -6,8 +6,8 @@ import org.openrndr.drawImage
 import org.openrndr.extra.shadergenerator.compute.computeStyle
 import org.openrndr.extra.shadergenerator.compute.computeTransform
 import org.openrndr.extra.shadergenerator.compute.execute
-import org.openrndr.extra.shadergenerator.phrases.dsl.Image2D
-import org.openrndr.extra.shadergenerator.phrases.dsl.UIntVector3
+import org.openrndr.extra.shadergenerator.dsl.Image2D
+import org.openrndr.extra.shadergenerator.dsl.UIntVector3
 
 fun main() {
     application {

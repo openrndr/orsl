@@ -1,11 +1,8 @@
-package org.openrndr.extra.shadergenerator.phrases.dsl.functions
+package org.openrndr.extra.shadergenerator.dsl.functions
 
 import org.openrndr.color.ColorRGBa
-import org.openrndr.extra.shadergenerator.dsl.Generator
-import org.openrndr.extra.shadergenerator.dsl.Symbol
-import org.openrndr.extra.shadergenerator.dsl.functionCall
-import org.openrndr.extra.shadergenerator.dsl.functionSymbol
-import org.openrndr.extra.shadergenerator.phrases.dsl.Image2D
+import org.openrndr.extra.shadergenerator.dsl.*
+import org.openrndr.extra.shadergenerator.dsl.Image2D
 import org.openrndr.math.IntVector2
 import org.openrndr.math.Vector4
 import kotlin.jvm.JvmName

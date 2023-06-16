@@ -1,4 +1,4 @@
-package org.openrndr.extra.shadergenerator.phrases.dsl
+package org.openrndr.extra.shadergenerator.dsl
 
 interface BooleanVector2
 interface BooleanVector3

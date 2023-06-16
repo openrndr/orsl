@@ -7,8 +7,8 @@ import org.openrndr.extra.shadergenerator.dsl.functions.Functions.*
 import org.openrndr.extra.shadergenerator.dsl.functions.BooleanFunctions
 import org.openrndr.extra.shadergenerator.dsl.functions.Matrix33Functions
 import org.openrndr.extra.shadergenerator.dsl.functions.SamplerFunctions
-import org.openrndr.extra.shadergenerator.phrases.dsl.UIntVector4
-import org.openrndr.extra.shadergenerator.phrases.dsl.functions.ColorRGBaFunctions
+import org.openrndr.extra.shadergenerator.dsl.UIntVector4
+import org.openrndr.extra.shadergenerator.dsl.functions.ColorRGBaFunctions
 import org.openrndr.math.*
 import kotlin.reflect.KProperty
 

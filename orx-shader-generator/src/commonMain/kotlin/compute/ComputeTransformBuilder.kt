@@ -5,8 +5,8 @@ import org.openrndr.extra.shadergenerator.dsl.shadestyle.ShadeStyleBuilder
 import org.openrndr.extra.shadergenerator.phrases.*
 import org.openrndr.extra.shadergenerator.dsl.functions.FragmentDerivativeFunctions
 import org.openrndr.extra.shadergenerator.dsl.shadestyle.preprocessor
-import org.openrndr.extra.shadergenerator.phrases.dsl.functions.Image2DFunctions
-import org.openrndr.extra.shadergenerator.phrases.dsl.functions.IntRImage2DFunctions
+import org.openrndr.extra.shadergenerator.dsl.functions.Image2DFunctions
+import org.openrndr.extra.shadergenerator.dsl.functions.IntRImage2DFunctions
 import org.openrndr.math.Matrix44
 import org.openrndr.math.Vector3
 import org.openrndr.math.Vector4
