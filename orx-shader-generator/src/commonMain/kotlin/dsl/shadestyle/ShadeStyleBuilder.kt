@@ -4,7 +4,7 @@ import org.openrndr.extra.shadergenerator.dsl.ShaderBuilder
 import org.openrndr.extra.shadergenerator.dsl.*
 import org.openrndr.extra.shadergenerator.dsl.functions.extra.PbrFunctions
 import org.openrndr.extra.shadergenerator.phrases.*
-import org.openrndr.extra.shadergenerator.phrases.dsl.functions.FragmentDerivativeFunctions
+import org.openrndr.extra.shadergenerator.dsl.functions.FragmentDerivativeFunctions
 import org.openrndr.math.Matrix44
 import org.openrndr.math.Vector2
 import org.openrndr.math.Vector3

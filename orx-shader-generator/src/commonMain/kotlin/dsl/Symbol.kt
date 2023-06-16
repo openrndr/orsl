@@ -113,6 +113,17 @@ data class Function3Symbol<T0, T1, T2, R>(
         }
 }
 
+inline fun <reified T0, reified T1, reified T2> Generator.functionCall(
+    p0: Symbol<T0>,
+    p1: Symbol<T1>,
+    p2: Symbol<T2>,
+    function: String
+) {
+    val b = Function3Symbol<T0, T1, T2, Nothing>(p0 = p0, p1 = p1, p2 = p2, function = function, type = "")
+    emit("${b.name};")
+}
+
+
 inline fun <reified T0, reified T1, reified T2, reified R> functionSymbol(
     p0: Symbol<T0>,
     p1: Symbol<T1>,
@@ -120,6 +131,8 @@ inline fun <reified T0, reified T1, reified T2, reified R> functionSymbol(
     function: String
 ): Symbol<R> =
     Function3Symbol(p0 = p0, p1 = p1, p2 = p2, function = function, type = staticType<R>())
+
+
 
 inline fun <reified T0, reified T1, reified T2, reified R> functionSymbol(
     v0: T0,

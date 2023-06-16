@@ -35,6 +35,7 @@ class ComputeStyle : ShadeStyleParameters {
         buffers[name] = "AtomicCounterBuffer"
     }
 
+
 }
 
 
@@ -60,7 +61,7 @@ private fun mapTypeToUniform(type: String, name: String): String {
             val layout = imageLayout(colorFormat, colorType)
             when (access) {
                 ImageAccess.READ, ImageAccess.READ_WRITE -> "layout($layout) $u $sampler p_$name;"
-                ImageAccess.WRITE -> "writeonly $u $sampler p_$name"
+                ImageAccess.WRITE -> "layout($layout) writeonly $u $sampler p_$name;"
             }
         }
 
@@ -426,6 +427,8 @@ ${structure.computeTransform.prependIndent("    ")}
         return shader
 
     }
+
+
 }
 
 fun computeStyle(builder:ComputeStyle.() -> Unit) : ComputeStyle {
@@ -439,3 +442,4 @@ fun ComputeStyle.execute(width: Int=1, height: Int=1, depth:Int=1) {
     val cs = computeStyleManager.shader(this, "compute-style")
     cs.execute(width, height, depth)
 }
+

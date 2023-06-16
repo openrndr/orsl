@@ -1,4 +1,4 @@
-package org.openrndr.extra.shadergenerator.phrases.dsl.functions
+package org.openrndr.extra.shadergenerator.dsl.functions
 
 import org.openrndr.color.ColorRGBa
 import org.openrndr.extra.shadergenerator.dsl.Generator

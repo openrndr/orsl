@@ -10,7 +10,7 @@ import org.openrndr.extra.shadergenerator.phrases.SdfPhrasesIndex
 import org.openrndr.extra.shadergenerator.phrases.ValueNoiseDerPhrases
 import org.openrndr.extra.shadergenerator.phrases.ValueNoiseDerPhrasesIndex
 
-private fun preprocessor(): PhraseResolver {
+fun preprocessor(): PhraseResolver {
     val resolver = PhraseResolver()
     resolver.indices.add(ArrayPhrasesIndex(ArrayPhrases()))
     resolver.indices.add(HashPhrasesIndex(HashPhrases()))
