@@ -20,8 +20,7 @@ fun main() {
                 computeTransform {
                     val p_inputImage by parameter<Image2D>()
                     val p_outputImage by parameter<Image2D>()
-                    val gl_GlobalInvocationID by parameter<UIntVector3>()
-                    val coord by gl_GlobalInvocationID.int.xy
+                    val coord by c_giid.int.xy
                     val c by p_inputImage.load(coord)
                     p_outputImage.store(coord, c)
                 }

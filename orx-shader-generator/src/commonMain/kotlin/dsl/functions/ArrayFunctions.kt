@@ -10,6 +10,11 @@ interface ArrayFunctions : Generator {
         return symbol("${this@get.name}[$index]", type)
     }
 
+    operator fun <T> ArraySymbol<T>.get(index: Symbol<Int>): Symbol<T> {
+        return symbol("${this@get.name}[${index.name}]", type)
+    }
+
+
     fun ArraySymbol<Double>.max(): Symbol<Double> {
         emitPreamble("#pragma import floatArrayMax($length)")
         return symbol("floatArrayMax_$length(${this@max.name})", "float")
@@ -78,6 +83,12 @@ interface ArrayFunctions : Generator {
         emitPreamble("#pragma import floatArraySum($length)")
         return symbol("floatArraySum_$length(${this@sum.name})")
     }
+
+    operator fun <T> ArraySymbol<T>.set(index: Symbol<Int>, value: Symbol<T>): Symbol<T> {
+        emit("${this@set.name}[${index.name}] = ${value.name};")
+        return symbol("${this@set.name}[${index.name}] = ${value.name}", type)
+    }
+
 
     operator fun <T> ArraySymbol<T>.set(index: Int, value: Symbol<T>): Symbol<T> {
         emit("${this@set.name}[$index] = ${value.name};")

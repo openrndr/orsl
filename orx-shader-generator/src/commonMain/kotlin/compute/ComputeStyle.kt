@@ -24,10 +24,12 @@ class ComputeStyle : ShadeStyleParameters {
 
     var bufferValues = mutableMapOf<String, Any>()
     val buffers = mutableMapOf<String, String>()
+    val bufferTypes = mutableMapOf<String, String>()
 
-    fun buffer(name: String, buffer: ShaderStorageBuffer) {
+    inline fun <reified T: Struct<T>> buffer(name: String, buffer: StructuredBuffer<T>) {
         bufferValues[name] = buffer
         buffers[name] = buffer.format.hashCode().toString()
+        bufferTypes[name] = "struct ${T::class.simpleName}"
     }
 
     fun buffer(name: String, buffer: AtomicCounterBuffer) {
@@ -60,7 +62,8 @@ private fun mapTypeToUniform(type: String, name: String): String {
             val access = ImageAccess.valueOf(tokens[3])
             val layout = imageLayout(colorFormat, colorType)
             when (access) {
-                ImageAccess.READ, ImageAccess.READ_WRITE -> "layout($layout) $u $sampler p_$name;"
+                ImageAccess.READ -> "layout($layout) readonly $u $sampler p_$name;"
+                ImageAccess.READ_WRITE -> "layout($layout) $u $sampler p_$name;"
                 ImageAccess.WRITE -> "layout($layout) writeonly $u $sampler p_$name;"
             }
         }
@@ -105,20 +108,21 @@ fun structureFromComputeStyle(computeStyle: ComputeStyle): ComputeStructure {
     fun structDefinitions(): String {
         val structs = computeStyle.parameterTypes.filterValues {
             it.startsWith("struct")
-        }
+        } + computeStyle.bufferTypes.filterValues { it.startsWith("struct") }
         val structValues = structs.keys.map {
-            if (computeStyle.parameterValues[it] is Array<*>) {
-                @Suppress("UNCHECKED_CAST") val array = computeStyle.parameterValues[it] as Array<Struct<*>>
+            if ((computeStyle.parameterValues[it]?:computeStyle.bufferValues[it]) is Array<*>) {
+                @Suppress("UNCHECKED_CAST") val array = (computeStyle.parameterValues[it]?:computeStyle.bufferValues[it]) as Array<Struct<*>>
                 Pair(it, array.first())
             } else {
-                Pair(it, computeStyle.parameterValues[it]!! as Struct<*>)
+                Pair(it, (computeStyle.parameterValues[it]?:
+                ((computeStyle.bufferValues[it] as? StructuredBuffer<*>)?.struct ))!! as Struct<*>)
             }
         }
         val structProtoValues = structValues.distinctBy {
             it.second::class.simpleName
         }
         return structProtoValues.joinToString("\n") {
-            it.second.typeDef(computeStyle.parameterTypes[it.first]!!.split(" ")[1].split(",")[0])
+            it.second.typeDef((computeStyle.parameterTypes[it.first]?:computeStyle.bufferTypes[it.first])!!.split(" ")[1].split(",")[0])
         }
     }
 
@@ -131,6 +135,10 @@ fun structureFromComputeStyle(computeStyle: ComputeStyle): ComputeStructure {
 
         return computeStyle.bufferValues.map {
             val r = when (val v = it.value) {
+                is StructuredBuffer<*> -> {
+                    val structType = computeStyle.bufferTypes[it.key]?.drop(7)?:error("no type for buffer '${it.key}'")
+                    "layout(std430, binding = $bufferIndex) buffer B_${it.key} { ${structType} b_${it.key}; };"
+                }
                 is ShaderStorageBuffer -> "layout(std430, binding = $bufferIndex) buffer B_${it.key} { ${v.format.glslLayout} } b_${it.key};"
                 else -> error("unsupported buffer type: $v")
             }
@@ -430,6 +438,14 @@ ${structure.computeTransform.prependIndent("    ")}
 
 
 }
+
+/**
+ * inline fun <reified T : Struct<T>> ShadeStyleParameters.parameter(name: String, value: T) {
+ *     parameterValues[name] = value
+ *     parameterTypes[name] = "struct ${T::class.simpleName}"
+ * }
+ *
+ */
 
 fun computeStyle(builder:ComputeStyle.() -> Unit) : ComputeStyle {
     val computeStyle = ComputeStyle()
