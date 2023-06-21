@@ -11,9 +11,17 @@ import org.openrndr.extra.shadergenerator.phrases.dsl.compute.return_
 import org.openrndr.math.IntVector3
 import org.openrndr.math.Vector2
 import org.openrndr.math.Vector3
+import kotlin.math.cos
+
+// based on compute.toys entry by wrighter
+// https://compute.toys/view/68
 
 fun main() {
     application {
+        configure {
+            width = 1280
+            height = 720
+        }
         program {
             val atomic = colorBuffer(width, height, type = ColorType.SINT32_INT, format = ColorFormat.R)
             val cb = colorBuffer(width, height)
@@ -57,7 +65,7 @@ fun main() {
 
                     val sample_disk by function<Vector2> {
                         val r by hash_v2()
-                        Vector2(sin(r.x * Math.PI * 2.0), cos(r.x * Math.PI)) * sqrt(r.y)
+                        Vector2(sin(r.x * Math.PI * 2.0), cos(r.x * Math.PI * 2.0)) * sqrt(r.y)
                     }
 
                     val projParticle by function<Vector3, Vector3> {
@@ -70,13 +78,10 @@ fun main() {
                         p
                     }
 
-
-
                     seed = hash_u(c_giid.x + hash_u(c_giid.y * 200U) * 20U + hash_u(c_giid.x) * 250U)
                     seed = hash_u(seed)
 
-                    val particleIdx by c_giid.x
-                    val iters = 1060
+                    val iters = 20
                     val t by p_time - hash_f() * (1.0 / 30.0)
                     val env by t + sin(t) * 0.5
                     val envb by sin(t * 0.45)
@@ -85,7 +90,7 @@ fun main() {
                     val R by p_screen.size().double
                     val focusDist by (p_dofFocalDist * 2.0 - 1.0) * 2.0
                     val dofFac by (1.0 / Vector2(R.x / R.y, 1.0.symbol)) * p_dofAmount
-                    var i by variable<Int>()
+                    val i by variable<Int>()
                     i.for_(0 until iters) {
                         val r by hash_f()
                         val k by if_(r lt 0.3) {
@@ -106,24 +111,23 @@ fun main() {
                         }
                     }
                     val q by projParticle(p)
-                    var k by variable(q.xy)
-                    k += sample_disk() * abs(q.z - focusDist) * 0.05 * dofFac
+                    val k by q.xy + sample_disk() * abs(q.z - focusDist) * 0.05 * dofFac
+
                     val uv by k / 2.0 + Vector2(0.5)
                     val cc by (uv * R).int
 
                     imageMemoryBarrier {
-                        doIf(//(q.z lt -20.0) and
-                            (cc.x gte 0) and (cc.y gte 0) and (cc.x lt 640) and (cc.y lt 480)
+                        doIf(
+                            (cc.x gte 0) and (cc.y gte 0) and (cc.x lt R.x.int) and (cc.y lt R.y.int)
                         ) {
                             val b by p_atomic.atomicAdd(cc, 1)
                         }
                     }
-
                 }
             }
 
-            splat.parameter("dofAmount", 0.816)
-            splat.parameter("dofFocalDist", 0.5)
+            splat.parameter("dofAmount", 0.116)
+            splat.parameter("dofFocalDist", 0.15)
             splat.parameter("mouse", mouse.position)
             splat.parameter("a", 0.2)
             splat.parameter("b", 0.4)
@@ -142,38 +146,27 @@ fun main() {
                         return_()
                     }
                     val c by p_atomic.load(c_giid.xy.int).double
-                    var col by variable(Vector3(c,c,c))
-                    val sc by 124452.7
+                    var col by variable(Vector3(c, c, c))
+                    val sc by 1244520.7
                     col = log(col) / log(sc)
-                    p_screen.store(c_giid.xy.int, Vector4(2.0 * col, 1.0))
+                    col = pow(col, Vector3(1.0 / 2.2).symbol)
+                    col *= Vector3(1.0, 1.2, 1.3)
+                    p_screen.store(c_giid.xy.int, Vector4(col, 1.0))
                     p_atomic.store(c_giid.xy.int, 0.symbol)
                 }
             }
 
-            val setCounters = computeStyle {
-                workGroupSize = IntVector3(16, 16, 1)
-                computeTransform {
-                    val p_atomic by parameter<IntRImage2D>()
-                        val oldValue by p_atomic.atomicAdd(c_giid.xy.int, 100)
-                        //p_atomic.store(c_giid.xy.int, 1000000.symbol)
-                }
-            }
-
-//            setCounters.parameter("atomic", atomic.imageBinding(0, ImageAccess.READ_WRITE))
-//            setCounters.execute(width / mainImage.workGroupSize.x, height / mainImage.workGroupSize.y, 1)
-
             mainImage.parameter("atomic", atomic.imageBinding(0, ImageAccess.READ_WRITE))
             mainImage.parameter("screen", cb.imageBinding(0, ImageAccess.WRITE))
-//            mainImage.execute(width / mainImage.workGroupSize.x, height / mainImage.workGroupSize.y, 1)
 
-            splat.execute(32, 32)
-            mainImage.execute(width / mainImage.workGroupSize.x, height / mainImage.workGroupSize.y, 1)
-//
             extend {
-
-                splat.parameter("mouse", mouse.position)
+                splat.parameter("dofFocalDist", cos(seconds) * 0.5 + 0.5)
+                splat.parameter("mouse", (mouse.position / window.size) * Math.PI * 2.0)
                 splat.parameter("time", seconds)
-                splat.execute(64, 64)
+                splat.parameter("a", cos(seconds * 0.342) * 0.5 + 0.5)
+                splat.parameter("b", cos(seconds * 0.5374) * 0.5 + 0.5)
+                splat.parameter("c", cos(seconds * 0.4193) * 0.5 + 0.5)
+                splat.execute(256, 256, 1)
                 mainImage.execute(width / mainImage.workGroupSize.x, height / mainImage.workGroupSize.y, 1)
                 drawer.image(cb)
             }
