@@ -70,7 +70,7 @@ class ArrayVariableProperty<T>(val generator: Generator, val length: Int, val gl
             generator.emit("${glslType} ${property.name};")
             declarationEmitted = true
         }
-        generator.emit("${property.name} = ${value.name};")
+        activeGenerator().emit("${property.name} = ${value.name};")
     }
 }
 

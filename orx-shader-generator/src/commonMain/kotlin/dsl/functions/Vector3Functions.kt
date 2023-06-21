@@ -94,6 +94,12 @@ interface Vector3Functions {
     @JvmName("divSv3Vd")
     operator fun Symbol<Vector3>.div(right: Double): Symbol<Vector3> = functionSymbol(this, right, "($0 / $1)")
 
+    @JvmName("divSv3Sd")
+    operator fun Symbol<Vector3>.div(right: Symbol<Double>): Symbol<Vector3> = functionSymbol(this, right, "($0 / $1)")
+
+    @JvmName("logSv3")
+    fun log(x: Symbol<Vector3>): Symbol<Vector3> = functionSymbol(x, "log($0)")
+
 
     val Symbol<Vector3>.length: Symbol<Double>
         @JvmName("lengthSv3")

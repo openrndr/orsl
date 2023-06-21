@@ -1,9 +1,6 @@
 package org.openrndr.extra.shadergenerator.dsl.functions
 
-import org.openrndr.extra.shadergenerator.dsl.Symbol
-import org.openrndr.extra.shadergenerator.dsl.functionSymbol
-import org.openrndr.extra.shadergenerator.dsl.glsl
-import org.openrndr.extra.shadergenerator.dsl.symbol
+import org.openrndr.extra.shadergenerator.dsl.*
 import org.openrndr.math.IntVector2
 import org.openrndr.math.Vector2
 import org.openrndr.math.Vector3
@@ -69,6 +66,26 @@ interface Vector2Functions {
         functionSymbol(this, right, "($0 * $1)")
 
 
+    @JvmName("divSv2Sd")
+    operator fun Symbol<Vector2>.div(right: Symbol<Double>): Symbol<Vector2> =
+        functionSymbol(this, right, "($0 / $1)")
+
+    @JvmName("divSv2Vd")
+    operator fun Symbol<Vector2>.div(right: Double): Symbol<Vector2> =
+        functionSymbol(this, right, "($0 / $1)")
+
+
+
+    @JvmName("divSdSv2")
+    operator fun Symbol<Double>.div(right: Symbol<Vector2>): Symbol<Vector2> =
+        functionSymbol(this, right, "($0 / $1)")
+
+
+    @JvmName("divVdSv2")
+    operator fun Double.div(right: Symbol<Vector2>): Symbol<Vector2> =
+        functionSymbol(this, right, "($0 / $1)")
+
+
     @JvmName("timesSv2Vv2")
     operator fun Symbol<Vector2>.times(right: Vector2): Symbol<Vector2> = functionSymbol(this, right, "($0 * $1)")
 
@@ -95,6 +112,16 @@ interface Vector2Functions {
     @JvmName("vec2SdSd")
     fun Vector2(x: Symbol<Double>, y: Symbol<Double>): Symbol<Vector2> =
         functionSymbol(x, y, "vec2($0, $1)")
+
+    val Symbol<Vector2>.int: Symbol<IntVector2>
+        @JvmName("intSv2")
+        get() = functionSymbol(this, "ivec2($0)")
+
+    val Symbol<Vector2>.uint: Symbol<UIntVector2>
+        @JvmName("uintSv2")
+        get() = functionSymbol(this, "uvec2($0)")
+
+
 
 }
 

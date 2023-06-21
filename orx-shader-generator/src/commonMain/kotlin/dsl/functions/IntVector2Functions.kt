@@ -1,9 +1,6 @@
 package org.openrndr.extra.shadergenerator.dsl.functions
 
-import org.openrndr.extra.shadergenerator.dsl.Symbol
-import org.openrndr.extra.shadergenerator.dsl.functionSymbol
-import org.openrndr.extra.shadergenerator.dsl.glsl
-import org.openrndr.extra.shadergenerator.dsl.symbol
+import org.openrndr.extra.shadergenerator.dsl.*
 import org.openrndr.math.IntVector2
 import org.openrndr.math.Matrix44
 import org.openrndr.math.Vector2
@@ -15,7 +12,7 @@ interface IntVector2Functions {
     @JvmName("absSiv2")
     fun abs(x: Symbol<IntVector2>): Symbol<IntVector2> = functionSymbol(x, "abs($0)")
 
-    @JvmName("divVdSv2")
+    @JvmName("divVdSiv2")
     operator fun Double.div(right: Symbol<IntVector2>): Symbol<Vector2> = functionSymbol(this, right, "($0 / $1)")
 
 
@@ -44,6 +41,15 @@ interface IntVector2Functions {
     @JvmName("ivec2SiSi")
     fun IntVector2(x: Symbol<Int>, y: Symbol<Int>): Symbol<IntVector2> =
         functionSymbol(x, y, "ivec2($0, $1)")
+
+    val Symbol<IntVector2>.double: Symbol<Vector2>
+        @JvmName("doubleSiv2")
+        get() = functionSymbol(this, "vec2($0)")
+
+    val Symbol<IntVector2>.uint: Symbol<UIntVector2>
+        @JvmName("uintSiv2")
+        get() = functionSymbol(this, "uvec2($0)")
+
 
 }
 

@@ -42,6 +42,17 @@ inline fun <reified T> arraySymbol(name: String, length: Int) = object : ArraySy
     override val type = staticType<T>()
 }
 
+data class Function0Symbol<R>(
+    val function: String,
+    override val type: String
+) : Symbol<R> {
+    override val name: String
+        get() {
+            return function
+        }
+}
+
+
 data class FunctionSymbol1<T0, R>(
     val v0: T0? = null,
     val p0: Symbol<T0>? = null,
@@ -141,6 +152,14 @@ inline fun <reified T0, reified T1, reified T2, reified R> functionSymbol(
     function: String
 ): Symbol<R> =
     Function3Symbol(v0 = v0, v1 = v1, p2 = p2, function = function, type = staticType<R>())
+
+inline fun <reified T0, reified T1, reified T2, reified R> functionSymbolSSV(
+    p0: Symbol<T0>,
+    p1: Symbol<T1>,
+    v2: T2,
+    function: String
+): Symbol<R> =
+    Function3Symbol(p0 = p0, p1 = p1, v2 = v2, function = function, type = staticType<R>())
 
 
 inline fun <reified T0, reified T1, reified T2, reified R> functionSymbolSVV(

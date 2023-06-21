@@ -11,13 +11,13 @@ data class ComputeStructure(
     val buffers: String? = null,
     val computeTransform: String,
     val computePreamble: String,
-    val localSize: IntVector3
+    val workGroupSize: IntVector3
 )
 
 class ComputeStyle : ShadeStyleParameters {
     var computePreamble: String = ""
     var computeTransform: String = ""
-    var localSize = IntVector3(1, 1, 1)
+    var workGroupSize = IntVector3(1, 1, 1)
     private var dirty = true
     override var parameterValues: MutableMap<String, Any> = mutableMapOf()
     override var parameterTypes: ObservableHashmap<String, String> = ObservableHashmap(mutableMapOf()) { dirty = true }
@@ -59,12 +59,17 @@ private fun mapTypeToUniform(type: String, name: String): String {
             val sampler = tokens[0].take(1).lowercase() + tokens[0].drop(1)
             val colorFormat = ColorFormat.valueOf(tokens[1])
             val colorType = ColorType.valueOf(tokens[2])
+            val samplerPrefix = when(colorType.colorSampling) {
+                ColorSampling.SIGNED_INTEGER -> "i"
+                ColorSampling.NORMALIZED -> ""
+                ColorSampling.UNSIGNED_INTEGER -> "u"
+            }
             val access = ImageAccess.valueOf(tokens[3])
             val layout = imageLayout(colorFormat, colorType)
             when (access) {
-                ImageAccess.READ -> "layout($layout) readonly $u $sampler p_$name;"
-                ImageAccess.READ_WRITE -> "layout($layout) $u $sampler p_$name;"
-                ImageAccess.WRITE -> "layout($layout) writeonly $u $sampler p_$name;"
+                ImageAccess.READ -> "layout($layout) readonly $u $samplerPrefix$sampler p_$name;"
+                ImageAccess.READ_WRITE -> "layout($layout) $u $samplerPrefix$sampler p_$name;"
+                ImageAccess.WRITE -> "layout($layout) writeonly $u $samplerPrefix$sampler p_$name;"
             }
         }
 
@@ -80,6 +85,8 @@ private fun imageLayout(format: ColorFormat, type: ColorType): String {
         Pair(ColorFormat.R, ColorType.UINT16) -> "r16"
         Pair(ColorFormat.R, ColorType.UINT16_INT) -> "r16u"
         Pair(ColorFormat.R, ColorType.SINT16_INT) -> "r16i"
+        Pair(ColorFormat.R, ColorType.UINT32_INT) -> "r32u"
+        Pair(ColorFormat.R, ColorType.SINT32_INT) -> "r32i"
         Pair(ColorFormat.R, ColorType.FLOAT16) -> "r16f"
         Pair(ColorFormat.R, ColorType.FLOAT32) -> "r32f"
 
@@ -140,6 +147,8 @@ fun structureFromComputeStyle(computeStyle: ComputeStyle): ComputeStructure {
                     "layout(std430, binding = $bufferIndex) buffer B_${it.key} { ${structType} b_${it.key}; };"
                 }
                 is ShaderStorageBuffer -> "layout(std430, binding = $bufferIndex) buffer B_${it.key} { ${v.format.glslLayout} } b_${it.key};"
+                is AtomicCounterBuffer -> "layout(binding = $bufferIndex, offset = 0) uniform atomic_uint b_${it.key}[${(it.value as AtomicCounterBuffer).size}];"
+
                 else -> error("unsupported buffer type: $v")
             }
             bufferIndex++
@@ -154,7 +163,7 @@ fun structureFromComputeStyle(computeStyle: ComputeStyle): ComputeStructure {
         buffers = buffers(),
         computeTransform = computeStyle.computeTransform,
         computePreamble = computeStyle.computePreamble,
-        localSize = computeStyle.localSize
+        workGroupSize = computeStyle.workGroupSize
     )
 }
 
@@ -264,7 +273,7 @@ class ComputeStyleManager() {
         val shader = shaders.getOrPut(structure) {
 
             val code = """#version 450 core
-layout(local_size_x = ${structure.localSize.x}, local_size_y = ${structure.localSize.y}, local_size_z = ${structure.localSize.z}) in;
+layout(local_size_x = ${structure.workGroupSize.x}, local_size_y = ${structure.workGroupSize.y}, local_size_z = ${structure.workGroupSize.z}) in;
 
 ${structure.structDefinitions ?: ""}
 ${structure.uniforms ?: ""}
@@ -286,6 +295,10 @@ ${structure.computeTransform.prependIndent("    ")}
             for (it in style.bufferValues.entries) {
                 when (val value = it.value) {
                     is ShaderStorageBuffer -> {
+                        value.bind(bufferIndex)
+                        bufferIndex++
+                    }
+                    is AtomicCounterBuffer -> {
                         value.bind(bufferIndex)
                         bufferIndex++
                     }

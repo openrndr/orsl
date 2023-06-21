@@ -4,6 +4,15 @@ import org.openrndr.extra.shadergenerator.dsl.*
 import kotlin.reflect.KProperty
 
 
+inline fun <reified R> Generator.function(useHash: Boolean = true, noinline f: ShaderBuilder.() -> Symbol<R>): Functions.Function0PropertyProvider<R> =
+    Functions.Function0PropertyProvider(
+        useHash,
+        this,
+        returnType = staticType<R>(),
+        f
+    )
+
+
 inline fun <reified T, reified R> Generator.function(useHash: Boolean = true, noinline f: ShaderBuilder.(Symbol<T>) -> Symbol<R>): Functions.FunctionPropertyProvider<T, R> =
     Functions.FunctionPropertyProvider(
         useHash,
@@ -96,6 +105,62 @@ ${sb.code.replace(p0, "x__").prependIndent("    ").trimEnd()}
             }
         }
     }
+
+    class Function0Property<R>(
+        useHash: Boolean,
+        name: String,
+        generator: Generator,
+        private val returnType: String,
+        f: ShaderBuilder.() -> Symbol<R>,
+    ) {
+        private var functionHash = 0U
+
+        init {
+            val sb = ShaderBuilder()
+            sb.push()
+            val hash = hash(name)
+            val resultSym = sb.f()
+            functionHash = if (useHash)
+                hash(name, returnType, resultSym.name, resultSym.type, sb.code, sb.preamble, sb.tempId)
+            else 0U
+
+            if (useHash) {
+                generator.emitPreamble("#ifndef f_${name}_${functionHash}")
+                generator.emitPreamble("#define f_${name}_${functionHash}")
+            }
+            generator.emitPreamble(sb.preamble)
+            generator.emitPreamble(
+                """$returnType ${name}_${functionHash}() { 
+${sb.code.prependIndent("    ").trimEnd()}                    
+    return ${resultSym.name};
+}"""
+            )
+            if (useHash) {
+                generator.emitPreamble("#endif")
+            }
+            sb.pop()
+        }
+
+        operator fun getValue(any: Any?, property: KProperty<*>): () -> Function0Symbol<R> {
+            return {
+                Function0Symbol(
+                    function = "${property.name}_${functionHash}()",
+                    type = returnType
+                )
+            }
+        }
+    }
+
+    class Function0PropertyProvider<R>(
+        private val useHash: Boolean,
+        private val generator: Generator,
+        private val returnType: String,
+        private val f: ShaderBuilder.() -> Symbol<R>
+    ) {
+        operator fun provideDelegate(any: Any?, property: KProperty<*>): Function0Property<R> =
+            Function0Property(useHash, property.name, generator, returnType, f)
+    }
+
 
     class FunctionPropertyProvider<T, R>(
         private val useHash: Boolean,

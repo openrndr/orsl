@@ -9,14 +9,16 @@ import org.openrndr.extra.shadergenerator.dsl.functions.Matrix33Functions
 import org.openrndr.extra.shadergenerator.dsl.functions.SamplerFunctions
 import org.openrndr.extra.shadergenerator.dsl.UIntVector4
 import org.openrndr.extra.shadergenerator.dsl.functions.ColorRGBaFunctions
+import org.openrndr.extra.shadergenerator.phrases.dsl.functions.AtomicCounterBufferFunctions
+import org.openrndr.extra.shadergenerator.phrases.dsl.functions.BarrierFunctions
 import org.openrndr.math.*
 import kotlin.reflect.KProperty
 
 open class ShaderBuilder : Generator, Functions, BooleanFunctions, DoubleFunctions, ArrayFunctions, SamplerFunctions,
     IntFunctions, ColorRGBaFunctions,  UIntFunctions,
     Vector2Functions, Vector3Functions, Vector4Functions, Matrix33Functions, Matrix44Functions,
-    IntVector2Functions, IntVector3unctions,
-    UIntVector3Functions {
+    IntVector2Functions, IntVector3unctions, UIntVector2Functions,
+    UIntVector3Functions, AtomicCounterBufferFunctions, IntRImage2DFunctions, BarrierFunctions {
     var code = ""
     var preamble = ""
 

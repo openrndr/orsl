@@ -1,9 +1,7 @@
 package org.openrndr.extra.shadergenerator.dsl.functions
 
-import org.openrndr.extra.shadergenerator.dsl.Symbol
-import org.openrndr.extra.shadergenerator.dsl.functionSymbol
-import org.openrndr.extra.shadergenerator.dsl.glsl
-import org.openrndr.extra.shadergenerator.dsl.symbol
+import org.openrndr.extra.shadergenerator.dsl.*
+import org.openrndr.math.IntVector2
 import kotlin.jvm.JvmName
 
 @Suppress("INAPPLICABLE_JVM_NAME")
@@ -89,10 +87,10 @@ interface DoubleFunctions {
     fun isnan(x: Symbol<Double>): Symbol<Boolean> = functionSymbol(x, "isnan($0)")
 
     @JvmName("logSd")
-    fun log(x: Symbol<Double>): Symbol<Boolean> = functionSymbol(x, "log($0)")
+    fun log(x: Symbol<Double>): Symbol<Double> = functionSymbol(x, "log($0)")
 
     @JvmName("log2Sd")
-    fun log2(x: Symbol<Double>): Symbol<Boolean> = functionSymbol(x, "log2($0)")
+    fun log2(x: Symbol<Double>): Symbol<Double> = functionSymbol(x, "log2($0)")
 
 
     @JvmName("maxSdSd")
@@ -236,6 +234,16 @@ interface DoubleFunctions {
     @JvmName("mixSdSdSd")
     fun Symbol<Double>.mix(right: Symbol<Double>, factor: Symbol<Double>): Symbol<Double> =
         functionSymbol(this, right, factor, "mix($0, $1, $2)")
+
+    val Symbol<Double>.int: Symbol<Int>
+        @JvmName("intSd")
+        get() = functionSymbol(this, "int($0)")
+
+
+    val Symbol<Double>.uint: Symbol<UInt>
+        @JvmName("uintSd")
+        get() = functionSymbol(this, "uint($0)")
+
 }
 
 val Double.symbol: Symbol<Double>

@@ -18,6 +18,21 @@ interface UIntFunctions {
     @JvmName("plusSuiSui")
     operator fun Symbol<UInt>.plus(right: Symbol<UInt>): Symbol<UInt> = functionSymbol(this, right, "($0 + $1)")
 
+    @JvmName("xorSuiVui")
+    infix fun Symbol<UInt>.xor(right: UInt): Symbol<UInt> = functionSymbol(this, right, "($0 ^ $1)")
+
+    @JvmName("xorSuiSui")
+    infix fun Symbol<UInt>.xor(right: Symbol<UInt>): Symbol<UInt> = functionSymbol(this, right, "($0 ^ $1)")
+
+    @JvmName("orSuiVui")
+    infix fun Symbol<UInt>.or(right: UInt): Symbol<UInt> = functionSymbol(this, right, "($0 | $1)")
+
+    @JvmName("andSuiVui")
+    infix fun Symbol<UInt>.and(right: UInt): Symbol<UInt> = functionSymbol(this, right, "($0 & $1)")
+
+    infix fun Symbol<UInt>.shr(right: Int): Symbol<UInt> = functionSymbol(this, right, "($0 >> $1)")
+
+
     @JvmName("plusSuiSd")
     operator fun Symbol<UInt>.plus(right: Symbol<Double>): Symbol<Double> = functionSymbol(this, right, "($0 + $1)")
 
