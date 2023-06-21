@@ -145,7 +145,7 @@ fun main() {
                     doIf((c_giid.x gt res.x) or (c_giid.y gt res.y)) {
                         return_()
                     }
-                    val c by p_atomic.load(c_giid.xy.int).double
+                    val c by p_atomic.load(c_giid.xy.int).double + 1.0
                     var col by variable(Vector3(c, c, c))
                     val sc by 1244520.7
                     col = log(col) / log(sc)
