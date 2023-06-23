@@ -14,6 +14,7 @@ kotlin {
                 implementation(libs.openrndr.application)
                 implementation(libs.openrndr.draw)
                 implementation(libs.openrndr.filter)
+
                 implementation(libs.kotlin.reflect)
                 implementation(project(":orx-shader-generator-annotations"))
             }
@@ -22,6 +23,7 @@ kotlin {
         @Suppress("UNUSED_VARIABLE")
         val jvmDemo by getting {
             dependencies {
+                implementation(libs.openrndr.ffmpeg)
                 implementation(libs.orx.mesh.generators)
                 implementation(libs.orx.camera)
                 implementation(libs.orx.olive)

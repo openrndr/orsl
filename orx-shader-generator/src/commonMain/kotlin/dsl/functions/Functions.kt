@@ -69,7 +69,7 @@ interface Functions {
         private var functionHash = 0U
 
         init {
-            val sb = ShaderBuilder()
+            val sb = ShaderBuilder(activeGenerator().declaredSymbols)
             sb.push()
             val hash = hash(name, parameter0Type)
             val p0 = "$,,${hash}_0"
@@ -83,7 +83,7 @@ interface Functions {
                 generator.emitPreamble("#define f_${name}_${functionHash}")
             }
             generator.emitPreamble(sb.preamble)
-            generator.emitPreamble(
+            generator.emitPreamble("${name}_${functionHash}",
                 """$returnType ${name}_${functionHash}($parameter0Type x__) { 
 ${sb.code.replace(p0, "x__").prependIndent("    ").trimEnd()}                    
     return ${resultSym.name.replace(p0, "x__")};
@@ -93,6 +93,7 @@ ${sb.code.replace(p0, "x__").prependIndent("    ").trimEnd()}
                 generator.emitPreamble("#endif")
             }
             sb.pop()
+            activeGenerator().declaredSymbols.addAll(sb.declaredSymbols)
         }
 
         operator fun getValue(any: Any?, property: KProperty<*>): (Symbol<T>) -> FunctionSymbol1<T, R> {
@@ -116,7 +117,7 @@ ${sb.code.replace(p0, "x__").prependIndent("    ").trimEnd()}
         private var functionHash = 0U
 
         init {
-            val sb = ShaderBuilder()
+            val sb = ShaderBuilder(activeGenerator().declaredSymbols)
             sb.push()
             val hash = hash(name)
             val resultSym = sb.f()
@@ -129,7 +130,7 @@ ${sb.code.replace(p0, "x__").prependIndent("    ").trimEnd()}
                 generator.emitPreamble("#define f_${name}_${functionHash}")
             }
             generator.emitPreamble(sb.preamble)
-            generator.emitPreamble(
+            generator.emitPreamble("${name}_${functionHash}",
                 """$returnType ${name}_${functionHash}() { 
 ${sb.code.prependIndent("    ").trimEnd()}                    
     return ${resultSym.name};
@@ -139,6 +140,7 @@ ${sb.code.prependIndent("    ").trimEnd()}
                 generator.emitPreamble("#endif")
             }
             sb.pop()
+            activeGenerator().declaredSymbols.addAll(sb.declaredSymbols)
         }
 
         operator fun getValue(any: Any?, property: KProperty<*>): () -> Function0Symbol<R> {
@@ -185,7 +187,7 @@ ${sb.code.prependIndent("    ").trimEnd()}
         private var functionHash = 0U
 
         init {
-            val sb = ShaderBuilder()
+            val sb = ShaderBuilder(activeGenerator().declaredSymbols)
             sb.push()
             val hash = hash(name, parameter0Type, parameter1Type)
             val p0 = "$,,${hash}_0"
@@ -208,7 +210,7 @@ ${sb.code.prependIndent("    ").trimEnd()}
                 generator.emitPreamble("#ifndef f_${name}_${functionHash}")
                 generator.emitPreamble("#define f_${name}_${functionHash}")
             }
-            generator.emitPreamble(
+            generator.emitPreamble("${name}_${functionHash}",
                 """$returnType ${name}_${functionHash}($parameter0Type x__, $parameter1Type y__) { 
 ${sb.code.replace(p0, "x__").replace(p1, "y__").prependIndent("    ").trimEnd()}                    
     return ${resultSym.name.replace(p0, "x__").replace(p1, "y__")};
@@ -218,6 +220,7 @@ ${sb.code.replace(p0, "x__").replace(p1, "y__").prependIndent("    ").trimEnd()}
                 generator.emitPreamble("#endif")
             }
             sb.pop()
+            activeGenerator().declaredSymbols.addAll(sb.declaredSymbols)
         }
 
         operator fun getValue(
@@ -273,7 +276,7 @@ ${sb.code.replace(p0, "x__").replace(p1, "y__").prependIndent("    ").trimEnd()}
     ) {
         private var functionHash = 0U
         init {
-            val sb = ShaderBuilder()
+            val sb = ShaderBuilder(activeGenerator().declaredSymbols)
             sb.push()
             val hash = hash(name, parameter0Type, parameter1Type)
             val p0 = "$,,${hash}_0"
@@ -300,7 +303,7 @@ ${sb.code.replace(p0, "x__").replace(p1, "y__").prependIndent("    ").trimEnd()}
                 generator.emitPreamble("#define f_${name}_${functionHash}")
             }
             generator.emitPreamble(sb.preamble)
-            generator.emitPreamble(
+            generator.emitPreamble("${name}_${functionHash}",
                 """$returnType ${name}_${functionHash}($parameter0Type x__, $parameter1Type y__, $parameter2Type z__) { 
 ${sb.code.replace(p0, "x__").replace(p1, "y__").replace(p2, "z__").prependIndent("    ").trimEnd()}                    
     return ${resultSym.name.replace(p0, "x__").replace(p1, "y__").replace(p2, "z__")};
@@ -310,6 +313,7 @@ ${sb.code.replace(p0, "x__").replace(p1, "y__").replace(p2, "z__").prependIndent
                 generator.emitPreamble("#endif")
             }
             sb.pop()
+            activeGenerator().declaredSymbols.addAll(sb.declaredSymbols)
         }
 
         operator fun getValue(
@@ -367,7 +371,7 @@ ${sb.code.replace(p0, "x__").replace(p1, "y__").replace(p2, "z__").prependIndent
     ) {
         private var functionHash = 0U
         init {
-            val sb = ShaderBuilder()
+            val sb = ShaderBuilder(activeGenerator().declaredSymbols)
             sb.push()
             val hash = hash(name, parameter0Type, parameter1Type)
             val p0 = "$,,${hash}_0"
@@ -393,7 +397,7 @@ ${sb.code.replace(p0, "x__").replace(p1, "y__").replace(p2, "z__").prependIndent
             generator.emitPreamble("#ifndef f_${name}_${functionHash}")
             generator.emitPreamble("#define f_${name}_${functionHash}")
             generator.emitPreamble(sb.preamble)
-            generator.emitPreamble(
+            generator.emitPreamble("${name}_${functionHash}",
                 """$returnType ${name}_${functionHash}($parameter0Type x__, $parameter1Type y__, $parameter2Type z__, $parameter3Type w__) { 
 ${
                     sb.code.replace(p0, "x__").replace(p1, "y__").replace(p2, "z__").replace(p3, "w__")
@@ -404,6 +408,7 @@ ${
             )
             generator.emitPreamble("#endif")
             sb.pop()
+            activeGenerator().declaredSymbols.addAll(sb.declaredSymbols)
         }
 
         operator fun getValue(

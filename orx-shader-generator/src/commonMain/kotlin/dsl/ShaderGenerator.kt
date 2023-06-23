@@ -14,19 +14,15 @@ import org.openrndr.extra.shadergenerator.phrases.dsl.functions.BarrierFunctions
 import org.openrndr.math.*
 import kotlin.reflect.KProperty
 
-open class ShaderBuilder : Generator, Functions, BooleanFunctions, DoubleFunctions, ArrayFunctions, SamplerFunctions,
+open class ShaderBuilder(declaredSymbols: Set<String>) : Generator, Functions, BooleanFunctions, DoubleFunctions, ArrayFunctions, SamplerFunctions,
     IntFunctions, ColorRGBaFunctions,  UIntFunctions,
     Vector2Functions, Vector3Functions, Vector4Functions, Matrix33Functions, Matrix44Functions,
     IntVector2Functions, IntVector3unctions, UIntVector2Functions,
     UIntVector3Functions, AtomicCounterBufferFunctions, IntRImage2DFunctions, BarrierFunctions {
-    var code = ""
-    var preamble = ""
+    override var code = ""
+    override var preamble = ""
+    override val declaredSymbols= declaredSymbols.map { it }.toMutableSet()
 
-    override fun emit(code: String) {
-        if (code.isNotBlank()) {
-            this.code += code.trimEnd() + "\n"
-        }
-    }
 
     infix fun Int.until(to: Int): Range {
         val range = Range(startV = this, endV = to)
@@ -169,7 +165,7 @@ open class ShaderBuilder : Generator, Functions, BooleanFunctions, DoubleFunctio
         precondition: Symbol<Boolean>,
         noinline f: ShaderBuilder.() -> Symbol<T>
     ): Symbol<T> {
-        val sb = ShaderBuilder()
+        val sb = ShaderBuilder(declaredSymbols)
         sb.push()
         val result = sb.f()
         sb.pop()
@@ -183,13 +179,14 @@ ${sb.code.prependIndent("    ").trimEnd()}
     temp_$tempId = ${this@elseIf.name};
 }"""
         )
+        declaredSymbols.addAll(sb.declaredSymbols)
         val s = symbol<T>("temp_$tempId")
         tempId++
         return s
     }
 
     fun Symbol<Int>.for_(range: Range, f: ShaderBuilder.() -> Unit) {
-        val sb = ShaderBuilder()
+        val sb = ShaderBuilder(declaredSymbols)
         sb.push()
         val result = sb.f()
         emitPreamble(sb.preamble)
@@ -198,7 +195,7 @@ ${sb.code.prependIndent("    ").trimEnd()}
 ${sb.code.prependIndent("    ").trimEnd()}            
 }"""
         )
-
+        declaredSymbols.addAll(sb.declaredSymbols)
     }
 
     fun break_() {
@@ -210,7 +207,7 @@ ${sb.code.prependIndent("    ").trimEnd()}
     }
 
     inline fun <reified T> run(noinline f: ShaderBuilder.() -> Symbol<T>): Symbol<T> {
-        val sb = ShaderBuilder()
+        val sb = ShaderBuilder(declaredSymbols)
         sb.tempId = tempId * 31
         sb.push()
         val result = sb.f()
@@ -224,6 +221,7 @@ ${sb.code.prependIndent("    ").trimEnd()}
     temp_${hash}_$tempId = ${result.name};
 }"""
         )
+        declaredSymbols.addAll(sb.declaredSymbols)
         val s = ifSymbol<T>("temp_${hash}_$tempId")
         tempId++
         return s
@@ -231,7 +229,7 @@ ${sb.code.prependIndent("    ").trimEnd()}
 
 
     inline fun <reified T> if_(precondition: Symbol<Boolean>, noinline f: ShaderBuilder.() -> Symbol<T>): IfSymbol<T> {
-        val sb = ShaderBuilder()
+        val sb = ShaderBuilder(declaredSymbols)
         sb.push()
         sb.tempId = tempId * 31
         val result = sb.f()
@@ -245,12 +243,13 @@ ${sb.code.prependIndent("    ").trimEnd()}
 }"""
         )
         val s = ifSymbol<T>("temp_$tempId")
+        declaredSymbols.addAll(sb.declaredSymbols)
         tempId++
         return s
     }
 
     fun doIf(precondition: Symbol<Boolean>, f: ShaderBuilder.() -> Unit) {
-        val sb = ShaderBuilder()
+        val sb = ShaderBuilder(declaredSymbols)
         sb.push()
         sb.f()
         sb.pop()
@@ -260,10 +259,11 @@ ${sb.code.prependIndent("    ").trimEnd()}
 ${sb.code.prependIndent("    ").trimEnd()}
 }"""
         )
+        declaredSymbols.addAll(sb.declaredSymbols)
     }
 
     inline infix fun <reified T> IfSymbol<T>.else_(noinline f: ShaderBuilder.() -> Symbol<T>): Symbol<T> {
-        val sb = ShaderBuilder()
+        val sb = ShaderBuilder(declaredSymbols)
         sb.tempId = tempId * 31
         sb.push()
         val result = sb.f()
@@ -275,6 +275,7 @@ ${sb.code.prependIndent("    ").trimEnd()}
     temp_${tempId - 1} = ${result.name};             
 }"""
         )
+        declaredSymbols.addAll(sb.declaredSymbols)
         val s = symbol<T>("temp_${tempId - 1}")
         return s
     }
@@ -283,7 +284,7 @@ ${sb.code.prependIndent("    ").trimEnd()}
         precondition: Symbol<Boolean>,
         noinline f: ShaderBuilder.() -> Symbol<T>
     ): IfSymbol<T> {
-        val sb = ShaderBuilder()
+        val sb = ShaderBuilder(declaredSymbols)
         sb.tempId = tempId * 31
         sb.push()
         val result = sb.f()
@@ -296,6 +297,7 @@ ${sb.code.prependIndent("    ").trimEnd()}
     temp_${tempId - 1} = ${result.name};
 }"""
         )
+        declaredSymbols.addAll(sb.declaredSymbols)
         val s = ifSymbol<T>("temp_${tempId - 1}")
         return s
     }

@@ -99,7 +99,7 @@ vec4 value13D(in vec3 pos) {
 
     @ShaderPhrase
     val value13 = """#pragma import shash33
-vec4 value13(in vec3 pos) {
+float value13(in vec3 pos) {
     vec3 p = floor(pos);
     vec3 w = fract(pos);
 

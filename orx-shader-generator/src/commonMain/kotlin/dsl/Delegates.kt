@@ -16,7 +16,7 @@ class ConstantProperty<T>(val type: String) {
 
 class GlobalProperty<T>(val generator: Generator, val type:String) {
     operator fun provideDelegate(any: Any?, property: KProperty<*>) : GlobalProperty<T> {
-        generator.emitPreamble("${type} ${property.name};")
+        generator.emitPreamble(property.name, "${type} ${property.name};")
         return this
     }
     operator fun getValue(any: Any?, property: KProperty<*>): Symbol<T> = symbol(property.name, type)
