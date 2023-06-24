@@ -4,7 +4,10 @@ import org.openrndr.extra.shadergenerator.dsl.*
 import kotlin.reflect.KProperty
 
 
-inline fun <reified R> Generator.function(useHash: Boolean = true, noinline f: ShaderBuilder.() -> Symbol<R>): Functions.Function0PropertyProvider<R> =
+inline fun <reified R> Generator.function(
+    useHash: Boolean = true,
+    noinline f: ShaderBuilder.() -> Symbol<R>
+): Functions.Function0PropertyProvider<R> =
     Functions.Function0PropertyProvider(
         useHash,
         this,
@@ -12,8 +15,10 @@ inline fun <reified R> Generator.function(useHash: Boolean = true, noinline f: S
         f
     )
 
-
-inline fun <reified T, reified R> Generator.function(useHash: Boolean = true, noinline f: ShaderBuilder.(Symbol<T>) -> Symbol<R>): Functions.FunctionPropertyProvider<T, R> =
+inline fun <reified T, reified R> Generator.function(
+    useHash: Boolean = true,
+    noinline f: ShaderBuilder.(Symbol<T>) -> Symbol<R>
+): Functions.FunctionPropertyProvider<T, R> =
     Functions.FunctionPropertyProvider(
         useHash,
         this,
@@ -22,7 +27,10 @@ inline fun <reified T, reified R> Generator.function(useHash: Boolean = true, no
         f
     )
 
-inline fun <reified T0, reified T1, reified R> Generator.function(useHash: Boolean = true, noinline f: ShaderBuilder.(Symbol<T0>, Symbol<T1>) -> Symbol<R>): Functions.Function2PropertyProvider<T0, T1, R> =
+inline fun <reified T0, reified T1, reified R> Generator.function(
+    useHash: Boolean = true,
+    noinline f: ShaderBuilder.(Symbol<T0>, Symbol<T1>) -> Symbol<R>
+): Functions.Function2PropertyProvider<T0, T1, R> =
     Functions.Function2PropertyProvider(
         useHash,
         this,
@@ -32,7 +40,10 @@ inline fun <reified T0, reified T1, reified R> Generator.function(useHash: Boole
         f
     )
 
-inline fun <reified T0, reified T1, reified T2, reified R> Generator.function(useHash: Boolean = true,noinline f: ShaderBuilder.(Symbol<T0>, Symbol<T1>, Symbol<T2>) -> Symbol<R>): Functions.Function3PropertyProvider<T0, T1, T2, R> =
+inline fun <reified T0, reified T1, reified T2, reified R> Generator.function(
+    useHash: Boolean = true,
+    noinline f: ShaderBuilder.(Symbol<T0>, Symbol<T1>, Symbol<T2>) -> Symbol<R>
+): Functions.Function3PropertyProvider<T0, T1, T2, R> =
     Functions.Function3PropertyProvider(
         useHash,
         this,
@@ -43,7 +54,10 @@ inline fun <reified T0, reified T1, reified T2, reified R> Generator.function(us
         f
     )
 
-inline fun <reified T0, reified T1, reified T2, reified T3, reified R> Generator.function(useHash: Boolean = true, noinline f: ShaderBuilder.(Symbol<T0>, Symbol<T1>, Symbol<T2>, Symbol<T3>) -> Symbol<R>): Functions.Function4PropertyProvider<T0, T1, T2, T3, R> =
+inline fun <reified T0, reified T1, reified T2, reified T3, reified R> Generator.function(
+    useHash: Boolean = true,
+    noinline f: ShaderBuilder.(Symbol<T0>, Symbol<T1>, Symbol<T2>, Symbol<T3>) -> Symbol<R>
+): Functions.Function4PropertyProvider<T0, T1, T2, T3, R> =
     Functions.Function4PropertyProvider(
         useHash,
         this,
@@ -83,7 +97,8 @@ interface Functions {
                 generator.emitPreamble("#define f_${name}_${functionHash}")
             }
             generator.emitPreamble(sb.preamble)
-            generator.emitPreamble("${name}_${functionHash}",
+            generator.emitPreamble(
+                "${name}_${functionHash}",
                 """$returnType ${name}_${functionHash}($parameter0Type x__) { 
 ${sb.code.replace(p0, "x__").prependIndent("    ").trimEnd()}                    
     return ${resultSym.name.replace(p0, "x__")};
@@ -119,26 +134,19 @@ ${sb.code.replace(p0, "x__").prependIndent("    ").trimEnd()}
         init {
             val sb = ShaderBuilder(activeGenerator().declaredSymbols)
             sb.push()
-            val hash = hash(name)
             val resultSym = sb.f()
             functionHash = if (useHash)
                 hash(name, returnType, resultSym.name, resultSym.type, sb.code, sb.preamble, sb.tempId)
             else 0U
 
-            if (useHash) {
-                generator.emitPreamble("#ifndef f_${name}_${functionHash}")
-                generator.emitPreamble("#define f_${name}_${functionHash}")
-            }
             generator.emitPreamble(sb.preamble)
-            generator.emitPreamble("${name}_${functionHash}",
+            generator.emitPreamble(
+                "${name}_${functionHash}",
                 """$returnType ${name}_${functionHash}() { 
 ${sb.code.prependIndent("    ").trimEnd()}                    
     return ${resultSym.name};
 }"""
             )
-            if (useHash) {
-                generator.emitPreamble("#endif")
-            }
             sb.pop()
             activeGenerator().declaredSymbols.addAll(sb.declaredSymbols)
         }
@@ -206,19 +214,13 @@ ${sb.code.prependIndent("    ").trimEnd()}
                 sb.tempId
             ) else 0U
 
-            if (useHash) {
-                generator.emitPreamble("#ifndef f_${name}_${functionHash}")
-                generator.emitPreamble("#define f_${name}_${functionHash}")
-            }
-            generator.emitPreamble("${name}_${functionHash}",
+            generator.emitPreamble(
+                "${name}_${functionHash}",
                 """$returnType ${name}_${functionHash}($parameter0Type x__, $parameter1Type y__) { 
 ${sb.code.replace(p0, "x__").replace(p1, "y__").prependIndent("    ").trimEnd()}                    
     return ${resultSym.name.replace(p0, "x__").replace(p1, "y__")};
 }"""
             )
-            if (useHash) {
-                generator.emitPreamble("#endif")
-            }
             sb.pop()
             activeGenerator().declaredSymbols.addAll(sb.declaredSymbols)
         }
@@ -261,7 +263,16 @@ ${sb.code.replace(p0, "x__").replace(p1, "y__").prependIndent("    ").trimEnd()}
         private val f: ShaderBuilder.(Symbol<T0>, Symbol<T1>, Symbol<T2>) -> Symbol<R>
     ) {
         operator fun provideDelegate(any: Any?, property: KProperty<*>): Function3Property<T0, T1, T2, R> =
-            Function3Property(useHash, property.name, generator, parameter0Type, parameter1Type, parameter2Type, returnType, f)
+            Function3Property(
+                useHash,
+                property.name,
+                generator,
+                parameter0Type,
+                parameter1Type,
+                parameter2Type,
+                returnType,
+                f
+            )
     }
 
     class Function3Property<T0, T1, T2, R>(
@@ -275,6 +286,7 @@ ${sb.code.replace(p0, "x__").replace(p1, "y__").prependIndent("    ").trimEnd()}
         f: ShaderBuilder.(Symbol<T0>, Symbol<T1>, Symbol<T2>) -> Symbol<R>,
     ) {
         private var functionHash = 0U
+
         init {
             val sb = ShaderBuilder(activeGenerator().declaredSymbols)
             sb.push()
@@ -298,20 +310,14 @@ ${sb.code.replace(p0, "x__").replace(p1, "y__").prependIndent("    ").trimEnd()}
                 sb.tempId
             ) else 0U
 
-            if (useHash) {
-                generator.emitPreamble("#ifndef f_${name}_${functionHash}")
-                generator.emitPreamble("#define f_${name}_${functionHash}")
-            }
             generator.emitPreamble(sb.preamble)
-            generator.emitPreamble("${name}_${functionHash}",
+            generator.emitPreamble(
+                "${name}_${functionHash}",
                 """$returnType ${name}_${functionHash}($parameter0Type x__, $parameter1Type y__, $parameter2Type z__) { 
 ${sb.code.replace(p0, "x__").replace(p1, "y__").replace(p2, "z__").prependIndent("    ").trimEnd()}                    
     return ${resultSym.name.replace(p0, "x__").replace(p1, "y__").replace(p2, "z__")};
 }"""
             )
-            if (useHash) {
-                generator.emitPreamble("#endif")
-            }
             sb.pop()
             activeGenerator().declaredSymbols.addAll(sb.declaredSymbols)
         }
@@ -370,6 +376,7 @@ ${sb.code.replace(p0, "x__").replace(p1, "y__").replace(p2, "z__").prependIndent
         f: ShaderBuilder.(Symbol<T0>, Symbol<T1>, Symbol<T2>, Symbol<T3>) -> Symbol<R>,
     ) {
         private var functionHash = 0U
+
         init {
             val sb = ShaderBuilder(activeGenerator().declaredSymbols)
             sb.push()
@@ -378,7 +385,12 @@ ${sb.code.replace(p0, "x__").replace(p1, "y__").replace(p2, "z__").prependIndent
             val p1 = "$,,${hash}_1"
             val p2 = "$,,${hash}_2"
             val p3 = "$,,${hash}_3"
-            val resultSym = sb.f(symbol(p0, "dc"), symbol(p1, "dc"), symbol(p2, "dc"), symbol(p3, "dc"))
+            val resultSym = sb.f(
+                symbol(p0, parameter0Type),
+                symbol(p1, parameter1Type),
+                symbol(p2, parameter2Type),
+                symbol(p3, parameter3Type)
+            )
 
             functionHash = hash(
                 name,
@@ -394,19 +406,17 @@ ${sb.code.replace(p0, "x__").replace(p1, "y__").replace(p2, "z__").prependIndent
                 sb.tempId
             )
 
-            generator.emitPreamble("#ifndef f_${name}_${functionHash}")
-            generator.emitPreamble("#define f_${name}_${functionHash}")
             generator.emitPreamble(sb.preamble)
-            generator.emitPreamble("${name}_${functionHash}",
+            generator.emitPreamble(
+                "${name}_${functionHash}",
                 """$returnType ${name}_${functionHash}($parameter0Type x__, $parameter1Type y__, $parameter2Type z__, $parameter3Type w__) { 
 ${
                     sb.code.replace(p0, "x__").replace(p1, "y__").replace(p2, "z__").replace(p3, "w__")
                         .prependIndent("    ").trimEnd()
                 }                    
-    return ${resultSym.name.replace(p0, "x__").replace(p1, "y__").replace(p2, "z__").replace(p3, "z__")};
+    return ${resultSym.name.replace(p0, "x__").replace(p1, "y__").replace(p2, "z__").replace(p3, "w__")};
 }"""
             )
-            generator.emitPreamble("#endif")
             sb.pop()
             activeGenerator().declaredSymbols.addAll(sb.declaredSymbols)
         }
