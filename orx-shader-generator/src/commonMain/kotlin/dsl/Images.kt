@@ -8,6 +8,10 @@ interface IntRImage2D
 interface UIntImage2D
 
 interface Image3D
+
+interface IntRImage3D
+
+
 interface ImageCube
 interface Image2DArray
 interface ImageCubeArray

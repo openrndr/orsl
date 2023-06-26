@@ -18,7 +18,9 @@ open class ShaderBuilder(declaredSymbols: Set<String>) : Generator, Functions, B
     IntFunctions, ColorRGBaFunctions,  UIntFunctions,
     Vector2Functions, Vector3Functions, Vector4Functions, Matrix33Functions, Matrix44Functions,
     IntVector2Functions, IntVector3unctions, UIntVector2Functions,
-    UIntVector3Functions, AtomicCounterBufferFunctions, IntRImage2DFunctions, BarrierFunctions {
+    UIntVector3Functions, AtomicCounterBufferFunctions, IntRImage2DFunctions,
+    IntRImage3DFunctions,
+    BarrierFunctions {
     override var code = ""
     override var preamble = ""
     override val declaredSymbols= declaredSymbols.map { it }.toMutableSet()

@@ -24,6 +24,14 @@ interface IntVector3unctions {
     operator fun Symbol<IntVector3>.times(right: Symbol<Double>): Symbol<Vector3> =
         functionSymbol(this, right, "($0 * $1)")
 
+    @JvmName("plusSiv3Siv3")
+    operator fun Symbol<IntVector3>.plus(right: Symbol<IntVector3>): Symbol<Vector3> =
+        functionSymbol(this, right, "($0 + $1)")
+
+    @JvmName("plusSiv3Viv3")
+    operator fun Symbol<IntVector3>.plus(right: IntVector3): Symbol<IntVector3> =
+        functionSymbol(this, right, "($0 + $1)")
+
 
     val Symbol<IntVector3>.x: Symbol<Int>
         @JvmName("xSiv3")
