@@ -143,8 +143,7 @@ fun structureFromComputeStyle(computeStyle: ComputeStyle): ComputeStructure {
         return computeStyle.bufferValues.map {
             val r = when (val v = it.value) {
                 is StructuredBuffer<*> -> {
-                    val structType = computeStyle.bufferTypes[it.key]?.drop(7)?:error("no type for buffer '${it.key}'")
-                    "layout(std430, binding = $bufferIndex) buffer B_${it.key} { ${structType} b_${it.key}; };"
+                    "layout(std430, binding = $bufferIndex) buffer B_${it.key} { ${v.struct.typeDef("", true)}  }b_${it.key};"
                 }
                 is ShaderStorageBuffer -> "layout(std430, binding = $bufferIndex) buffer B_${it.key} { ${v.format.glslLayout} } b_${it.key};"
                 is AtomicCounterBuffer -> "layout(binding = $bufferIndex, offset = 0) uniform atomic_uint b_${it.key}[${(it.value as AtomicCounterBuffer).size}];"
@@ -287,6 +286,7 @@ ${structure.computeTransform.prependIndent("    ")}
             Driver.instance.createComputeShader(code, name)
         }
 
+
         //shader.begin()
         var textureIndex = 2
         var imageIndex = 0
@@ -294,13 +294,15 @@ ${structure.computeTransform.prependIndent("    ")}
         run {
             for (it in style.bufferValues.entries) {
                 when (val value = it.value) {
+                    is StructuredBuffer<*> -> {
+                        shader.buffer("B_${it.key}", value.ssbo)
+                    }
+
                     is ShaderStorageBuffer -> {
-                        value.bind(bufferIndex)
-                        bufferIndex++
+                        shader.buffer("b_${it.key}", value)
                     }
                     is AtomicCounterBuffer -> {
-                        value.bind(bufferIndex)
-                        bufferIndex++
+                        shader.buffer("b_${it.key}[0]", value)
                     }
 
                     else -> error("unsupported buffer type $value")

@@ -49,6 +49,11 @@ fun main() {
                         a
                     }
 
+                    val coc by function<Double, Double, Double, Double, Double> { a, f, zf, z ->
+                        abs((a * f * (zf - z)) / (zf * (z - f)))
+                    }
+
+
                     val hash_f by function<Double> {
                         val s = hash_u(seed)
                         seed = s
@@ -72,9 +77,10 @@ fun main() {
                         var p by variable(it)
                         p = erot(p, Vector3.UNIT_Y.symbol, p_mouse.x * 0.2)
                         p = erot(p, Vector3.UNIT_X.symbol, p_mouse.y * 0.2)
+                        val ogz by p.z
                         p += Vector3(0.0, 0.0, 4.0).symbol
                         p /= p.z * 0.4
-                        p = Vector3(p.x, p.y, it.z)
+                        p = Vector3(p.x, p.y, ogz)
                         p
                     }
 
@@ -92,7 +98,7 @@ fun main() {
                     val i by variable<Int>()
 
 
-                    var fd by variable<Double>()
+                    var fd by variable<Double>(0.0)
                     i.for_(0 until iters) {
                         val pp by erot(p, Vector3(1.0,1.0,1.0).normalized.symbol, (p.x+p.y+p.z+p_time) * 3.0*p_d)
                         val dist0 by sdSphere(pp, cos(p_time + pp.y*40.0*p_a)*0.5 + 1.5)
@@ -103,7 +109,7 @@ fun main() {
                         fd = dist
                     }
                     val q by projParticle(p)
-                    val k by q.xy * Vector2(9.0/16.0, 1.0) + sample_disk() * abs(q.z - focusDist) * 0.1 * dofFac
+                    val k by q.xy * Vector2(9.0/16.0, 1.0) + sample_disk() * coc(0.075.symbol, 0.1.symbol, focusDist+0.1, q.z)
 
 
                     val uv by k / 2.0 + Vector2(0.5)
@@ -152,9 +158,9 @@ fun main() {
             mainImage.parameter("atomic", atomic.imageBinding(0, ImageAccess.READ_WRITE))
             mainImage.parameter("screen", cb.imageBinding(0, ImageAccess.WRITE))
 
-            extend(ScreenRecorder()) {
-                maximumDuration = 20.0
-            }
+//            extend(ScreenRecorder()) {
+//                maximumDuration = 20.0
+//            }
             extend {
                 splat.parameter("dofFocalDist", cos(seconds) * 0.5 + 0.5)
                 splat.parameter("mouse", (mouse.position / window.size) * Math.PI * 2.0 + Vector2(seconds*1.0/10.0*2*Math.PI,0.0 ))
@@ -163,7 +169,7 @@ fun main() {
                 splat.parameter("b", cos(seconds * 0.5374) * 0.5 + 0.5)
                 splat.parameter("c", cos(seconds * 0.4193) * 0.5 + 0.5)
                 splat.parameter("d", cos(seconds * 0.6193) * 0.5 + 0.5)
-                splat.execute(256, 256)
+                splat.execute(256*4, 256*4  )
                 mainImage.execute(width / mainImage.workGroupSize.x, height / mainImage.workGroupSize.y, 1)
                 drawer.image(cb)
             }

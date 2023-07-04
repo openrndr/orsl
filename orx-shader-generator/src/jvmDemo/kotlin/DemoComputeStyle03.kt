@@ -68,13 +68,17 @@ fun main() {
                         Vector2(sin(r.x * Math.PI * 2.0), cos(r.x * Math.PI * 2.0)) * sqrt(r.y)
                     }
 
+                    val coc by function<Double, Double, Double, Double, Double> { a, f, zf, z ->
+                        (a * f * (zf - z)) / (zf * (z - f))
+                    }
+
                     val projParticle by function<Vector3, Vector3> {
                         var p by variable(it)
                         p = erot(p, Vector3.UNIT_Y.symbol, p_mouse.x * 0.2)
                         p = erot(p, Vector3.UNIT_X.symbol, p_mouse.y * 0.2)
-                        p += Vector3(0.0, 0.0, 4.0).symbol
-                        p /= p.z * 0.4
-                        p = Vector3(p.x, p.y, it.z)
+                        //p += Vector3(0.0, 0.0, 4.0).symbol
+                        //p /= p.z * 0.4
+                        //p = Vector3(p.x, p.y, it.z)
                         p
                     }
 
@@ -111,13 +115,14 @@ fun main() {
                         }
                     }
                     val q by projParticle(p)
-                    val k by q.xy + sample_disk() * abs(q.z - focusDist) * 0.05 * dofFac
+                    val k by q.xy + sample_disk() * coc(10.0.symbol, 0.01.symbol, 2.0.symbol, q.z)
 
                     val uv by k / 2.0 + Vector2(0.5)
                     val cc by (uv * R).int
 
                     imageMemoryBarrier {
                         doIf(
+                            (q.z gt 0.0) and
                             (cc.x gte 0) and (cc.y gte 0) and (cc.x lt R.x.int) and (cc.y lt R.y.int)
                         ) {
                             val b by p_atomic.atomicAdd(cc, 1)

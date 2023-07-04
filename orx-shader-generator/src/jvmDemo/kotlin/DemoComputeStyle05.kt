@@ -53,7 +53,7 @@ fun main() {
                     val dofFac by (1.0 / Vector2(R.x / R.y, 1.0.symbol)) * p_dofAmount
                     val i by variable<Int>()
 
-                    var fd by variable<Double>()
+                    var fd by variable<Double>(0.0)
                     i.for_(0 until iters) {
                         val pp by p //erot(p, Vector3(1.0,1.0,1.0).normalized.symbol, (p.x+p.y+p.z+p_time) * 3.0*p_d)
                         val dist0 by sdSphere(pp, 3.0.symbol) + value13(p  + Vector3(p_time, p_time, p_time))*4.0
@@ -61,7 +61,7 @@ fun main() {
                         p = p + dir * dist * 0.8
                         fd = dist
                     }
-                    i.for_(0 until 10000) {
+                    i.for_(0 until 4096) {
                         val q by projParticle(p + Vector3(0.0.symbol, 0.0.symbol, (uniform1()-0.5)*1.0))
                         val k by q.xy * Vector2(9.0 / 16.0, 1.0) + uniformDisk() * abs(q.z - focusDist) * 0.5 * dofFac
                         val uv by k / 2.0 + Vector2(0.5)
@@ -104,9 +104,9 @@ fun main() {
             mainImage.parameter("atomic", atomic.imageBinding(0, ImageAccess.READ_WRITE))
             mainImage.parameter("screen", cb.imageBinding(0, ImageAccess.WRITE))
 
-            extend(ScreenRecorder()) {
-                maximumDuration = 20.0
-            }
+//            extend(ScreenRecorder()) {
+//                maximumDuration = 20.0
+//            }
             extend {
                 splat.parameter("dofFocalDist", cos(seconds) * 0.5 + 0.5)
                 splat.parameter("time", seconds)

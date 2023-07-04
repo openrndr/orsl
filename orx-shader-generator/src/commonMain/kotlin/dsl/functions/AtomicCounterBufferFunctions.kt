@@ -21,22 +21,22 @@ interface AtomicCounterBufferFunctions : Generator {
 
     @JvmName("incrementSAcbVi")
     fun Symbol<AtomicCounterBuffer>.increment(index: Int) : Symbol<UInt> {
-        return functionSymbol(this, index,"atomicIncrement($0[$1])")
+        return functionSymbol(this, index,"atomicCounterIncrement($0[$1])")
     }
 
     @JvmName("incrementSAcbSi")
     fun Symbol<AtomicCounterBuffer>.increment(index: Symbol<Int>) : Symbol<UInt> {
-        return functionSymbol(this, index,"atomicIncrement($0[$1])")
+        return functionSymbol(this, index,"atomicCounterIncrement($0[$1])")
     }
 
     @JvmName("decrementSAcbVi")
     fun Symbol<AtomicCounterBuffer>.decrement(index: Int) : Symbol<UInt> {
-        return functionSymbol(this, index,"atomicDecrement($0[$1])")
+        return functionSymbol(this, index,"atomicCounterDecrement($0[$1])")
     }
 
     @JvmName("decrementSAcbSi")
     fun Symbol<AtomicCounterBuffer>.decrement(index: Symbol<Int>) : Symbol<UInt> {
-        return functionSymbol(this, index,"atomicDecrement($0[$1])")
+        return functionSymbol(this, index,"atomicCounterDecrement($0[$1])")
     }
 
 }
