@@ -24,33 +24,17 @@ val Symbol<BufferStruct>.floats by BufferStruct::floats[640]
  * positions in the vertex transform.
  */
 fun main() {
-    System.loadLibrary("renderdoc")
     application {
         program {
             val bufferStruct = BufferStruct()
             val buffer = structuredBuffer(bufferStruct)
 
-            println(buffer.format)
-            println(buffer.format.size)
-//            buffer.put {
-//
-//                for (i in 0 until 1) {
-//                    write(i.toFloat())
-//                }
-////                    write(FloatArray(640) { it.toFloat()})
-//
-//            }
-
             val cs = computeStyle {
                 computeTransform {
                     val b_buffer by parameter<BufferStruct>()
                     b_buffer.floats[c_giid.x.int] = c_giid.x.double
-
-
                 }
             }
-
-
             cs.buffer("buffer", buffer)
             cs.execute(640, 1, 1)
 

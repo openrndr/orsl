@@ -25,7 +25,7 @@ class Voxel128 : Struct<Voxel128>() {
 val Symbol<Voxel128>.position by Voxel128::position[128 * 128 * 128]
 
 fun main() {
-    System.loadLibrary("renderdoc")
+//    System.loadLibrary("renderdoc")
 
     application {
         configure {
