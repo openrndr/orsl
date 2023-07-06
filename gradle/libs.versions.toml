@@ -1,9 +1,9 @@
 [versions]
-ksp = "1.8.22-1.0.11"
+ksp = "1.9.0-RC-1.0.11"
 kotlinPoet = "1.14.2"
-kotlinApi = "1.8"
-kotlinLanguage = "1.8"
-kotlin = "1.8.22"
+kotlinApi = "1.9"
+kotlinLanguage = "1.9"
+kotlin = "1.9.0"
 jvmTarget = "11"
 openrndr = { require = "[0.4.2, 0.5.0)" }
 orx = { require = "[0.4.2, 0.5.0)" }
