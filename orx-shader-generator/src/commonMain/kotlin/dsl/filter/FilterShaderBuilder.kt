@@ -8,8 +8,8 @@ import org.openrndr.math.Vector2
 import org.openrndr.math.Vector4
 
 class FilterShaderBuilder : ShaderBuilder(emptySet()) {
-    inline fun <reified T> uniform(): ShadeStyleBuilder.Parameter<T> {
-        return ShadeStyleBuilder.Parameter(staticType<T>())
+    inline fun <reified T> uniform(): ShadeStyleBuilder.ParameterProperty<T> {
+        return ShadeStyleBuilder.ParameterProperty(staticType<T>())
     }
 
 

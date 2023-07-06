@@ -1,18 +1,24 @@
 package org.openrndr.extra.shadergenerator.dsl
 
-interface Image2D
+sealed interface Image
 
-interface IntImage2D
-interface IntRImage2D
+interface Image2D : Image
 
-interface UIntImage2D
+interface IntImage2D : Image2D
 
-interface Image3D
+interface IntRImage2D : Image2D
 
-interface IntRImage3D
+interface UIntImage2D : Image2D
 
+interface Image3D : Image
 
-interface ImageCube
-interface Image2DArray
-interface ImageCubeArray
-interface ImageBuffer
+interface IntRImage3D : Image3D
+
+interface ImageCube : Image
+
+interface Image2DArray : Image
+
+interface ImageCubeArray : Image
+
+interface ImageBuffer : Image
+

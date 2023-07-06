@@ -2,6 +2,8 @@ package org.openrndr.extra.shadergenerator.compute
 
 import org.openrndr.color.ColorRGBa
 import org.openrndr.draw.*
+import org.openrndr.draw.font.BufferAccess
+import org.openrndr.draw.font.BufferFlag
 import org.openrndr.internal.Driver
 import org.openrndr.math.*
 
@@ -14,7 +16,23 @@ data class ComputeStructure(
     val workGroupSize: IntVector3
 )
 
-class ComputeStyle : ShadeStyleParameters {
+private val BufferAccess.glsl: String
+    get() = when (this) {
+        BufferAccess.READ -> "readonly"
+        BufferAccess.READ_WRITE -> ""
+        BufferAccess.WRITE -> "writeonly"
+    }
+
+private val BufferFlag.glsl: String
+    get() = when (this) {
+        BufferFlag.RESTRICT -> "restrict"
+        BufferFlag.COHERENT -> "coherent"
+        BufferFlag.VOLATILE -> "volatile"
+    }
+
+
+
+class ComputeStyle : StyleParameters, StyleBufferBindings, StyleImageBindings {
     var computePreamble: String = ""
     var computeTransform: String = ""
     var workGroupSize = IntVector3(1, 1, 1)
@@ -22,22 +40,47 @@ class ComputeStyle : ShadeStyleParameters {
     override var parameterValues: MutableMap<String, Any> = mutableMapOf()
     override var parameterTypes: ObservableHashmap<String, String> = ObservableHashmap(mutableMapOf()) { dirty = true }
 
-    var bufferValues = mutableMapOf<String, Any>()
-    val buffers = mutableMapOf<String, String>()
-    val bufferTypes = mutableMapOf<String, String>()
+    override var bufferValues = mutableMapOf<String, Any>()
+    override val buffers = mutableMapOf<String, String>()
+    override val bufferTypes = mutableMapOf<String, String>()
+    override val bufferAccess = mutableMapOf<String, BufferAccess>()
+    override val bufferFlags: MutableMap<String, Set<BufferFlag>> = mutableMapOf()
 
-    inline fun <reified T: Struct<T>> buffer(name: String, buffer: StructuredBuffer<T>) {
-        bufferValues[name] = buffer
-        buffers[name] = buffer.format.hashCode().toString()
-        bufferTypes[name] = "struct ${T::class.simpleName}"
+    override val imageTypes: MutableMap<String, String> = mutableMapOf()
+    override val imageValues: MutableMap<String, ImageBinding> = mutableMapOf()
+    override val imageAccess: MutableMap<String, ImageAccess> = mutableMapOf()
+
+}
+
+private fun mapTypeToImage(name: String, type: String, access: ImageAccess): String {
+    val tokens = type.split(",")
+    val u = "uniform"
+
+
+    val subtokens = tokens[0].split(" ")
+    return when (subtokens[0]) {
+        "Image2D", "Image3D", "ImageCube", "Image2DArray", "ImageBuffer", "ImageCubeArray" -> {
+            val sampler = tokens[0].take(1).lowercase() + tokens[0].drop(1)
+
+            val colorFormat = ColorFormat.valueOf(tokens[1])
+            val colorType = ColorType.valueOf(tokens[2])
+
+            val samplerType = when (colorType.colorSampling) {
+                ColorSampling.SIGNED_INTEGER -> "i"
+                ColorSampling.UNSIGNED_INTEGER -> "u"
+                else -> ""
+            }
+            val layout = imageLayout(colorFormat, colorType)
+            when (access) {
+                ImageAccess.READ -> "layout($layout) readonly $u $samplerType$sampler p_$name;"
+                ImageAccess.READ_WRITE -> "layout($layout) $u $samplerType$sampler p_$name;"
+                ImageAccess.WRITE -> "layout($layout) writeonly $u $samplerType$sampler p_$name;"
+            }
+        }
+        else -> {
+            error("unknown image type '${subtokens[0]}")
+        }
     }
-
-    fun buffer(name: String, buffer: AtomicCounterBuffer) {
-        bufferValues[name] = buffer
-        buffers[name] = "AtomicCounterBuffer"
-    }
-
-
 }
 
 
@@ -55,24 +98,6 @@ private fun mapTypeToUniform(type: String, name: String): String {
     val subtokens = tokens[0].split(" ")
     return when (subtokens[0]) {
         "struct" -> "$u ${subtokens[1]} p_$name${arraySize.arraySizeDefinition()}"
-        "Image2D", "Image3D", "ImageCube", "Image2DArray", "ImageBuffer", "ImageCubeArray" -> {
-            val sampler = tokens[0].take(1).lowercase() + tokens[0].drop(1)
-            val colorFormat = ColorFormat.valueOf(tokens[1])
-            val colorType = ColorType.valueOf(tokens[2])
-            val samplerPrefix = when(colorType.colorSampling) {
-                ColorSampling.SIGNED_INTEGER -> "i"
-                ColorSampling.NORMALIZED -> ""
-                ColorSampling.UNSIGNED_INTEGER -> "u"
-            }
-            val access = ImageAccess.valueOf(tokens[3])
-            val layout = imageLayout(colorFormat, colorType)
-            when (access) {
-                ImageAccess.READ -> "layout($layout) readonly $u $samplerPrefix$sampler p_$name;"
-                ImageAccess.READ_WRITE -> "layout($layout) $u $samplerPrefix$sampler p_$name;"
-                ImageAccess.WRITE -> "layout($layout) writeonly $u $samplerPrefix$sampler p_$name;"
-            }
-        }
-
         else -> "$u ${shadeStyleTypeToGLSL(tokens[0])} p_$name${arraySize.arraySizeDefinition()}"
     }
 }
@@ -143,7 +168,12 @@ fun structureFromComputeStyle(computeStyle: ComputeStyle): ComputeStructure {
         return computeStyle.bufferValues.map {
             val r = when (val v = it.value) {
                 is StructuredBuffer<*> -> {
-                    "layout(std430, binding = $bufferIndex) buffer B_${it.key} { ${v.struct.typeDef("", true)}  }b_${it.key};"
+                    listOf(
+                        "layout(std430, binding = $bufferIndex)",
+                        (computeStyle.bufferFlags[it.key] ?: emptySet()).joinToString(" ") { it.glsl},
+                        "${(computeStyle.bufferAccess[it.key] ?: BufferAccess.READ_WRITE).glsl}",
+                        "buffer B_${it.key} { ${v.struct.typeDef("", true)} } b_${it.key};"
+                    ).joinToString(" ")
                 }
                 is ShaderStorageBuffer -> "layout(std430, binding = $bufferIndex) buffer B_${it.key} { ${v.format.glslLayout} } b_${it.key};"
                 is AtomicCounterBuffer -> "layout(binding = $bufferIndex, offset = 0) uniform atomic_uint b_${it.key}[${(it.value as AtomicCounterBuffer).size}];"
@@ -155,11 +185,15 @@ fun structureFromComputeStyle(computeStyle: ComputeStyle): ComputeStructure {
         }.joinToString("\n")
     }
 
+    fun images(): String {
+        return computeStyle.imageTypes.map { mapTypeToImage(it.key, it.value, computeStyle.imageAccess[it.key] ?: error("no image access for '${it.key}'")) }.joinToString("\n")
+    }
+
 
     return ComputeStructure(
         structDefinitions = structDefinitions(),
         uniforms = uniforms(),
-        buffers = buffers(),
+        buffers = listOf(buffers(), images()).joinToString("\n"),
         computeTransform = computeStyle.computeTransform,
         computePreamble = computeStyle.computePreamble,
         workGroupSize = computeStyle.workGroupSize
@@ -443,6 +477,9 @@ ${structure.computeTransform.prependIndent("    ")}
 
         run {
             for (it in style.parameterValues.entries) {
+                setUniform("p_${it.key}", it.key, it.value)
+            }
+            for (it in style.imageValues.entries) {
                 setUniform("p_${it.key}", it.key, it.value)
             }
         }
