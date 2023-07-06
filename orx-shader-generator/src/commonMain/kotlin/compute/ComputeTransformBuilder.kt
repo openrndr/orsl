@@ -1,5 +1,6 @@
 package org.openrndr.extra.shadergenerator.compute
 
+import org.openrndr.draw.ComputeStyle
 import org.openrndr.extra.shadergenerator.dsl.UIntVector3
 import org.openrndr.extra.shadergenerator.dsl.functions.extra.PbrFunctions
 import org.openrndr.extra.shadergenerator.dsl.shadestyle.ShadeStyleBuilder

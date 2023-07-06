@@ -1,8 +1,6 @@
 import org.openrndr.application
 import org.openrndr.draw.*
-import org.openrndr.extra.shadergenerator.compute.computeStyle
 import org.openrndr.extra.shadergenerator.compute.computeTransform
-import org.openrndr.extra.shadergenerator.compute.execute
 import org.openrndr.extra.shadergenerator.dsl.Image2D
 import org.openrndr.extra.shadergenerator.dsl.IntRImage2D
 import org.openrndr.extra.shadergenerator.dsl.functions.function

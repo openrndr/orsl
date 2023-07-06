@@ -2,9 +2,7 @@ import org.openrndr.application
 import org.openrndr.draw.*
 import org.openrndr.extra.camera.Orbital
 import org.openrndr.extra.meshgenerators.boxMesh
-import org.openrndr.extra.shadergenerator.compute.computeStyle
 import org.openrndr.extra.shadergenerator.compute.computeTransform
-import org.openrndr.extra.shadergenerator.compute.execute
 import org.openrndr.extra.shadergenerator.dsl.IntRImage3D
 import org.openrndr.extra.shadergenerator.dsl.Symbol
 import org.openrndr.extra.shadergenerator.dsl.functions.symbol
