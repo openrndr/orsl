@@ -13,6 +13,7 @@ interface UIntImage2D : Image2D
 interface Image3D : Image
 
 interface IntRImage3D : Image3D
+interface RImage3D: Image3D
 
 interface ImageCube : Image
 
