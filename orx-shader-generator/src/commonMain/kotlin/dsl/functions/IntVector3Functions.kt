@@ -1,9 +1,6 @@
 package org.openrndr.extra.shadergenerator.dsl.functions
 
-import org.openrndr.extra.shadergenerator.dsl.Symbol
-import org.openrndr.extra.shadergenerator.dsl.functionSymbol
-import org.openrndr.extra.shadergenerator.dsl.glsl
-import org.openrndr.extra.shadergenerator.dsl.symbol
+import org.openrndr.extra.shadergenerator.dsl.*
 import org.openrndr.math.*
 import kotlin.jvm.JvmName
 
@@ -25,7 +22,7 @@ interface IntVector3unctions {
         functionSymbol(this, right, "($0 * $1)")
 
     @JvmName("plusSiv3Siv3")
-    operator fun Symbol<IntVector3>.plus(right: Symbol<IntVector3>): Symbol<Vector3> =
+    operator fun Symbol<IntVector3>.plus(right: Symbol<IntVector3>): Symbol<IntVector3> =
         functionSymbol(this, right, "($0 + $1)")
 
     @JvmName("plusSiv3Viv3")
@@ -53,6 +50,10 @@ interface IntVector3unctions {
     val Symbol<IntVector3>.xz: Symbol<IntVector2>
         @JvmName("xzSiv3")
         get() = functionSymbol(this, "$0.xz")
+
+    val Symbol<IntVector3>.double: Symbol<Vector3>
+        @JvmName("doubleSiv3")
+        get() = functionSymbol(this, "vec3($0)")
 
     @Suppress("FunctionName")
     @JvmName("ivec3SiSiSi")
