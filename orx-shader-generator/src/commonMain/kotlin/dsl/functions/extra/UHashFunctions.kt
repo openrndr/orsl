@@ -2,6 +2,7 @@ package org.openrndr.extra.shadergenerator.phrases.dsl.functions.extra
 
 import org.openrndr.extra.shadergenerator.dsl.ShaderBuilder
 import org.openrndr.extra.shadergenerator.dsl.Symbol
+import org.openrndr.extra.shadergenerator.dsl.UIntVector2
 import org.openrndr.extra.shadergenerator.dsl.UIntVector3
 import org.openrndr.extra.shadergenerator.dsl.functions.function
 import org.openrndr.extra.shadergenerator.dsl.functions.symbol
@@ -36,6 +37,14 @@ fun ShaderBuilder.setSeed(seed: Symbol<UInt>) {
     var uhashSeed by global<UInt>()
     uhashSeed = seed
 }
+
+@JvmName("setSeedSuiv2")
+fun ShaderBuilder.setSeed(seed: Symbol<UIntVector2>) {
+    var uhashSeed by global<UInt>()
+    uhashSeed = uhash11(seed.x)
+    uhashSeed = uhash11(uhashSeed + seed.y)
+}
+
 
 /**
  * set the seed value from [UIntVector3]
@@ -111,7 +120,7 @@ fun ShaderBuilder.uniformSphere(): Symbol<Vector3> {
         val r by uniform2()
         val theta by r.x * PI * 2.0
         val phi by acos(1.0 - 2.0 * r.y)
-        Vector3(sin(phi) * cos(phi), sin(phi) *  cos(theta), cos(phi))
+        Vector3(sin(phi) * cos(phi), sin(phi) * cos(theta), cos(phi))
     }
     return uniformSphere()
 }
@@ -125,7 +134,7 @@ fun ShaderBuilder.uniformBall(): Symbol<Vector3> {
     val uniformBall by function<Vector3>(false) {
         val s by uniformSphere()
         val u by uniform1()
-        s * pow(u, (1.0/3.0).symbol)
+        s * pow(u, (1.0 / 3.0).symbol)
     }
     return uniformBall()
 }
