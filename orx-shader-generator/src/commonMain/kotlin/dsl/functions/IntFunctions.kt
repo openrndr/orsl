@@ -25,6 +25,13 @@ interface IntFunctions {
     operator fun Symbol<Int>.unaryMinus(): Symbol<Int> =
         functionSymbol(this, "(-$0)")
 
+    @JvmName("shlSiSi")
+    infix fun Symbol<Int>.shl(right: Symbol<Int>): Symbol<Int> = functionSymbol(this, right, "($0 << $1)")
+
+    @JvmName("shrSiSi")
+    infix fun Symbol<Int>.shr(right: Symbol<Int>): Symbol<Int> = functionSymbol(this, right, "($0 >> $1)")
+
+
     @JvmName("plusSiSi")
     operator fun Symbol<Int>.plus(right: Symbol<Int>): Symbol<Int> = functionSymbol(this, right, "($0 + $1)")
 
