@@ -65,6 +65,11 @@ interface Vector2Functions {
     operator fun Symbol<Vector2>.times(right: Symbol<IntVector2>): Symbol<Vector2> =
         functionSymbol(this, right, "($0 * $1)")
 
+    @JvmName("divSv2Sv2")
+    operator fun Symbol<Vector2>.div(right: Symbol<Vector2>): Symbol<Vector2> =
+        functionSymbol(this, right, "($0 / $1)")
+
+
 
     @JvmName("divSv2Sd")
     operator fun Symbol<Vector2>.div(right: Symbol<Double>): Symbol<Vector2> =

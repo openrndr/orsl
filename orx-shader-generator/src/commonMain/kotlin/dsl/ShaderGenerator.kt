@@ -18,7 +18,7 @@ open class ShaderBuilder(declaredSymbols: Set<String>) : Generator, Functions, B
     IntFunctions, ColorRGBaFunctions,  UIntFunctions,
     Vector2Functions, Vector3Functions, Vector4Functions, Matrix33Functions, Matrix44Functions,
     IntVector2Functions, IntVector3unctions, UIntVector2Functions,
-    UIntVector3Functions, AtomicCounterBufferFunctions, IntRImage2DFunctions,
+    UIntVector3Functions, AtomicCounterBufferFunctions, IntRImage2DFunctions, RImage3DFunctions,
     IntRImage3DFunctions,
     BarrierFunctions {
     override var code = ""
@@ -161,6 +161,10 @@ open class ShaderBuilder(declaredSymbols: Set<String>) : Generator, Functions, B
     }
 
 
+    inline fun <reified T> fragmentOutput(): FragmentOutputProperty<T> {
+        return FragmentOutputProperty(this@ShaderBuilder, staticType<T>())
+    }
+
     @PublishedApi
     internal var tempId = 1;
     inline fun <reified T> Symbol<T>.elseIf(
@@ -191,6 +195,7 @@ ${sb.code.prependIndent("    ").trimEnd()}
         val sb = ShaderBuilder(declaredSymbols)
         sb.push()
         val result = sb.f()
+        sb.pop()
         emitPreamble(sb.preamble)
         emit(
             """for (${this.name} = ${range.startV}; ${this.name} < ${range.endV}; ++${this.name}) {

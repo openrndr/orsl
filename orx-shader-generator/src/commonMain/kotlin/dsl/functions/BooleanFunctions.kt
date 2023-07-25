@@ -27,11 +27,18 @@ interface BooleanFunctions : Generator{
     fun not(right:Boolean) : Symbol<Boolean> = functionSymbol(this, "!($0)")
 
 
+
     @JvmName("eqSbVb")
     infix fun Symbol<Boolean>.eq(right:Boolean) : Symbol<Boolean> = functionSymbol(this, right, "($0 == $1)")
 
     @JvmName("eqSbSb")
     infix fun Symbol<Boolean>.eq(right:Symbol<Boolean>) : Symbol<Boolean> = functionSymbol(this, right, "($0 == $1)")
+
+    @JvmName("neqSbVb")
+    infix fun Symbol<Boolean>.neq(right:Boolean) : Symbol<Boolean> = functionSymbol(this, right, "($0 != $1)")
+
+    @JvmName("neqSbSb")
+    infix fun Symbol<Boolean>.neq(right:Symbol<Boolean>) : Symbol<Boolean> = functionSymbol(this, right, "($0 != $1)")
 
 
 }

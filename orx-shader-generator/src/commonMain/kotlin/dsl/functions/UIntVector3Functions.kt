@@ -12,6 +12,20 @@ interface UIntVector3Functions {
     @JvmName("timesSuiv3Vd")
     operator fun Symbol<UIntVector3>.times(right: Double): Symbol<Vector3> = functionSymbol(this, right, "($0 * $1)")
 
+    @JvmName("timesSuiv3Vui")
+    operator fun Symbol<UIntVector3>.times(right: UInt): Symbol<UIntVector3> = functionSymbol(this, right, "($0 * $1u)")
+
+    @JvmName("timesSuiv3Sui")
+    operator fun Symbol<UIntVector3>.times(right: Symbol<UInt>): Symbol<UIntVector3> = functionSymbol(this, right, "($0 * $1)")
+
+
+    @JvmName("timesSuiv3Vi")
+    operator fun Symbol<UIntVector3>.times(right: Int): Symbol<IntVector3> = functionSymbol(this, right, "(ivec3($0) * $1)")
+
+    @JvmName("timesSuiv3Si")
+    operator fun Symbol<UIntVector3>.times(right: Symbol<Int>): Symbol<IntVector3> = functionSymbol(this, right, "($0 * $1)")
+
+
     @JvmName("timesSuiv3Sd")
     operator fun Symbol<UIntVector3>.times(right: Symbol<Double>): Symbol<Vector3> =
         functionSymbol(this, right, "($0 * $1)")

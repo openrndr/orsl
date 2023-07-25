@@ -1,9 +1,7 @@
 package org.openrndr.extra.shadergenerator.dsl.functions
 
-import org.openrndr.extra.shadergenerator.dsl.Symbol
-import org.openrndr.extra.shadergenerator.dsl.functionSymbol
-import org.openrndr.extra.shadergenerator.dsl.glsl
-import org.openrndr.extra.shadergenerator.dsl.symbol
+import org.openrndr.extra.shadergenerator.dsl.*
+import org.openrndr.math.IntVector3
 import org.openrndr.math.Vector2
 import org.openrndr.math.Vector3
 import kotlin.jvm.JvmName
@@ -13,6 +11,11 @@ interface Vector3Functions {
 
     @JvmName("absSv3")
     fun abs(x: Symbol<Vector3>): Symbol<Vector3> = functionSymbol(x, "abs($0)")
+
+
+    @JvmName("roundSv3")
+    fun round(x: Symbol<Vector3>): Symbol<Vector3> = functionSymbol(x, "round($0)")
+
 
     @JvmName("cosSv3")
     fun cos(x: Symbol<Vector3>): Symbol<Vector3> = functionSymbol(x, "cos($0)")
@@ -157,6 +160,14 @@ interface Vector3Functions {
     @JvmName("vec3SdSdSd")
     fun Vector3(x: Symbol<Double>, y: Symbol<Double>, z: Symbol<Double>): Symbol<Vector3> =
         functionSymbol(x, y, z, "vec3($0, $1, $2)")
+
+    val Symbol<Vector3>.int: Symbol<IntVector3>
+        @JvmName("intSv3")
+        get() = functionSymbol(this, "ivec3($0)")
+
+    val Symbol<Vector3>.uint: Symbol<UIntVector3>
+        @JvmName("uintSv3")
+        get() = functionSymbol(this, "uvec3($0)")
 
 
 }

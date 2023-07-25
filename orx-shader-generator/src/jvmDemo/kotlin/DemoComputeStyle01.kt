@@ -6,6 +6,7 @@ import org.openrndr.extra.shadergenerator.dsl.Image2D
 import org.openrndr.extra.shadergenerator.dsl.UIntVector3
 
 fun main() {
+    System.loadLibrary("renderdoc")
     application {
         program {
             val input = drawImage(width, height) {
@@ -21,11 +22,14 @@ fun main() {
                     p_outputImage.store(coord, c)
                 }
             }
-            cs.parameter("inputImage", input.imageBinding(0, ImageAccess.READ))
-            cs.parameter("outputImage", output.imageBinding(0, ImageAccess.WRITE))
-            cs.execute(input.width, input.height, 1)
+            cs.image("inputImage", input.imageBinding(0, ImageAccess.READ))
+            cs.image("outputImage", output.imageBinding(0, ImageAccess.WRITE))
+
             extend {
-                drawer.image(output)
+                cs.execute(input.width, input.height, 1)
+                for (i in 0 until 10000    ) {
+                    drawer.image(output)
+                }
             }
         }
     }

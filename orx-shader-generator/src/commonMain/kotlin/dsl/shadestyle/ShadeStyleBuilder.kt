@@ -49,6 +49,22 @@ open class ShadeStyleBuilder : ShaderBuilder(emptySet()), TransformPhrasesFuncti
         operator fun getValue(any: Any?, property: KProperty<*>) = symbol<T>(property.name, type)
     }
 
+    class ArrayImageProperty<T : Image>(
+        val type: String,
+        val length: Int,
+        val register: (name: String) -> Unit
+    ) {
+        operator fun provideDelegate(any: Any?, property: KProperty<*>): ArrayImageProperty<T> {
+            register(property.name.replace("p_", ""))
+            return this
+        }
+
+        operator fun getValue(any: Any?, property: KProperty<*>) = arraySymbol<T>(property.name, length, type)
+    }
+
+
+
+
     class ArrayParameter<T>(val type: String, val length: Int) {
         operator fun getValue(any: Any?, property: KProperty<*>) = arraySymbol<T>(property.name, length, type)
     }
@@ -87,7 +103,7 @@ open class ShadeStyleBuilder : ShaderBuilder(emptySet()), TransformPhrasesFuncti
         vararg flags: BufferFlag
     ): BufferProperty<T> {
         return BufferProperty(staticType<T>()) { name ->
-            registerStructuredBuffer<T>(name, flags.toSet(), access)
+            registerStructuredBuffer<T>(name, access, flags.toSet())
         }
     }
 
@@ -97,7 +113,7 @@ open class ShadeStyleBuilder : ShaderBuilder(emptySet()), TransformPhrasesFuncti
         vararg flags: BufferFlag
     ): BufferProperty<T> {
         return BufferProperty(staticType<T>()) { name ->
-            registerStructuredBuffer<T>(name, flags.toSet(), access)
+            registerStructuredBuffer<T>(name, access, flags.toSet())
             this@buffer.buffer(name, structuredBuffer)
         }
     }
@@ -116,34 +132,79 @@ open class ShadeStyleBuilder : ShaderBuilder(emptySet()), TransformPhrasesFuncti
         }
     }
 
-    inline fun <reified T : Image> StyleImageBindings.image(access: ImageAccess = ImageAccess.READ_WRITE): ImageProperty<T> {
+    inline fun <reified T : Image> StyleImageBindings.image(access: ImageAccess = ImageAccess.READ_WRITE, flags: Set<ImageFlag> = emptySet()): ImageProperty<T> {
         return ImageProperty(staticType<T>()) { name ->
-            this@image.registerImageBinding(name, access)
+            this@image.registerImageBinding(name, access, flags)
         }
     }
 
     inline fun <reified T : Image2D> StyleImageBindings.image(
         colorBuffer: ColorBuffer,
-        level: Int,
-        access: ImageAccess = ImageAccess.READ_WRITE
+        level: Int = 0,
+        access: ImageAccess = ImageAccess.READ_WRITE,
+        flags: Set<ImageFlag> = emptySet()
     ): ImageProperty<T> {
         return ImageProperty(staticType<T>()) { name ->
-            this@image.registerImageBinding(name, access)
-            this@image.image(name, colorBuffer.imageBinding(level, access))
+            this@image.registerImageBinding(name, access, flags)
+            this@image.image(name, colorBuffer, level)
+        }
+    }
+
+
+    inline fun <reified T : Image2D> StyleImageBindings.images(
+        colorBuffers: Array<ColorBuffer>,
+        levels: Array<Int>,
+        access: ImageAccess = ImageAccess.READ_WRITE,
+        flags: Set<ImageFlag> = emptySet()
+    ): ArrayImageProperty<T> {
+        return ArrayImageProperty(staticType<T>(), colorBuffers.size) { name ->
+            this@images.registerImageBinding(name, access, flags)
+            this@images.image(name, colorBuffers, levels)
         }
     }
 
     inline fun <reified T : Image3D> StyleImageBindings.image(
         volumeTexture: VolumeTexture,
         level: Int,
-        access: ImageAccess = ImageAccess.READ_WRITE
+        access: ImageAccess = ImageAccess.READ_WRITE,
+        flags: Set<ImageFlag> = emptySet()
     ): ImageProperty<T> {
         return ImageProperty(staticType<T>()) { name ->
-            this@image.registerImageBinding(name, access)
-            this@image.image(name, volumeTexture.imageBinding(level, access))
+            this@image.registerImageBinding(name, access, flags)
+            this@image.image(name, volumeTexture)
         }
     }
 
+    inline fun <reified T : Image> StyleImageBindings.images(
+        size: Int,
+        access: ImageAccess = ImageAccess.READ_WRITE,
+        flags: Set<ImageFlag> = emptySet()
+    ): ArrayImageProperty<T> {
+        return ArrayImageProperty(staticType<T>(), size) { name ->
+            this@images.registerImageBinding(name, access, flags)
+        }
+    }
+
+    /**
+     * Reference to an already declared image binding
+     */
+    inline fun <reified T : Image> StyleImageBindings.images(): ArrayImageProperty<T> {
+        return ArrayImageProperty(staticType<T>(), 0) { name ->
+            require(imageAccess.containsKey(name.replace("p_", "")))
+        }
+    }
+
+    inline fun <reified T : Image3D> StyleImageBindings.images(
+        volumeTextures: Array<VolumeTexture>,
+        levels: Array<Int>,
+        access: ImageAccess = ImageAccess.READ_WRITE,
+        flags: Set<ImageFlag> = emptySet()
+    ): ArrayImageProperty<T> {
+        return ArrayImageProperty(staticType<T>(), volumeTextures.size) { name ->
+            this@images.registerImageBinding(name, access, flags)
+            this@images.image(name, volumeTextures, levels)
+        }
+    }
 
 
     inline fun <reified T> arrayParameter(length: Int): ArrayParameter<T> {

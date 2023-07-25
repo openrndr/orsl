@@ -205,6 +205,18 @@ interface DoubleFunctions {
     @JvmName("divVdSd")
     operator fun Double.div(right: Symbol<Double>): Symbol<Double> = functionSymbol(this, right, "($0 / $1)")
 
+    @JvmName("eqSdSd")
+    infix fun Symbol<Double>.eq(right: Symbol<Double>): Symbol<Boolean> = functionSymbol(this, right, "($0 == $1)")
+
+    @JvmName("eqSdVd")
+    infix fun Symbol<Double>.eq(right: Double): Symbol<Boolean> = functionSymbol(this, right, "($0 == $1)")
+
+    @JvmName("neqSdSd")
+    infix fun Symbol<Double>.neq(right: Symbol<Double>): Symbol<Boolean> = functionSymbol(this, right, "($0 != $1)")
+
+    @JvmName("neqSdVd")
+    infix fun Symbol<Double>.neq(right: Double): Symbol<Boolean> = functionSymbol(this, right, "($0 != $1)")
+
 
     @JvmName("gteSdSd")
     infix fun Symbol<Double>.gte(right: Symbol<Double>): Symbol<Boolean> = functionSymbol(this, right, "($0 >= $1)")

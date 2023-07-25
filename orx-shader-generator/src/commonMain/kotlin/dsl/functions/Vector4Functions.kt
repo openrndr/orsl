@@ -70,6 +70,8 @@ interface Vector4Functions {
     @JvmName("divSv4Vd")
     operator fun Symbol<Vector4>.div(right: Double): Symbol<Vector4> = functionSymbol(this, right, "($0 / $1)")
 
+    @JvmName("divSv4Vd")
+    operator fun Symbol<Vector4>.div(right: Symbol<Double>): Symbol<Vector4> = functionSymbol(this, right, "($0 / $1)")
 
     val Symbol<Vector4>.length: Symbol<Double>
         @JvmName("lengthSv4")

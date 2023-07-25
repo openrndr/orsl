@@ -22,10 +22,10 @@ import kotlin.math.cos
 const val voxelSize = 128
 
 class Voxel128 : Struct<Voxel128>() {
-    val position by arrayField<Vector4>(40000)
+    val position by arrayField<Vector4>(120000)
 }
 
-val Symbol<Voxel128>.position by Voxel128::position[40000]
+val Symbol<Voxel128>.position by Voxel128::position[80000]
 
 fun main() {
 //    System.loadLibrary("renderdoc")
@@ -36,7 +36,7 @@ fun main() {
             height = 720
         }
         program {
-            val vt = volumeTexture(voxelSize, voxelSize, voxelSize, ColorFormat.R, ColorType.SINT32_INT)
+            val vt = volumeTexture(16, 16, 16, ColorFormat.R, ColorType.UINT8_INT)
             val acb = AtomicCounterBuffer.create(1)
             acb.reset()
 
@@ -174,7 +174,7 @@ fun main() {
                 val cameraPosition = ((drawer.view).inversed * Vector4(0.0, 0.0, 0.0, 1.0)).xyz
                 drawer.shadeStyle?.parameter("cameraPosition", cameraPosition)
 
-                drawer.cullTestPass = CullTestPass.FRONT
+//                drawer.cullTestPass = CullTestPass.FRONT
                 drawer.vertexBufferInstances(listOf(box), emptyList(), DrawPrimitive.TRIANGLES, c)
             }
         }
