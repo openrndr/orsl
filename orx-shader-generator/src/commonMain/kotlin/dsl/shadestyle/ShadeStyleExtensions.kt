@@ -10,6 +10,9 @@ import org.openrndr.extra.shadergenerator.phrases.SdfPhrases
 import org.openrndr.extra.shadergenerator.phrases.SdfPhrasesIndex
 import org.openrndr.extra.shadergenerator.phrases.ValueNoiseDerPhrases
 import org.openrndr.extra.shadergenerator.phrases.ValueNoiseDerPhrasesIndex
+import kotlin.contracts.ExperimentalContracts
+import kotlin.contracts.InvocationKind
+import kotlin.contracts.contract
 
 fun preprocessor(): PhraseResolver {
     val resolver = PhraseResolver()
@@ -28,7 +31,12 @@ fun preprocessor(): PhraseResolver {
     return resolver
 }
 
+@OptIn(ExperimentalContracts::class)
 fun ShadeStyle.fragmentTransform(f: FragmentTransformBuilder.() -> Unit) {
+    contract {
+        callsInPlace(f, InvocationKind.EXACTLY_ONCE)
+    }
+
     val builder = FragmentTransformBuilder()
     builder.push()
     require(activeGenerator() == builder)
@@ -40,7 +48,11 @@ fun ShadeStyle.fragmentTransform(f: FragmentTransformBuilder.() -> Unit) {
     builder.pop()
 }
 
+@OptIn(ExperimentalContracts::class)
 fun ShadeStyle.vertexTransform(f: VertexTransformBuilder.() -> Unit) {
+    contract {
+        callsInPlace(f, InvocationKind.EXACTLY_ONCE)
+    }
     val builder = VertexTransformBuilder()
     builder.push()
     builder.f()

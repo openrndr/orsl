@@ -13,6 +13,13 @@ interface IntFunctions {
     @JvmName("absSi")
     fun abs(x: Symbol<Int>): Symbol<Int> = functionSymbol(x, "abs($0)")
 
+    @JvmName("modSiSi")
+    fun mod(a: Symbol<Int>, b: Symbol<Int>): Symbol<Int> = functionSymbol(a, b, "mod($0, $1)")
+
+    @JvmName("modSiVi")
+    fun mod(a: Symbol<Int>, b: Int): Symbol<Int> = functionSymbol(a, b, "mod($0, $1)")
+
+
     @JvmName("minSiSi")
     fun min(a: Symbol<Int>, b: Symbol<Int>): Symbol<Int> = functionSymbol(a, b, "min($0, $1)")
 

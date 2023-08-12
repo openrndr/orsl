@@ -17,6 +17,10 @@ interface Vector2Functions {
     @JvmName("absSv2")
     fun abs(x: Symbol<Vector2>): Symbol<Vector2> = functionSymbol(x, "abs($0)")
 
+    @JvmName("expSv2")
+    fun exp(x: Symbol<Vector2>): Symbol<Vector2> = functionSymbol(x, "exp($0)")
+
+
     @JvmName("sqrtSv2")
     fun sqrt(x: Symbol<Vector2>): Symbol<Vector2> = functionSymbol(x, "sqrt($0)")
 
@@ -53,6 +57,10 @@ interface Vector2Functions {
     @JvmName("timesSv2Vd")
     operator fun Symbol<Vector2>.times(right: Double): Symbol<Vector2> = functionSymbol(this, right, "($0 * $1)")
 
+    @JvmName("timesVv2Sd")
+    operator fun Vector2.times(right: Symbol<Double>): Symbol<Vector2> = functionSymbol(this, right, "($0 * $1)")
+
+
     @JvmName("timesSv2Sd")
     operator fun Symbol<Vector2>.times(right: Symbol<Double>): Symbol<Vector2> =
         functionSymbol(this, right, "($0 * $1)")
@@ -64,6 +72,16 @@ interface Vector2Functions {
     @JvmName("timesSv2Siv2")
     operator fun Symbol<Vector2>.times(right: Symbol<IntVector2>): Symbol<Vector2> =
         functionSymbol(this, right, "($0 * $1)")
+
+
+    @JvmName("modSv2Sv2")
+    fun Symbol<Vector2>.mod(right: Symbol<Vector2>): Symbol<Vector2> =
+        functionSymbol(this, right, "mod($0, $1)")
+
+    @JvmName("modSv2Vv2")
+    fun Symbol<Vector2>.mod(right: Vector2): Symbol<Vector2> =
+        functionSymbol(this, right, "mod($0, $1)")
+
 
     @JvmName("divSv2Sv2")
     operator fun Symbol<Vector2>.div(right: Symbol<Vector2>): Symbol<Vector2> =
@@ -112,6 +130,17 @@ interface Vector2Functions {
     val Symbol<Vector2>.xx: Symbol<Vector2>
         @JvmName("xxSv2")
         get() = functionSymbol(this, "$0.xx")
+
+
+    @JvmName("maxSv2Sv2")
+    fun max(a: Symbol<Vector2>, b: Symbol<Vector2>): Symbol<Vector2> = functionSymbol(a, b, "max($0, $1)")
+
+    @JvmName("maxSv2Vv2")
+    fun max(a: Symbol<Vector2>, b: Vector2): Symbol<Vector2> = functionSymbol(a, b, "max($0, $1)")
+
+    @JvmName("maxVv2Sv2")
+    fun max(a: Vector2, b: Symbol<Vector2>): Symbol<Vector2> = functionSymbol(a, b, "max($0, $1)")
+
 
     @Suppress("FunctionName")
     @JvmName("vec2SdSd")

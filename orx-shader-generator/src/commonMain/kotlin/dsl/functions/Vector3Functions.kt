@@ -12,6 +12,12 @@ interface Vector3Functions {
     @JvmName("absSv3")
     fun abs(x: Symbol<Vector3>): Symbol<Vector3> = functionSymbol(x, "abs($0)")
 
+    @JvmName("floorSv3")
+    fun floor(x: Symbol<Vector3>): Symbol<Vector3> = functionSymbol(x, "floor($0)")
+
+    @JvmName("ceilSv3")
+    fun ceil(x: Symbol<Vector3>): Symbol<Vector3> = functionSymbol(x, "ceil($0)")
+
 
     @JvmName("roundSv3")
     fun round(x: Symbol<Vector3>): Symbol<Vector3> = functionSymbol(x, "round($0)")
@@ -28,6 +34,19 @@ interface Vector3Functions {
 
     @JvmName("dotSv3Vv3")
     fun Symbol<Vector3>.dot(right: Vector3): Symbol<Double> = functionSymbol(this, right, "dot($0, $1)")
+
+    @JvmName("reflectSv3Sv3")
+    fun Symbol<Vector3>.reflect(right: Symbol<Vector3>): Symbol<Vector3> = functionSymbol(this, right, "reflect($0, $1)")
+
+    @JvmName("reflectSv3Vv3")
+    fun Symbol<Vector3>.reflect(right: Vector3): Symbol<Vector3> = functionSymbol(this, right, "reflect($0, $1)")
+
+    @JvmName("modSv3Sv3")
+    fun Symbol<Vector3>.mod(right: Symbol<Vector3>): Symbol<Vector3> = functionSymbol(this, right, "mod($0, $1)")
+
+    @JvmName("modSv3Vv3")
+    fun Symbol<Vector3>.mod(right: Vector3): Symbol<Vector3> = functionSymbol(this, right, "mod($0, $1)")
+
 
     @JvmName("mixSv3Sv3Sb")
     fun Symbol<Vector3>.mix(right: Symbol<Vector3>, factor: Symbol<Boolean>): Symbol<Vector3> = functionSymbol(this, right, factor, "mix($0, $1, ($2) ? 1.0 : 0.0)")
@@ -52,6 +71,11 @@ interface Vector3Functions {
     @JvmName("plusSv3Sv3")
     operator fun Symbol<Vector3>.plus(right: Symbol<Vector3>): Symbol<Vector3> =
         functionSymbol(this, right, "($0 + $1)")
+
+    @JvmName("plusSv3Sd")
+    operator fun Symbol<Vector3>.plus(right: Symbol<Double>): Symbol<Vector3> =
+        functionSymbol(this, right, "($0 + $1)")
+
 
     @JvmName("plusSv3Vv3")
     operator fun Symbol<Vector3>.plus(right: Vector3): Symbol<Vector3> = functionSymbol(this, right, "($0 + $1)")
