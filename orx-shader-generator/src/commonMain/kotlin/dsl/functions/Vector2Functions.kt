@@ -132,6 +132,16 @@ interface Vector2Functions {
         get() = functionSymbol(this, "$0.xx")
 
 
+    @JvmName("minSv2Sv2")
+    fun min(a: Symbol<Vector2>, b: Symbol<Vector2>): Symbol<Vector2> = functionSymbol(a, b, "min($0, $1)")
+
+    @JvmName("minSv2Vv2")
+    fun min(a: Symbol<Vector2>, b: Vector2): Symbol<Vector2> = functionSymbol(a, b, "min($0, $1)")
+
+    @JvmName("minVv2Sv2")
+    fun min(a: Vector2, b: Symbol<Vector2>): Symbol<Vector2> = functionSymbol(a, b, "min($0, $1)")
+
+
     @JvmName("maxSv2Sv2")
     fun max(a: Symbol<Vector2>, b: Symbol<Vector2>): Symbol<Vector2> = functionSymbol(a, b, "max($0, $1)")
 

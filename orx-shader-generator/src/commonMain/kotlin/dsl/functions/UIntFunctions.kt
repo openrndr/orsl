@@ -26,11 +26,27 @@ interface UIntFunctions {
 
     @JvmName("orSuiVui")
     infix fun Symbol<UInt>.or(right: UInt): Symbol<UInt> = functionSymbol(this, right, "($0 | $1)")
+    @JvmName("orSuiSui")
+    infix fun Symbol<UInt>.or(right: Symbol<UInt>): Symbol<UInt> = functionSymbol(this, right, "($0 | $1)")
+
 
     @JvmName("andSuiVui")
     infix fun Symbol<UInt>.and(right: UInt): Symbol<UInt> = functionSymbol(this, right, "($0 & $1)")
 
     infix fun Symbol<UInt>.shr(right: Int): Symbol<UInt> = functionSymbol(this, right, "($0 >> $1)")
+
+    @JvmName("shrSuiVui")
+    infix fun Symbol<UInt>.shr(right: UInt): Symbol<UInt> = functionSymbol(this, right, "($0 << $1)")
+
+
+    @JvmName("shlSuiVi")
+    infix fun Symbol<UInt>.shl(right: Int): Symbol<Int> = functionSymbol(this, right, "($0 << $1)")
+
+    @JvmName("shlSuiVui")
+    infix fun Symbol<UInt>.shl(right: UInt): Symbol<UInt> = functionSymbol(this, right, "($0 << $1)")
+
+    @JvmName("shlSuiSui")
+    infix fun Symbol<UInt>.shl(right: Symbol<UInt>): Symbol<UInt> = functionSymbol(this, right, "($0 << $1)")
 
 
     @JvmName("plusSuiSd")

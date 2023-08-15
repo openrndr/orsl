@@ -41,11 +41,40 @@ interface Vector3Functions {
     @JvmName("reflectSv3Vv3")
     fun Symbol<Vector3>.reflect(right: Vector3): Symbol<Vector3> = functionSymbol(this, right, "reflect($0, $1)")
 
+    @JvmName("smoothstepSv3Sv3Sv3")
+    fun smoothstep(edge0: Symbol<Vector3>, edge1: Symbol<Vector3>, x: Symbol<Vector3>): Symbol<Vector3> =
+        functionSymbol(edge0, edge1, x, "smoothstep($0, $1, $2)")
+
+
+    @JvmName("fmodSv3Sv3")
+    fun mod(left: Symbol<Vector3>, right: Symbol<Vector3>): Symbol<Vector3> = functionSymbol(this, right, "mod($0, $1)")
+
     @JvmName("modSv3Sv3")
     fun Symbol<Vector3>.mod(right: Symbol<Vector3>): Symbol<Vector3> = functionSymbol(this, right, "mod($0, $1)")
 
     @JvmName("modSv3Vv3")
     fun Symbol<Vector3>.mod(right: Vector3): Symbol<Vector3> = functionSymbol(this, right, "mod($0, $1)")
+
+
+    @JvmName("maxSv3Sv3")
+    fun Symbol<Vector3>.max(right: Symbol<Vector3>): Symbol<Vector3> = functionSymbol(this, right, "max($0, $1)")
+
+    @JvmName("maxSv3Vv3")
+    fun Symbol<Vector3>.max(right: Vector3): Symbol<Vector3> = functionSymbol(this, right, "max($0, $1)")
+
+    @JvmName("maxVv3Sv3")
+    fun Vector3.max(right: Symbol<Vector3>): Symbol<Vector3> = functionSymbol(this, right, "max($0, $1)")
+
+
+    @JvmName("minSv3Sv3")
+    fun Symbol<Vector3>.min(right: Symbol<Vector3>): Symbol<Vector3> = functionSymbol(this, right, "min($0, $1)")
+
+    @JvmName("minSv3Vv3")
+    fun Symbol<Vector3>.min(right: Vector3): Symbol<Vector3> = functionSymbol(this, right, "min($0, $1)")
+
+    @JvmName("minVv3Sv3")
+    fun Vector3.min(right: Symbol<Vector3>): Symbol<Vector3> = functionSymbol(this, right, "min($0, $1)")
+
 
 
     @JvmName("mixSv3Sv3Sb")
@@ -67,6 +96,8 @@ interface Vector3Functions {
     @JvmName("unaryMinusSv3")
     operator fun Symbol<Vector3>.unaryMinus(): Symbol<Vector3> =
         functionSymbol(this, "(-$0)")
+
+
 
     @JvmName("plusSv3Sv3")
     operator fun Symbol<Vector3>.plus(right: Symbol<Vector3>): Symbol<Vector3> =
@@ -184,6 +215,12 @@ interface Vector3Functions {
     @JvmName("vec3SdSdSd")
     fun Vector3(x: Symbol<Double>, y: Symbol<Double>, z: Symbol<Double>): Symbol<Vector3> =
         functionSymbol(x, y, z, "vec3($0, $1, $2)")
+
+    @Suppress("FunctionName")
+    @JvmName("vec3Sd")
+    fun Vector3(xyz: Symbol<Double>): Symbol<Vector3> =
+        functionSymbol(xyz, "vec3($0")
+
 
     val Symbol<Vector3>.int: Symbol<IntVector3>
         @JvmName("intSv3")

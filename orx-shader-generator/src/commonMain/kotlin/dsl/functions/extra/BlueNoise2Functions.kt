@@ -42,14 +42,13 @@ fun ShaderBuilder.bnDisk(): Symbol<Vector2> {
 
 fun ShaderBuilder.bnHemisphere(normal: Symbol<Vector3>): Symbol<Vector3> {
     val bnHemisphere by function<Vector3, Vector3> { normal ->
-
         val r by bnUniform2()
         val u by r.x * 2.0 - 1.0
         val v by r.y
         val a by PI * v * 2.0
 
-        val tn by normal + Vector3(Vector2(cos(a), sin(a)) * sqrt(1.0 - u * u), u)
-        tn.normalized
+        val point by Vector3(Vector2(cos(a), sin(a)) * sqrt(1.0 - u * u), u)
+        normalRotate(point, normal)
     }
     return bnHemisphere(normal)
 }

@@ -1,3 +1,5 @@
+@file:Suppress("PackageDirectoryMismatch")
+
 package org.openrndr.extra.shadergenerator.dsl
 
 import org.openrndr.draw.Struct
@@ -13,8 +15,9 @@ import org.openrndr.math.*
 import kotlin.reflect.KProperty
 
 open class ShaderBuilder(declaredSymbols: Set<String>) : Generator, Functions, BooleanFunctions, DoubleFunctions, ArrayFunctions, SamplerFunctions,
+    Vector3Functions,
     IntFunctions, ColorRGBaFunctions,  UIntFunctions,
-    Vector2Functions, Vector3Functions, Vector4Functions, Matrix33Functions, Matrix44Functions,
+    Vector2Functions, Vector4Functions, Matrix33Functions, Matrix44Functions,
     IntVector2Functions, IntVector3unctions, UIntVector2Functions,
     UIntVector3Functions, AtomicCounterBufferFunctions, IntRImage2DFunctions, RImage3DFunctions,
     IntRImage3DFunctions,
@@ -162,7 +165,7 @@ open class ShaderBuilder(declaredSymbols: Set<String>) : Generator, Functions, B
     }
 
     @PublishedApi
-    internal var tempId = 1;
+    internal var tempId = 1
     inline fun <reified T> Symbol<T>.elseIf(
         precondition: Symbol<Boolean>,
         noinline f: ShaderBuilder.() -> Symbol<T>
@@ -287,6 +290,7 @@ ${sb.code.prependIndent("    ").trimEnd()}
         return symbol<T>("temp_${tempId - 1}")
     }
 
+    @Suppress("UnusedReceiverParameter")
     inline fun <reified T> IfSymbol<T>.elseIf(
         precondition: Symbol<Boolean>,
         noinline f: ShaderBuilder.() -> Symbol<T>
@@ -574,6 +578,3 @@ ${sb.code.prependIndent("    ").trimEnd()}
         return this
     }
 }
-
-
-
