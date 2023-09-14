@@ -91,6 +91,11 @@ kotlin {
                 runtimeOnly(libs.openrndr.gl3.core)
                 runtimeOnly(libs.slf4j.simple)
             }
+
+            // https://youtrack.jetbrains.com/issue/KTIJ-25644
+            jvm().mainRun {
+
+            }
         }
     }
 }
