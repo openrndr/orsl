@@ -136,8 +136,8 @@ fun main() {
             splat.parameter("b", 0.4)
             splat.parameter("c", 0.9)
             splat.parameter("time", seconds)
-            splat.parameter("screen", cb.imageBinding(0, ImageAccess.READ))
-            splat.parameter("atomic", atomic.imageBinding(0, ImageAccess.READ_WRITE))
+            splat.image("screen", cb.imageBinding(0, ImageAccess.READ))
+            splat.image("atomic", atomic.imageBinding(0, ImageAccess.READ_WRITE))
 
             val mainImage = computeStyle {
                 workGroupSize = IntVector3(16, 16, 1)
@@ -159,8 +159,8 @@ fun main() {
                 }
             }
 
-            mainImage.parameter("atomic", atomic.imageBinding(0, ImageAccess.READ_WRITE))
-            mainImage.parameter("screen", cb.imageBinding(0, ImageAccess.WRITE))
+            mainImage.image("atomic", atomic.imageBinding(0, ImageAccess.READ_WRITE))
+            mainImage.image("screen", cb.imageBinding(0, ImageAccess.WRITE))
 
             extend {
                 splat.parameter("dofFocalDist", cos(seconds) * 0.5 + 0.5)
