@@ -108,7 +108,7 @@ fun main() {
                         } else_ {
                             p -= Vector3(-0.2 * p_c * 5.0, 0.2.symbol, 0.2.symbol)
                             p /= clamp(p.dot(p), (-4.5).symbol, 10.0.symbol)
-                            p = p * Vector3(1.0, 1.5, 1.2) * 3.1;
+                            p = p * Vector3(1.0, 1.5, 1.2) * 3.1
                             0.0.symbol
                         }
                     }

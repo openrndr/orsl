@@ -131,7 +131,7 @@ fun main() {
                     val d5 by 5.0
                     val specular by pow( saturate( normal.dot(hlf)), 1.0 + g_specular)*
                     diffuse *
-                            (0.04 + 0.96*pow( saturate(1.0+hlf.dot(rayDir)), d5 ));
+                            (0.04 + 0.96*pow( saturate(1.0+hlf.dot(rayDir)), d5 ))
 
                     val aoCalcer by calcAO(scene)
 

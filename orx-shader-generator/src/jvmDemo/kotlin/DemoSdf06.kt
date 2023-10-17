@@ -77,7 +77,7 @@ fun main() {
 
                     val specular by pow( saturate( normal.dot(hlf)), 1.0 + d16)*
                             diffuse *
-                            (0.04 + 0.96*pow( saturate(1.0+hlf.dot(rayDir)), d5 ));
+                            (0.04 + 0.96*pow( saturate(1.0+hlf.dot(rayDir)), d5 ))
 
                     val amb by run {
                         val aoCalcer by calcAO(shadowScene, intensity = 0.5, distance = 1.0, iterations = 32, falloff = 0.85)
