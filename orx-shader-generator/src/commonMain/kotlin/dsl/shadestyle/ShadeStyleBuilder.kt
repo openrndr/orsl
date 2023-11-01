@@ -229,6 +229,11 @@ class VertexTransformBuilder() : ShadeStyleBuilder(), HashPhrasesFunctions, Simp
     var x_modelNormalMatrix by output<Matrix44>()
     var x_viewNormalMatrix by output<Matrix44>()
     var x_projectionMatrix by output<Matrix44>()
+
+    inline fun <reified T> varyingOut(): VaryingOutProperty<T> {
+        val glslType = staticType<T>()
+        return VaryingOutProperty(this@VertexTransformBuilder, glslType)
+    }
 }
 
 
@@ -248,5 +253,15 @@ class FragmentTransformBuilder() : ShadeStyleBuilder(), HashPhrasesFunctions, Va
     val u_modelMatrix by parameter<Matrix44>()
     val u_modelNormalMatrix by parameter<Matrix44>()
     val u_viewNormalMatrix by parameter<Matrix44>()
+
+    /**
+     * declare a varying in
+     */
+    inline fun <reified T> varyingIn(): VaryingInProperty<T> {
+        val glslType = staticType<T>()
+        return VaryingInProperty(this@FragmentTransformBuilder, glslType)
+    }
+
+
 
 }

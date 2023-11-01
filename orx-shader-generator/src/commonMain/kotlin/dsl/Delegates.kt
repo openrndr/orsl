@@ -9,7 +9,25 @@ class OutputProperty<T>(val generator: Generator, val type:String) {
         activeGenerator().emit("${property.name} = ${value.name};")
     }
 }
+class VaryingInProperty<T>(val generator: Generator, val type: String) {
+    operator fun provideDelegate(any: Any?, property: KProperty<*>) : VaryingInProperty<T> {
+        generator.emitPreamble(property.name, "in ${type} ${property.name};")
+        return this
+    }
+    operator fun getValue(any: Any?, property: KProperty<*>): Symbol<T> = symbol(property.name, type)
+}
 
+class VaryingOutProperty<T>(val generator: Generator, val type: String) {
+    operator fun provideDelegate(any: Any?, property: KProperty<*>) : VaryingOutProperty<T> {
+        generator.emitPreamble(property.name, "out ${type} ${property.name};")
+        return this
+    }
+    operator fun getValue(any: Any?, property: KProperty<*>): Symbol<T> = symbol(property.name, type)
+
+    operator fun setValue(any: Any?, property: KProperty<*>, value: Symbol<T>) {
+        activeGenerator().emit("${property.name} = ${value.name};")
+    }
+}
 
 class FragmentOutputProperty<T>(val generator: Generator, val type:String) {
     operator fun getValue(any: Any?, property: KProperty<*>): Symbol<T> = symbol(property.name, type)
