@@ -154,3 +154,12 @@ if (shouldPublish) {
         sign(publishing.publications)
     }
 }
+
+kotlin {
+    jvm().mainRun {
+        classpath(kotlin.jvm().compilations.getByName("demo").output.allOutputs)
+        classpath(kotlin.jvm().compilations.getByName("demo").configurations.runtimeDependencyConfiguration!!)
+    }
+}
+
+tasks.withType<JavaExec>().matching { it.name == "jvmRun" }.configureEach { workingDir = rootDir }
