@@ -76,8 +76,8 @@ fun main() {
             splat.parameter("dofAmount", 0.116)
             splat.parameter("dofFocalDist", 0.15)
             splat.parameter("time", seconds)
-            splat.parameter("screen", cb.imageBinding(0, ImageAccess.READ))
-            splat.parameter("atomic", atomic.imageBinding(0, ImageAccess.READ_WRITE))
+            splat.image("screen", cb.imageBinding(0, ImageAccess.READ))
+            splat.image("atomic", atomic.imageBinding(0, ImageAccess.READ_WRITE))
 
             val mainImage = computeStyle {
                 workGroupSize = IntVector3(16, 16, 1)
@@ -98,8 +98,8 @@ fun main() {
                 }
             }
 
-            mainImage.parameter("atomic", atomic.imageBinding(0, ImageAccess.READ_WRITE))
-            mainImage.parameter("screen", cb.imageBinding(0, ImageAccess.WRITE))
+            mainImage.image("atomic", atomic.imageBinding(0, ImageAccess.READ_WRITE))
+            mainImage.image("screen", cb.imageBinding(0, ImageAccess.WRITE))
 
 //            extend(ScreenRecorder()) {
 //                maximumDuration = 20.0

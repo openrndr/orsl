@@ -41,11 +41,11 @@ fun main() {
                     p_sdf.store(c_giid.int, b)
 
                 }
-                parameter("sdf", vt.imageBinding(0, ImageAccess.WRITE))
+                image("sdf", vt.imageBinding(0, ImageAccess.WRITE))
             }
 
             val filterSdf = computeStyle {
-                parameter("sdf", vt.imageBinding(0, ImageAccess.READ))
+                image("sdf", vt.imageBinding(0, ImageAccess.READ))
 
                 buffer("instances", instances)
                 workGroupSize = IntVector3(1, 1, 1)

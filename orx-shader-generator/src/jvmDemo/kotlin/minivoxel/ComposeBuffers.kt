@@ -76,7 +76,7 @@ fun composeFinal() = shadeStyleFilter1to1 {
             val c1 by org.openrndr.math.Vector4(1.0, 0.0425, 1.040, -0.040)
 
             val r by c0 * roughness + c1
-            val a004 by min(r.x * r.x, exp2(-9.28 * nOv)) * r.x + r.y;
+            val a004 by min(r.x * r.x, exp2(-9.28 * nOv)) * r.x + r.y
             Vector2(-1.04, 1.04) * a004 + r.zw
         }
 
@@ -87,12 +87,12 @@ fun composeFinal() = shadeStyleFilter1to1 {
         val color by radiance + specularColor * indirect// * ambOcc
 
         val aces by function<Vector3, Vector3> { x ->
-            val a by 2.51;
-            val b by 0.03;
-            val c by 2.43;
-            val d by 0.59;
-            val e by 0.14;
-            (x * (a * x + b)) / (x * (c * x + d) + e);
+            val a by 2.51
+            val b by 0.03
+            val c by 2.43
+            val d by 0.59
+            val e by 0.14
+            (x * (a * x + b)) / (x * (c * x + d) + e)
         }
         val acesColor by aces(color)
         val finalColor = pow(acesColor, Vector3(1.0 / 2.2).symbol)
