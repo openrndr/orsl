@@ -11,6 +11,7 @@ dependencies {
     implementation(project(":orsl-extension-gradient"))
     implementation(project(":orsl-extension-noise"))
     implementation(project(":orsl-extension-pbr"))
+    implementation(project(":orsl-extension-raymarching"))
     implementation(project(":orsl-extension-sdf"))
 
     implementation(libs.orx.camera)

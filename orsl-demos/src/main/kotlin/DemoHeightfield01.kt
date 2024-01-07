@@ -6,13 +6,13 @@ import org.openrndr.orsl.shadergenerator.dsl.functions.Functions
 import org.openrndr.orsl.shadergenerator.dsl.functions.function
 import org.openrndr.orsl.shadergenerator.dsl.shadestyle.fragmentTransform
 import org.openrndr.orsl.shadergenerator.dsl.structs.getValue
-import org.openrndr.orsl.shadergenerator.phrases.sdf.MarchResult
-import org.openrndr.orsl.shadergenerator.phrases.sdf.hit
-import org.openrndr.orsl.shadergenerator.phrases.sdf.position
-import org.openrndr.orsl.shadergenerator.phrases.sdf.travel
 import org.openrndr.math.*
 import org.openrndr.math.transforms.normalMatrix
-import org.openrndr.orsl.extension.noise.phrases.value12D
+import org.openrndr.orsl.extension.noise.phrases.*
+import org.openrndr.orsl.extension.sdf.functions.MarchResult
+import org.openrndr.orsl.extension.sdf.functions.hit
+import org.openrndr.orsl.extension.sdf.functions.position
+import org.openrndr.orsl.extension.sdf.functions.travel
 
 
 fun ShaderBuilder.raycast(
@@ -63,7 +63,9 @@ fun main() {
         program {
 
             val ss = shadeStyle {
-                fragmentTransform {
+                fragmentTransform(ValueNoiseDerPhrasesIndex(ValueNoiseDerPhrases()),
+                    HashPhrasesIndex(HashPhrases())
+                    ) {
                     val p_origin by parameter<Vector3>()
                     val p_time by parameter<Double>()
                     val va_texCoord0 by parameter<Vector2>()

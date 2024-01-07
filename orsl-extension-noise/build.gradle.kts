@@ -11,7 +11,7 @@ kotlin {
             dependencies {
                 implementation(libs.openrndr.math)
                 implementation(project(":orsl-shader-generator"))
-                implementation(project(":orsl-shader-generator-annotations"))
+                api(project(":orsl-shader-generator-annotations"))
             }
         }
         val jvmTest by getting {

@@ -4,7 +4,11 @@ import org.openrndr.extra.camera.Camera2D
 import org.openrndr.orsl.shadergenerator.dsl.shadestyle.fragmentTransform
 
 import org.openrndr.math.*
-import org.openrndr.orsl.extension.noise.phrases.value13D
+import org.openrndr.orsl.extension.noise.phrases.*
+import org.openrndr.orsl.extension.sdf.phrases.FibonacciPhrases
+import org.openrndr.orsl.extension.sdf.phrases.FibonacciPhrasesIndex
+import org.openrndr.orsl.extension.sdf.phrases.SdfPhrases
+import org.openrndr.orsl.extension.sdf.phrases.SdfPhrasesIndex
 
 fun main() {
     application {
@@ -13,7 +17,10 @@ fun main() {
             extend {
                 drawer.shadeStyle = shadeStyle {
                     @Suppress("LocalVariableName")
-                    fragmentTransform {
+                    fragmentTransform(
+                        ValueNoiseDerPhrasesIndex(ValueNoiseDerPhrases()),
+                        HashPhrasesIndex(HashPhrases())
+                    ) {
                         val p_time by parameter<Double>()
                         val va_texCoord0 by parameter<Vector2>()
                         val d by value13D(Vector3(va_texCoord0, p_time)*10.0).yzw * 0.5 + Vector3(0.5)

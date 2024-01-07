@@ -6,8 +6,7 @@ import org.openrndr.orsl.shadergenerator.dsl.shadestyle.fragmentTransform
 import org.openrndr.math.*
 import org.openrndr.orsl.extension.noise.functions.fbm
 import org.openrndr.orsl.extension.noise.functions.perturb
-import org.openrndr.orsl.extension.noise.phrases.simplex13
-import org.openrndr.orsl.extension.noise.phrases.simplex22
+import org.openrndr.orsl.extension.noise.phrases.*
 
 fun main() {
     application {
@@ -16,7 +15,11 @@ fun main() {
             extend {
                 drawer.shadeStyle = shadeStyle {
                     @Suppress("LocalVariableName")
-                    fragmentTransform {
+                    fragmentTransform(
+                        SimplexPhrasesIndex(SimplexPhrases()),
+                        Mod289PhrasesIndex(Mod289Phrases()),
+                        PermutePhrasesIndex(PermutePhrases())
+                    ) {
                         val p_time by parameter<Double>()
                         val va_texCoord0 by parameter<Vector2>()
 

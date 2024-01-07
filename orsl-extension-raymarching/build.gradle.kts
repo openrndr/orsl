@@ -11,6 +11,7 @@ kotlin {
         val commonMain by getting {
             dependencies {
                 implementation(libs.openrndr.math)
+                implementation(libs.openrndr.draw)
                 implementation(project(":orsl-shader-generator"))
                 api(project(":orsl-shader-generator-annotations"))
             }

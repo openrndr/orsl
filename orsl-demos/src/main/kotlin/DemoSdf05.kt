@@ -4,14 +4,17 @@ import org.openrndr.extra.camera.Orbital
 import org.openrndr.orsl.shadergenerator.dsl.*
 import org.openrndr.orsl.shadergenerator.dsl.functions.function
 import org.openrndr.orsl.shadergenerator.dsl.shadestyle.fragmentTransform
-import org.openrndr.orsl.shadergenerator.dsl.structs.getValue
-import org.openrndr.orsl.shadergenerator.dsl.structs.setValue
-import org.openrndr.orsl.shadergenerator.phrases.sdf.*
-import org.openrndr.orsl.shadergenerator.phrases.sdf.calcSoftShadow
 import org.openrndr.math.*
 import org.openrndr.math.transforms.normalMatrix
 import org.openrndr.orsl.extension.gradient.functions.gradient
-import org.openrndr.orsl.extension.sdf.phrases.sdSphere
+import org.openrndr.orsl.extension.noise.phrases.HashPhrases
+import org.openrndr.orsl.extension.noise.phrases.HashPhrasesIndex
+import org.openrndr.orsl.extension.noise.phrases.ValueNoiseDerPhrases
+import org.openrndr.orsl.extension.noise.phrases.ValueNoiseDerPhrasesIndex
+import org.openrndr.orsl.extension.sdf.functions.calcAO
+import org.openrndr.orsl.extension.sdf.functions.march
+import org.openrndr.orsl.extension.sdf.functions.position
+import org.openrndr.orsl.extension.sdf.phrases.*
 
 
 fun main() {
@@ -23,7 +26,12 @@ fun main() {
         program {
 
             val ss = shadeStyle {
-                fragmentTransform {
+                fragmentTransform(
+                    SdfPhrasesIndex(SdfPhrases()),
+                    FibonacciPhrasesIndex(FibonacciPhrases()),
+                    ValueNoiseDerPhrasesIndex(ValueNoiseDerPhrases()),
+                    HashPhrasesIndex(HashPhrases())
+                ) {
                     val p_origin by parameter<Vector3>()
                     val p_time by parameter<Double>()
                     val va_texCoord0 by parameter<Vector2>()

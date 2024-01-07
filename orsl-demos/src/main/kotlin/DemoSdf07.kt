@@ -5,13 +5,14 @@ import org.openrndr.orsl.shadergenerator.dsl.functions.function
 import org.openrndr.orsl.shadergenerator.dsl.functions.symbol
 import org.openrndr.orsl.shadergenerator.dsl.shadestyle.fragmentTransform
 
-import org.openrndr.orsl.shadergenerator.phrases.sdf.*
 import org.openrndr.math.*
 import org.openrndr.math.transforms.normalMatrix
 import org.openrndr.orsl.extension.gradient.functions.gradient
-import org.openrndr.orsl.extension.noise.phrases.value13D
-import org.openrndr.orsl.extension.sdf.phrases.sdSphere
-import org.openrndr.orsl.extension.sdf.phrases.sphericalDistribution
+import org.openrndr.orsl.extension.noise.phrases.*
+import org.openrndr.orsl.extension.sdf.functions.calcAO
+import org.openrndr.orsl.extension.sdf.functions.march
+import org.openrndr.orsl.extension.sdf.functions.position
+import org.openrndr.orsl.extension.sdf.phrases.*
 
 // attempt to decouple the organisation of materials from the distance functions
 
@@ -24,7 +25,12 @@ fun main() {
         program {
 
             val ss = shadeStyle {
-                fragmentTransform {
+                fragmentTransform(
+                    SdfPhrasesIndex(SdfPhrases()),
+                    FibonacciPhrasesIndex(FibonacciPhrases()),
+                    ValueNoiseDerPhrasesIndex(ValueNoiseDerPhrases()),
+                    HashPhrasesIndex(HashPhrases())
+                ) {
                     val p_origin by parameter<Vector3>()
                     val p_time by parameter<Double>()
                     val va_texCoord0 by parameter<Vector2>()
@@ -87,7 +93,7 @@ fun main() {
 
                         if (shade) {
                             matQuantize = cos(it.y * 1.0) lt 0.0
-                            matSpecular = cos(it.x * 0.1)*50.0 + 60.0
+                            matSpecular = cos(it.x * 0.1) * 50.0 + 60.0
 
                             matColor = run {
                                 val s by (cos(it.y + p_time) * 0.5 + 0.5) * 0.5

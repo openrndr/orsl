@@ -4,16 +4,16 @@ import org.openrndr.extra.camera.Orbital
 import org.openrndr.orsl.shadergenerator.dsl.functions.function
 import org.openrndr.orsl.shadergenerator.dsl.functions.symbol
 import org.openrndr.orsl.shadergenerator.dsl.shadestyle.fragmentTransform
-import org.openrndr.orsl.shadergenerator.phrases.sdf.calcAO
-import org.openrndr.orsl.shadergenerator.phrases.sdf.hit
-import org.openrndr.orsl.shadergenerator.phrases.sdf.march
-import org.openrndr.orsl.shadergenerator.phrases.sdf.position
 import org.openrndr.math.Matrix44
 import org.openrndr.math.Vector2
 import org.openrndr.math.Vector3
 import org.openrndr.math.Vector4
 import org.openrndr.math.transforms.normalMatrix
 import org.openrndr.orsl.extension.gradient.functions.gradient
+import org.openrndr.orsl.extension.sdf.functions.calcAO
+import org.openrndr.orsl.extension.sdf.functions.hit
+import org.openrndr.orsl.extension.sdf.functions.march
+import org.openrndr.orsl.extension.sdf.functions.position
 
 
 fun main() {

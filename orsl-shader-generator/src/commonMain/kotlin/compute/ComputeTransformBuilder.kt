@@ -1,6 +1,7 @@
 package org.openrndr.orsl.shadergenerator.compute
 
 import org.openrndr.draw.ComputeStyle
+import org.openrndr.orsl.shadergenerator.annotations.ShaderBookIndex
 import org.openrndr.orsl.shadergenerator.dsl.UIntVector3
 import org.openrndr.orsl.shadergenerator.dsl.shadestyle.ShadeStyleBuilder
 import org.openrndr.orsl.shadergenerator.dsl.shadestyle.preprocessor
@@ -51,11 +52,11 @@ Image2DFunctions, IntRImage2DFunctions {
     val c_lii = symbol<UInt>("gl_LocalInvocationIndex")
 }
 
-fun ComputeStyle.computeTransform(builder: ComputeTransformBuilder.() ->Unit) {
+fun ComputeStyle.computeTransform(vararg indices: ShaderBookIndex<*>, builder: ComputeTransformBuilder.() ->Unit) {
     val ctb = ComputeTransformBuilder()
     ctb.push()
     ctb.builder()
-    val prep = preprocessor()
+    val prep = preprocessor(*indices)
     computePreamble = prep.preprocessShader(ctb.preamble)
     computeTransform = prep.preprocessShader(ctb.code)
     ctb.pop()

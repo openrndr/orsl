@@ -1,4 +1,4 @@
-package org.openrndr.orsl.shadergenerator.phrases.sdf
+package org.openrndr.orsl.extension.sdf.functions
 
 import org.openrndr.draw.Struct
 import org.openrndr.orsl.shadergenerator.dsl.FunctionSymbol1
