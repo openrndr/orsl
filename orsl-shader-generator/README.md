@@ -1,4 +1,4 @@
-# orx-shader-generator
+# orsl-shader-generator
 
 Tools for authoring shaders using Kotlin's typesafe builders.
 
@@ -196,14 +196,14 @@ fragmentTransform {
 }
 ```
 
-Kotlin operator | ORSL operator 
-----------------|--------------
-`<`             | `lt`
-`<=`            | `lte`
-`==`            | `eq`
-`!=`            | `neq`
-`>=`            | `gte`
-`>`            | `gt`
+| Kotlin operator | ORSL operator | 
+|-----------------|---------------|
+| `<`             | `lt`          |
+| `<=`            | `lte`         |
+| `==`            | `eq`          |
+| `!=`            | `neq`         |
+| `>=`            | `gte`         |
+|  `>`            | `gt`          |
 
 ### doIf statements
 
