@@ -1,4 +1,4 @@
-group = "org.openrndr.extra"
+group = "org.openrndr.orsl"
 plugins {
     alias(libs.plugins.nebula.release)
 }

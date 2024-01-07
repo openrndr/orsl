@@ -1,7 +1,11 @@
-rootProject.name = "poc-shader-generation"
+rootProject.name = "orsl"
 include(
-    listOf("orx-shader-generator", "orx-shader-generator-annotations", "orx-shader-generator-processor",
-    "orx-jvm:orx-glsl-parser")
+    listOf(
+        "orsl-shader-generator",
+        "orsl-shader-generator-annotations",
+        "orsl-shader-generator-processor",
+        "orsl-jvm:orsl-glsl-parser"
+    )
 
 )
 pluginManagement {
