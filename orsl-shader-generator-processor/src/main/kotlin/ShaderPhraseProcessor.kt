@@ -9,7 +9,7 @@ fun OutputStream.appendText(str: String) {
     this.write(str.toByteArray())
 }
 
-val annotationPackage = "org.openrndr.orsl.shadergenerator.annotations"
+const val annotationPackage = "org.openrndr.orsl.shadergenerator.annotations"
 
 class ShaderPhraseProcessor(val codeGenerator: CodeGenerator, val logger: KSPLogger) : SymbolProcessor {
     override fun process(resolver: Resolver): List<KSAnnotated> {

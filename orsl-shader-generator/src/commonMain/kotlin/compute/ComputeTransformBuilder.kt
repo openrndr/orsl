@@ -2,17 +2,13 @@ package org.openrndr.orsl.shadergenerator.compute
 
 import org.openrndr.draw.ComputeStyle
 import org.openrndr.orsl.shadergenerator.dsl.UIntVector3
-import org.openrndr.orsl.shadergenerator.dsl.functions.orsl.PbrFunctions
 import org.openrndr.orsl.shadergenerator.dsl.shadestyle.ShadeStyleBuilder
-import org.openrndr.orsl.shadergenerator.phrases.*
-import org.openrndr.orsl.shadergenerator.dsl.functions.FragmentDerivativeFunctions
 import org.openrndr.orsl.shadergenerator.dsl.shadestyle.preprocessor
 import org.openrndr.orsl.shadergenerator.dsl.functions.Image2DFunctions
 import org.openrndr.orsl.shadergenerator.dsl.functions.IntRImage2DFunctions
 import org.openrndr.orsl.shadergenerator.dsl.symbol
 
-class ComputeTransformBuilder() : ShadeStyleBuilder(), HashPhrasesFunctions, ValueNoiseDerPhrasesFunctions,
-    SimplexPhrasesFunctions, SdfPhrasesFunctions, FibonacciPhrasesFunctions, PbrFunctions, FragmentDerivativeFunctions,
+class ComputeTransformBuilder() : ShadeStyleBuilder(),
 
 Image2DFunctions, IntRImage2DFunctions {
 

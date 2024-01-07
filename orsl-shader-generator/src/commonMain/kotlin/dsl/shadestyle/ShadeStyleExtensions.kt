@@ -6,10 +6,6 @@ import org.openrndr.orsl.shadergenerator.phrases.PhraseResolver
 import org.openrndr.orsl.shadergenerator.phrases.dsl.ArrayPhrases
 import org.openrndr.orsl.shadergenerator.phrases.dsl.ArrayPhrasesIndex
 import org.openrndr.orsl.shadergenerator.phrases.*
-import org.openrndr.orsl.shadergenerator.phrases.SdfPhrases
-import org.openrndr.orsl.shadergenerator.phrases.SdfPhrasesIndex
-import org.openrndr.orsl.shadergenerator.phrases.ValueNoiseDerPhrases
-import org.openrndr.orsl.shadergenerator.phrases.ValueNoiseDerPhrasesIndex
 import kotlin.contracts.ExperimentalContracts
 import kotlin.contracts.InvocationKind
 import kotlin.contracts.contract
@@ -17,16 +13,8 @@ import kotlin.contracts.contract
 fun preprocessor(): PhraseResolver {
     val resolver = PhraseResolver()
     resolver.indices.add(ArrayPhrasesIndex(ArrayPhrases()))
-    resolver.indices.add(HashPhrasesIndex(HashPhrases()))
     resolver.indices.add(FastMathPhrasesIndex(FastMathPhrases()))
-    resolver.indices.add(Mod289PhrasesIndex(Mod289Phrases()))
-    resolver.indices.add(PermutePhrasesIndex(PermutePhrases()))
-    resolver.indices.add(SimplexPhrasesIndex(SimplexPhrases()))
     resolver.indices.add(ConstPhrasesIndex(ConstPhrases()))
-    resolver.indices.add(EasingPhrasesIndex(EasingPhrases()))
-    resolver.indices.add(ValueNoiseDerPhrasesIndex(ValueNoiseDerPhrases()))
-    resolver.indices.add(SdfPhrasesIndex(SdfPhrases()))
-    resolver.indices.add(FibonacciPhrasesIndex(FibonacciPhrases()))
     resolver.indices.add(TransformPhrasesIndex(TransformPhrases()))
     return resolver
 }

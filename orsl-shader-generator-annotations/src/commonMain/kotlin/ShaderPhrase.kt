@@ -14,7 +14,7 @@ annotation class IndexShaderBook
 
 @Target(AnnotationTarget.CLASS)
 @Retention(AnnotationRetention.SOURCE)
-annotation class WrapShaderBook
+annotation class WrapShaderBook(val extensionFunctions: Boolean = false)
 
 
 interface ShaderBook

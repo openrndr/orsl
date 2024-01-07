@@ -23,18 +23,36 @@ fun glslToKotlin(glslType:String) : String {
     }
 }
 
+/**
+ * Return a type name used in @JvmName()
+ */
+internal fun glslToJvmName(glslType:String) : String {
+    return when(glslType) {
+        "float" -> "Sd"
+        "vec2" -> "Sv2"
+        "vec3" -> "Sv3"
+        "vec4" -> "Sv4"
+        "mat2" -> "Sm22"
+        "mat3" -> "Sm33"
+        "mat4" -> "Sm44"
+        "int" -> "Si"
+        "bool" -> "Sb"
+        else -> error("unsupported glsl type '$glslType'")
+    }
+}
+
 class ShaderFunctionProcessor(val codeGenerator: CodeGenerator, val logger: KSPLogger) : SymbolProcessor {
     override fun process(resolver: Resolver): List<KSAnnotated> {
         val shaderBookSymbols = resolver.getSymbolsWithAnnotation("$annotationPackage.WrapShaderBook")
         val ret = shaderBookSymbols.filter { !it.validate() }.toList()
         shaderBookSymbols
             .filter { it is KSClassDeclaration && it.validate() }
-            .forEach { it.accept(ShaderBookVisitor(), Unit) }
+            .forEach { it.accept(ShaderBookVisitor(it.annotations.filter { println(it.shortName.asString()); it.shortName.asString() == "WrapShaderBook" }.first().arguments.first().value == true) , Unit) }
 
         return ret
     }
 
-    inner class ShaderBookVisitor: KSVisitorVoid() {
+    inner class ShaderBookVisitor(val generateExtensionFunctions: Boolean = false): KSVisitorVoid() {
         override fun visitClassDeclaration(classDeclaration: KSClassDeclaration, data: Unit) {
             val packageName = classDeclaration.containingFile!!.packageName.asString()
             val className = "${classDeclaration.simpleName.asString()}"
@@ -60,13 +78,18 @@ class ShaderFunctionProcessor(val codeGenerator: CodeGenerator, val logger: KSPL
                     "${"$"}{${it.first}.name}"
                 }
 
+                val receiver = if (generateExtensionFunctions) { "ShaderBuilder." } else ""
+                val jvmName = """@JvmName("${name}${parameters.joinToString("") { glslToJvmName(it.second) }}")"""
+
                 return when (parameters.size) {
-                    1 -> """fun ${name}($kotlinFunctionParameters): FunctionSymbol1<$parameterTypes, ${glslToKotlin(returnType)}> {
+                    1 -> """$jvmName
+                    |fun $receiver${name}($kotlinFunctionParameters): FunctionSymbol1<$parameterTypes, ${glslToKotlin(returnType)}> {
                     |    emitPreamble("#pragma import $name")
                     |    return FunctionSymbol1(p0 = ${parameters[0].first}, function = "$name($0)", type = "$returnType")  
                     |} 
                     """
-                    else -> """fun ${name}($kotlinFunctionParameters): Symbol<${glslToKotlin(returnType)}> {
+                    else -> """$jvmName
+                    |fun $receiver${name}($kotlinFunctionParameters): Symbol<${glslToKotlin(returnType)}> {
                     |    emitPreamble("#pragma import $name")
                     |    return object : Symbol<${glslToKotlin(returnType)}> {
                     |         override val name = "$name($kotlinFunctionArguments)"
@@ -84,10 +107,20 @@ class ShaderFunctionProcessor(val codeGenerator: CodeGenerator, val logger: KSPL
             file.appendText("import org.openrndr.orsl.shadergenerator.dsl.FunctionSymbol1\n")
             file.appendText("import org.openrndr.orsl.shadergenerator.dsl.Generator\n")
             file.appendText("import org.openrndr.orsl.shadergenerator.dsl.Symbol\n")
+            file.appendText("import kotlin.jvm.JvmName\n")
+            if (generateExtensionFunctions) {
+                file.appendText("import org.openrndr.orsl.shadergenerator.dsl.ShaderBuilder\n")
+            }
 
-            file.appendText("""interface ${generatedClassName}: Generator  {
-                |${functionsFromProperties.joinToString("\n") { it.toKotlin() }}
-                |}""".trimMargin())
+            if (!generateExtensionFunctions) {
+                file.appendText("""@Suppress("INAPPLICABLE_JVM_NAME")
+                |interface ${generatedClassName}: Generator  {
+                |${functionsFromProperties.joinToString("\n") { it.toKotlin() }.prependIndent("    ")}
+                |}""".trimMargin()
+                )
+            } else {
+                file.appendText("${functionsFromProperties.joinToString("\n") { it.toKotlin() }}".trimMargin())
+            }
             file.close()
         }
     }

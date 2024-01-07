@@ -5,7 +5,6 @@ import org.openrndr.draw.font.BufferAccess
 import org.openrndr.draw.font.BufferFlag
 import org.openrndr.orsl.shadergenerator.dsl.ShaderBuilder
 import org.openrndr.orsl.shadergenerator.dsl.*
-import org.openrndr.orsl.shadergenerator.dsl.functions.orsl.PbrFunctions
 import org.openrndr.orsl.shadergenerator.phrases.*
 import org.openrndr.orsl.shadergenerator.dsl.functions.FragmentDerivativeFunctions
 import org.openrndr.draw.parameter as structParameter
@@ -221,7 +220,7 @@ open class ShadeStyleBuilder : ShaderBuilder(emptySet()), TransformPhrasesFuncti
 }
 
 
-class VertexTransformBuilder() : ShadeStyleBuilder(), HashPhrasesFunctions, SimplexPhrasesFunctions {
+class VertexTransformBuilder() : ShadeStyleBuilder(){
     var x_position by output<Vector3>()
     var x_normal by output<Vector3>()
     var x_viewMatrix by output<Matrix44>()
@@ -237,8 +236,7 @@ class VertexTransformBuilder() : ShadeStyleBuilder(), HashPhrasesFunctions, Simp
 }
 
 
-class FragmentTransformBuilder() : ShadeStyleBuilder(), HashPhrasesFunctions, ValueNoiseDerPhrasesFunctions,
-    SimplexPhrasesFunctions, SdfPhrasesFunctions, FibonacciPhrasesFunctions, PbrFunctions, FragmentDerivativeFunctions {
+class FragmentTransformBuilder() : ShadeStyleBuilder(), FragmentDerivativeFunctions {
     var color by output<Vector4>()
     var x_fill by output<Vector4>()
     var x_stroke by output<Vector4>()
