@@ -85,7 +85,7 @@ One can use ordinary Kotlin functions as a sort of macro processor.
 ```kotlin
 fragmentTransform {
     fun makeFunction(expensive:Boolean) = function<Double, Double> { x ->
-        var y by 0.0
+        var y by Variable(0.0)
         // this is a statically evaluated conditional
         if (expensive) {
             y = sqrt(x)
