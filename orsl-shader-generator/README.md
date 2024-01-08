@@ -39,7 +39,7 @@ fun main() = application {
             drawer.shadeStyle = shadeStyle {
                 fragmentTransform {
                     val p_time by parameter<Double>()
-                    val va_texCoord0 by parameter<Vector2>()
+                    val va_texCoord0 by varyingIn<Vector2>()
                     val d by value13D(Vector3(va_texCoord0, p_time)*10.0).yzw * 0.5 + Vector3(0.5)
                     x_fill = Vector4(d, 1.0)
                 }
@@ -59,7 +59,7 @@ having no support for closures. However, values that are passed in using shader 
 ```kotlin
 fragmentTransform {
     val p_time by parameter<Double>()
-    val va_texCoord0 by parameter<Vector2>()
+    val va_texCoord0 by varyingIn<Vector2>()
     val f by function<Double, Double> { x ->
         x * x + cos(p_time)
     } 
@@ -71,7 +71,7 @@ fragmentTransform {
 Note that ORSL currently allows one to construct a function that accesses its parent scope. This will, however,result in a shader that cannot be compiled, since the underlying shader language (GLSL) does not support closures. To demonstrate a shader that incorrectly accesses values outside of its local scope: 
 
 ```kotlin
-val va_texCoord0 by parameter<Vector2>()
+val va_texCoord0 by varyingIng<Vector2>()
 val notInScope by 2.0
 val f by function<Double, Double> { x ->
     x * x + cos(p_time) + notInScope
@@ -113,7 +113,7 @@ val immutableGlobal by global(6.0)
 ```kotlin
 fragmentTransform {
     val p_time by parameter<Double>()
-    val va_texCoord0 by parameter<Vector2>()
+    val va_texCoord0 by varyingIn<Vector2>()
     var someGlobal by global<Double>()
     val f by function<Double, Double> { x ->
         someGlobal = x
@@ -150,7 +150,7 @@ Note that there are two types of for loops that can be used:
 ```kotlin
 fragmentTransform {
     val p_time by parameter<Double>()
-    val va_texCoord0 by parameter<Vector2>()
+    val va_texCoord0 by varyingIn<Vector2>()
     
     var sum by variable(0.0)
     // create a dynamic for loop

@@ -21,7 +21,7 @@ fun main() {
                 drawer.shadeStyle = shadeStyle {
                     @Suppress("LocalVariableName")
                     fragmentTransform {
-                        val va_texCoord0 by parameter<Vector2>()
+                        val va_texCoord0 by varyingIn<Vector2>()
                         val p_time by parameter<Double>()
                         val p_texture by parameter<Sampler2D>()
                         val p_window by parameter<Int>()

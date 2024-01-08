@@ -22,7 +22,7 @@ fun main() {
                         HashPhrasesIndex(HashPhrases())
                     ) {
                         val p_time by parameter<Double>()
-                        val va_texCoord0 by parameter<Vector2>()
+                        val va_texCoord0 by varyingIn<Vector2>()
                         val d by value13D(Vector3(va_texCoord0, p_time)*10.0).yzw * 0.5 + Vector3(0.5)
                         x_fill = Vector4(d, 1.0)
                     }

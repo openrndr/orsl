@@ -9,6 +9,8 @@ import org.openrndr.orsl.shadergenerator.phrases.dsl.compute.return_
 import org.openrndr.math.IntVector3
 import org.openrndr.math.Vector2
 import org.openrndr.math.Vector3
+import org.openrndr.orsl.extension.sdf.phrases.SdfPhrases
+import org.openrndr.orsl.extension.sdf.phrases.SdfPhrasesIndex
 import org.openrndr.orsl.extension.sdf.phrases.sdSphere
 import kotlin.math.cos
 
@@ -24,7 +26,7 @@ fun main() {
             val cb = colorBuffer(width, height)
             val splat = computeStyle {
                 this.workGroupSize = IntVector3(256, 1, 1)
-                computeTransform {
+                computeTransform(SdfPhrasesIndex(SdfPhrases())) {
                     var seed by global<UInt>()
                     val p_mouse by parameter<Vector2>()
                     val p_time by parameter<Double>()
@@ -135,7 +137,7 @@ fun main() {
 
             val mainImage = computeStyle {
                 workGroupSize = IntVector3(16, 16, 1)
-                computeTransform {
+                computeTransform(SdfPhrasesIndex(SdfPhrases())) {
                     val p_screen by parameter<Image2D>()
                     val p_atomic by parameter<IntRImage2D>()
                     val res by p_screen.size().uint

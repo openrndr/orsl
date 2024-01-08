@@ -20,7 +20,7 @@ fun main() {
                         PermutePhrasesIndex(PermutePhrases())
                     ) {
                         val p_time by parameter<Double>()
-                        val va_texCoord0 by parameter<Vector2>()
+                        val va_texCoord0 by varyingIn<Vector2>()
                         val distort by function<Vector2, Vector2> {
                             it + Vector2(cos(it.y + p_time), sin(it.x + p_time))
                         }

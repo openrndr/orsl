@@ -21,7 +21,7 @@ fun main() {
                         PermutePhrasesIndex(PermutePhrases())
                     ) {
                         val p_time by parameter<Double>()
-                        val va_texCoord0 by parameter<Vector2>()
+                        val va_texCoord0 by varyingIn<Vector2>()
 
                         val s2 by function<Vector2, Double> {
                             simplex13(Vector3(it, p_time))

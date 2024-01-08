@@ -28,7 +28,7 @@ fun main() {
                 fragmentTransform {
                     val p_origin by parameter<Vector3>()
                     val p_time by parameter<Double>()
-                    val va_texCoord0 by parameter<Vector2>()
+                    val va_texCoord0 by varyingIn<Vector2>()
 
                     val p_viewMatrix by parameter<Matrix44>()
                     val fixedCoord = Vector2(va_texCoord0.x, 1.0 - va_texCoord0.y)

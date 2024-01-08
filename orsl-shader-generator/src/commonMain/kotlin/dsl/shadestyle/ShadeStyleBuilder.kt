@@ -72,6 +72,18 @@ open class ShadeStyleBuilder : ShaderBuilder(emptySet()), TransformPhrasesFuncti
         return ParameterProperty(staticType<T>())
     }
 
+
+    inline fun <reified T> vertexAttribute(): ParameterProperty<T> {
+        return ParameterProperty(staticType<T>())
+    }
+
+    inline fun <reified T> instanceAttribute(): ParameterProperty<T> {
+        return ParameterProperty(staticType<T>())
+    }
+
+
+
+
     inline fun <reified T : Struct<T>> StyleParameters.parameter(value: T): ParameterProperty<T> {
         return ParameterProperty(staticType<T>()) { name ->
             (this@parameter).structParameter<T>(name.replace("p_", ""), value)
