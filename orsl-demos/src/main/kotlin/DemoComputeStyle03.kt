@@ -1,18 +1,27 @@
 import org.openrndr.application
 import org.openrndr.draw.*
+import org.openrndr.math.IntVector3
+import org.openrndr.math.Vector2
+import org.openrndr.math.Vector3
 import org.openrndr.orsl.shadergenerator.compute.computeTransform
 import org.openrndr.orsl.shadergenerator.dsl.Image2D
 import org.openrndr.orsl.shadergenerator.dsl.IntRImage2D
 import org.openrndr.orsl.shadergenerator.dsl.functions.function
 import org.openrndr.orsl.shadergenerator.dsl.functions.symbol
 import org.openrndr.orsl.shadergenerator.phrases.dsl.compute.return_
-import org.openrndr.math.IntVector3
-import org.openrndr.math.Vector2
-import org.openrndr.math.Vector3
 import kotlin.math.cos
 
-// based on compute.toys entry by wrighter
-// https://compute.toys/view/68
+/**
+ * Based on compute.toys entry by wrighter
+ * https://compute.toys/view/68
+ *
+ * Mouse interaction.
+ * Uses two compute shaders: `splat` and `mainImage`,
+ * and two [colorBuffer]: `atomic` (for calculations) and `cb` (also called `screen`, the resulting image).
+ * `splat` reads `screen`, `mainImage` writes into `screen`.
+ * Both compute shaders read from and write into `atomic`.
+ */
+
 
 fun main() {
     application {
@@ -40,9 +49,9 @@ fun main() {
                     val hash_u by function<UInt, UInt> {
                         var a by variable(it)
                         a = a xor (a shr 16)
-                        a = a * 0x7feb352du
+                        a *= 0x7feb352du
                         a = a xor (a shr 15)
-                        a = a * 0x846ca68bu
+                        a *= 0x846ca68bu
                         a = a xor (a shr 16)
                         a
                     }
@@ -121,7 +130,7 @@ fun main() {
                     imageMemoryBarrier {
                         doIf(
                             (q.z gt 0.0) and
-                            (cc.x gte 0) and (cc.y gte 0) and (cc.x lt R.x.int) and (cc.y lt R.y.int)
+                                    (cc.x gte 0) and (cc.y gte 0) and (cc.x lt R.x.int) and (cc.y lt R.y.int)
                         ) {
                             val b by p_atomic.atomicAdd(cc, 1)
                         }

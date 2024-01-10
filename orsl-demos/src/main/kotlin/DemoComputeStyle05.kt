@@ -1,12 +1,5 @@
 import org.openrndr.application
 import org.openrndr.draw.*
-import org.openrndr.orsl.shadergenerator.compute.computeTransform
-import org.openrndr.orsl.shadergenerator.dsl.Image2D
-import org.openrndr.orsl.shadergenerator.dsl.IntRImage2D
-import org.openrndr.orsl.shadergenerator.dsl.functions.function
-import org.openrndr.orsl.shadergenerator.dsl.functions.symbol
-import org.openrndr.orsl.shadergenerator.phrases.dsl.compute.return_
-import org.openrndr.orsl.shadergenerator.phrases.dsl.functions.extra.*
 import org.openrndr.math.IntVector3
 import org.openrndr.math.Vector2
 import org.openrndr.math.Vector3
@@ -16,6 +9,12 @@ import org.openrndr.orsl.extension.noise.functions.uniform3
 import org.openrndr.orsl.extension.noise.functions.uniformDisk
 import org.openrndr.orsl.extension.noise.phrases.value13
 import org.openrndr.orsl.extension.sdf.phrases.sdSphere
+import org.openrndr.orsl.shadergenerator.compute.computeTransform
+import org.openrndr.orsl.shadergenerator.dsl.Image2D
+import org.openrndr.orsl.shadergenerator.dsl.IntRImage2D
+import org.openrndr.orsl.shadergenerator.dsl.functions.function
+import org.openrndr.orsl.shadergenerator.dsl.functions.symbol
+import org.openrndr.orsl.shadergenerator.phrases.dsl.compute.return_
 import kotlin.math.cos
 
 
@@ -59,13 +58,13 @@ fun main() {
                     var fd by variable<Double>(0.0)
                     i.for_(0 until iters) {
                         val pp by p //erot(p, Vector3(1.0,1.0,1.0).normalized.symbol, (p.x+p.y+p.z+p_time) * 3.0*p_d)
-                        val dist0 by sdSphere(pp, 3.0.symbol) + value13(p  + Vector3(p_time, p_time, p_time))*4.0
+                        val dist0 by sdSphere(pp, 3.0.symbol) + value13(p + Vector3(p_time, p_time, p_time)) * 4.0
                         val dist by dist0
-                        p = p + dir * dist * 0.8
+                        p += dir * dist * 0.8
                         fd = dist
                     }
                     i.for_(0 until 4096) {
-                        val q by projParticle(p + Vector3(0.0.symbol, 0.0.symbol, (uniform1()-0.5)*1.0))
+                        val q by projParticle(p + Vector3(0.0.symbol, 0.0.symbol, (uniform1() - 0.5) * 1.0))
                         val k by q.xy * Vector2(9.0 / 16.0, 1.0) + uniformDisk() * abs(q.z - focusDist) * 0.5 * dofFac
                         val uv by k / 2.0 + Vector2(0.5)
                         val cc by (uv * R).int
@@ -96,8 +95,8 @@ fun main() {
                     }
                     val c by p_atomic.load(c_giid.xy.int).double + 1.0
                     var col by variable(Vector3(c, c, c))
-                    col = log(col) *0.15
-                    col = pow(col, Vector3( 2.2).symbol)
+                    col = log(col) * 0.15
+                    col = pow(col, Vector3(2.2).symbol)
                     col *= Vector3(1.0, 1.2, 1.3)
                     p_screen.store(c_giid.xy.int, Vector4(col, 1.0))
                     p_atomic.store(c_giid.xy.int, 0.symbol)
@@ -113,7 +112,7 @@ fun main() {
             extend {
                 splat.parameter("dofFocalDist", cos(seconds) * 0.5 + 0.5)
                 splat.parameter("time", seconds)
-                splat.execute(32,32)
+                splat.execute(32, 32)
                 mainImage.execute(width / mainImage.workGroupSize.x, height / mainImage.workGroupSize.y, 1)
                 drawer.image(cb)
             }

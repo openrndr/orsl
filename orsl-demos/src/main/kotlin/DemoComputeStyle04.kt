@@ -14,7 +14,9 @@ import org.openrndr.orsl.extension.sdf.phrases.SdfPhrasesIndex
 import org.openrndr.orsl.extension.sdf.phrases.sdSphere
 import kotlin.math.cos
 
-
+/**
+ * Variation of DemoComputeStyle03.kt doing 16 times more calculations (heavy!).
+ */
 fun main() {
     application {
         configure {
@@ -42,9 +44,9 @@ fun main() {
                     val hash_u by function<UInt, UInt> {
                         var a by variable(it)
                         a = a xor (a shr 16)
-                        a = a * 0x7feb352du
+                        a *= 0x7feb352du
                         a = a xor (a shr 15)
-                        a = a * 0x846ca68bu
+                        a *= 0x846ca68bu
                         a = a xor (a shr 16)
                         a
                     }
@@ -105,7 +107,7 @@ fun main() {
                         val dist1 by sdSphere(pp, cos(p_time + pp.z*40.0*p_b)*0.5 + 1.5)
                         val dist2 by sdSphere(pp, cos(p_time + pp.x*40.0*p_c)*0.5 + 1.5)
                         val dist by min(dist2, min(dist0, dist1))
-                        p = p + dir * dist * 0.8
+                        p += dir * dist * 0.8
                         fd = dist
                     }
                     val q by projParticle(p)

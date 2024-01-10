@@ -2,6 +2,7 @@ import org.openrndr.application
 import org.openrndr.draw.*
 import org.openrndr.extra.camera.Orbital
 import org.openrndr.extra.meshgenerators.sphereMesh
+import org.openrndr.math.Vector4
 import org.openrndr.orsl.shadergenerator.compute.computeTransform
 import org.openrndr.orsl.shadergenerator.dsl.Symbol
 import org.openrndr.orsl.shadergenerator.dsl.functions.symbol
@@ -9,52 +10,80 @@ import org.openrndr.orsl.shadergenerator.dsl.shadestyle.fragmentTransform
 import org.openrndr.orsl.shadergenerator.dsl.shadestyle.vertexTransform
 import org.openrndr.orsl.shadergenerator.dsl.structs.get
 
-class BufferStruct : Struct<BufferStruct>() {
-    val floats by arrayField<Double>(639)
-    val floats2 by arrayField<Double>(640)
+const val STRUCT_LEN = 500
+
+class MyStruct : Struct<MyStruct>() {
+    val positions by arrayField<Vector4>(STRUCT_LEN)
 }
 
-val Symbol<BufferStruct>.floats by BufferStruct::floats[640]
+val Symbol<MyStruct>.positions by MyStruct::positions[STRUCT_LEN]
 
 /**
- * A compute demo in which a compute style is used to generate positions in
- * a buffer structured by [BufferStruct]. A shade style is used to retrieve the
+ * A compute demo in which a [computeStyle] is used to generate positions in
+ * a buffer structured by [MyStruct]. A shade style is used to retrieve the
  * positions in the vertex transform.
  */
 fun main() {
     application {
         program {
-            val bufferStruct = BufferStruct()
-            val buffer = structuredBuffer(bufferStruct)
+            val myStruct1 = MyStruct()
+            val buffer1 = structuredBuffer(myStruct1)
 
-            val cs = computeStyle {
+            @Suppress("LocalVariableName")
+            val updateBuffer = computeStyle {
                 computeTransform {
-                    val b_buffer by parameter<BufferStruct>()
-                    b_buffer.floats[c_giid.x.int] = c_giid.x.double
+                    val p_seconds by parameter<Double>()
+                    val b_buffer by parameter<MyStruct>()
+
+                    val id by c_giid.x
+
+                    // spherical coordinates
+                    val r by 5.0 + sin(id.double * 0.001) * 4.0
+                    val a by id.double * 0.1000 + p_seconds
+                    val b by id.double * 0.0201 + sin(a)
+
+                    b_buffer.positions[id.int] = Vector4(
+                        r * sin(a) * cos(b),
+                        r * sin(a) * sin(b),
+                        r * cos(a),
+                        1.0
+                    )
                 }
             }
-            cs.buffer("buffer", buffer)
-            cs.execute(640, 1, 1)
+            updateBuffer.buffer("buffer", buffer1)
 
-            val ss = shadeStyle {
+            val style = shadeStyle {
                 vertexTransform {
-                    val b_buffer by parameter<BufferStruct>()
-                    val x by b_buffer.floats[c_instance] * 1.5
-                    x_position += Vector3(x, 0.0.symbol, 0.0.symbol)
+                    val b_buffer by parameter<MyStruct>()
+                    val pos by b_buffer.positions[c_instance]
+                    x_position += pos.xyz
                 }
                 fragmentTransform {
-                    x_fill = Vector4(v_viewNormal.z, v_viewNormal.z, v_viewNormal.z, 1.0.symbol)
+                    val z by v_viewPosition.z
+                    val nz by v_viewNormal.z
+
+                    x_fill = Vector4(
+                        nz * (sin(z * 0.9 + 1.0) * 0.5 + 0.5),
+                        nz * (sin(z * 0.8 + 1.2) * 0.5 + 0.5),
+                        nz * (sin(z * 0.7 + 1.4) * 0.5 + 0.5),
+                        1.0.symbol
+                    )
                 }
             }
-            ss.buffer("buffer", buffer)
+            style.buffer("buffer", buffer1)
 
-            val sphere = sphereMesh()
+            val sphere = sphereMesh(radius = 0.1)
+
             extend(Orbital())
             extend {
-                cs.execute(640, 1, 1)
+                // Run the compute shader to update buffer1
+                updateBuffer.parameter("seconds", seconds)
+                updateBuffer.execute(STRUCT_LEN, 1, 1)
+
+                // Render making use of buffer1
                 drawer.isolated {
-                    drawer.shadeStyle = ss
-                    drawer.vertexBufferInstances(listOf(sphere), emptyList(), DrawPrimitive.TRIANGLES, 140)
+                    drawer.shadeStyle = style
+                    drawer.vertexBufferInstances(listOf(sphere), emptyList(), DrawPrimitive.TRIANGLES, STRUCT_LEN)
                 }
             }
         }
