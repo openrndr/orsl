@@ -8,7 +8,7 @@ import java.net.URI
 
 val libs = the<LibrariesForLibs>()
 
-val shouldPublish = project.name !in setOf("openrndr-demos")
+val shouldPublish = project.name !in setOf("orsl-demos")
 plugins {
     kotlin("multiplatform")
     `maven-publish` apply false
