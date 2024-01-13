@@ -67,7 +67,6 @@ fun main() {
                         b = 1.0.symbol
                     } else_ {
                         b = 0.0.symbol
-                        emit("breaking time=3")
                     }
 
                     val c2 by n.elseIf(result.hit) {
