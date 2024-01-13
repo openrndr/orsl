@@ -267,11 +267,8 @@ class FragmentTransformBuilder() : ShadeStyleBuilder(), FragmentDerivativeFuncti
     /**
      * declare a varying in
      */
-    inline fun <reified T> varyingIn(): VaryingInProperty<T> {
+    inline fun <reified T> varyingIn(forceDefinition: Boolean = false): VaryingInProperty<T> {
         val glslType = staticType<T>()
-        return VaryingInProperty(this@FragmentTransformBuilder, glslType)
+        return VaryingInProperty(this@FragmentTransformBuilder, glslType, forceDefinition)
     }
-
-
-
 }

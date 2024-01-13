@@ -9,9 +9,11 @@ class OutputProperty<T>(val generator: Generator, val type:String) {
         activeGenerator().emit("${property.name} = ${value.name};")
     }
 }
-class VaryingInProperty<T>(val generator: Generator, val type: String) {
+class VaryingInProperty<T>(val generator: Generator, val type: String, val forceDefinition: Boolean = false) {
     operator fun provideDelegate(any: Any?, property: KProperty<*>) : VaryingInProperty<T> {
-        generator.emitPreamble(property.name, "in ${type} ${property.name};")
+        if (forceDefinition || !(property.name.startsWith("va_") || property.name.startsWith("vi_"))) {
+            generator.emitPreamble(property.name, "in $type ${property.name};")
+        }
         return this
     }
     operator fun getValue(any: Any?, property: KProperty<*>): Symbol<T> = symbol(property.name, type)
