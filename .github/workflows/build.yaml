@@ -1,0 +1,64 @@
+name: Build
+on:
+  push:
+    branches: [ master ]
+
+concurrency:
+  group: ${{ github.ref }}
+  cancel-in-progress: true
+
+defaults:
+  run:
+    working-directory: ./orx
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout current repository
+        uses: actions/checkout@v3
+        with:
+          path: ./orsl
+
+      - name: Validate Gradle wrapper
+        uses: gradle/wrapper-validation-action@v1.0.5
+
+      - name: Checkout OPENRNDR repository
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+          repository: openrndr/openrndr
+          path: ./openrndr
+          ref: master
+
+      - name: Checkout ORX repository
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+          repository: openrndr/orx
+          path: ./orx
+          ref: master
+
+      - name: Test glxinfo
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y mesa-utils xvfb
+          xvfb-run glxinfo
+
+      - uses: actions/setup-java@v3
+        with:
+          distribution: temurin
+          java-version: 17
+          cache: gradle
+
+      - name: Build OPENRNDR
+        working-directory: ./openrndr
+        run: ./gradlew publishToMavenLocal snapshot
+
+      - name: Build ORX
+        working-directory: ./orx
+        run: ./gradlew publishToMavenLocal snapshot
+
+      - name: Build ORSL
+        working-directory: ./orsl
+        run: ./gradlew publishToMavenLocal
