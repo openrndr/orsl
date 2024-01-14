@@ -60,4 +60,7 @@ jobs:
         run: ./gradlew publishToMavenLocal snapshot
 
       - name: Build ORSL
+        run:  xvfb-run ./gradlew publishToMavenLocal snapshot
+
+      - name: Publish ORSL
         run: ./gradlew publishToMavenLocal snapshot

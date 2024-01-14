@@ -14,8 +14,8 @@ jobs:
         with:
           distribution: temurin
           java-version: 17
-      - name: Build ORSL
-        run: ./gradlew -Prelease.useLastTag=true build
+      #- name: Build ORSL
+      #  run: ./gradlew -Prelease.useLastTag=true build
       - name: Decode
         run: |
           echo "${{secrets.SIGNING_SECRET_KEY_RING_FILE}}" > ~/.gradle/secring.gpg.b64
