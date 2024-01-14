@@ -8,15 +8,15 @@ jvmTarget = "11"
 openrndr = { require = "[0.4.2, 0.5.0)" }
 orx = { require = "[0.4.2, 0.5.0)" }
 kotlinxCoroutines = "1.7.3"
-kotlinLogging = "3.0.0"
+kotlinLogging = "6.0.2"
 kotlinxSerialization = "1.6.2"
 dokka = "1.7.10"
-nebulaRelease = "18.0.8"
+nebulaRelease = "19.0.3"
 gradleNexusPublish = "2.0.0-rc-1"
 spek = "2.0.19"
 kluent = "1.73"
-junitJupiter = "5.9.3"
-slf4j = "2.0.10"
+junitJupiter = "5.10.1"
+slf4j = "2.0.11"
 antlr = "4.13.1"
 
 [libraries]
@@ -24,7 +24,7 @@ kotlin-poet = { group = "com.squareup", name = "kotlinpoet", version.ref = "kotl
 kotlin-poet-ksp = { group = "com.squareup", name = "kotlinpoet-ksp", version.ref = "kotlinPoet"}
 ksp-symbol-processing-api = { group = "com.google.devtools.ksp", name = "symbol-processing-api", version.ref = "ksp"}
 ksp-symbol-processing = { group = "com.google.devtools.ksp", name = "symbol-processing", version.ref = "ksp"}
-kotlin-logging = { group = "io.github.microutils", name = "kotlin-logging", version.ref = "kotlinLogging" }
+kotlin-logging = { group = "io.github.oshai", name = "kotlin-logging", version.ref = "kotlinLogging" }
 kotlin-coroutines = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-core", version.ref = "kotlinxCoroutines" }
 kotlin-serialization-json = { group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-json", version.ref = "kotlinxSerialization" }
 kotlin-serialization-core = { group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-core", version.ref = "kotlinxSerialization" }

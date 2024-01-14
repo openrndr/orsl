@@ -80,6 +80,7 @@ kotlin {
         val jvmTest by getting {
             dependencies {
                 runtimeOnly(libs.bundles.jupiter)
+                runtimeOnly(libs.slf4j.simple)
             }
         }
 
