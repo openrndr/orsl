@@ -14,7 +14,7 @@ jobs:
         with:
           distribution: temurin
           java-version: 17
-      - name: Build ORX
+      - name: Build ORSL
         run: ./gradlew -Prelease.useLastTag=true build
       - name: Decode
         run: |
