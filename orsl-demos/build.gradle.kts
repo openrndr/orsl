@@ -13,7 +13,7 @@ dependencies {
     implementation(project(":orsl-extension-pbr"))
     implementation(project(":orsl-extension-raymarching"))
     implementation(project(":orsl-extension-sdf"))
-
+    runtimeOnly(libs.slf4j.simple)
     implementation(libs.orx.camera)
     implementation(libs.orx.mesh.generators)
     implementation(libs.orx.olive)
