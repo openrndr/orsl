@@ -1,6 +1,6 @@
 [versions]
 ksp = "1.9.23-1.0.19"
-kotlinPoet = "1.15.3"
+kotlinPoet = "1.16.0"
 kotlinApi = "1.9"
 kotlinLanguage = "1.9"
 kotlin = "1.9.23"
@@ -9,10 +9,10 @@ openrndr = { require = "[0.4.2, 0.5.0)" }
 orx = { require = "[0.4.2, 0.5.0)" }
 kotlinxCoroutines = "1.8.0"
 kotlinLogging = "6.0.3"
-kotlinxSerialization = "1.6.3"
+kotlinxSerialization = "1.6.4"
 dokka = "1.7.10"
 nebulaRelease = "18.0.7"
-gradleNexusPublish = "2.0.0-rc-1"
+gradleNexusPublish = "2.0.0"
 kluent = "1.73"
 junitJupiter = "5.10.1"
 slf4j = "2.0.12"

@@ -17,6 +17,5 @@ dependencies {
     implementation(libs.orx.camera)
     implementation(libs.orx.mesh.generators)
     implementation(libs.orx.olive)
-
     testImplementation(libs.kluent)
 }

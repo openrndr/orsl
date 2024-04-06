@@ -3,8 +3,10 @@ package org.openrndr.orsl.convention
 import CollectScreenshotsTask
 import org.gradle.accessors.dm.LibrariesForLibs
 import org.gradle.api.tasks.testing.logging.TestExceptionFormat
-import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 import java.net.URI
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+import org.jetbrains.kotlin.gradle.dsl.KotlinCompile
+import org.jetbrains.kotlin.gradle.tasks.KotlinJvmCompile
 
 val libs = the<LibrariesForLibs>()
 
@@ -27,14 +29,17 @@ repositories {
 
 group = "org.openrndr.extra"
 
-tasks.withType<KotlinCompile>() {
+tasks.withType<KotlinCompile<*>> {
     kotlinOptions.apiVersion = libs.versions.kotlinApi.get()
     kotlinOptions.languageVersion = libs.versions.kotlinLanguage.get()
+    kotlinOptions.freeCompilerArgs += "-Xexpect-actual-classes"
+    kotlinOptions.freeCompilerArgs += "-Xjdk-release=${libs.versions.jvmTarget.get()}"
 }
-
+tasks.withType<KotlinJvmCompile>().configureEach {
+    compilerOptions.jvmTarget.set(JvmTarget.fromTarget(libs.versions.jvmTarget.get()))
+}
 kotlin {
     jvm {
-        jvmToolchain(libs.versions.jvmTarget.get().toInt())
         compilations {
             val main by getting
 

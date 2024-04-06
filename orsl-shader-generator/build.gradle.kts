@@ -2,7 +2,7 @@ import org.jetbrains.kotlin.gradle.dsl.KotlinCompile
 
 plugins {
     org.openrndr.orsl.convention.`kotlin-multiplatform`
-    id("com.google.devtools.ksp") version "1.9.22-1.0.16"
+    id("com.google.devtools.ksp") version "1.9.23-1.0.19"
 
 }
 
