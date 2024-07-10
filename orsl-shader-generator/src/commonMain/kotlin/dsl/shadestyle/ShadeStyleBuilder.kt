@@ -125,7 +125,7 @@ open class ShadeStyleBuilder : ShaderBuilder(emptySet()), TransformPhrasesFuncti
     ): BufferProperty<T> {
         return BufferProperty(staticType<T>()) { name ->
             registerStructuredBuffer<T>(name, access, flags.toSet())
-            this@buffer.buffer(name, structuredBuffer)
+            this@buffer.buffer(name, structuredBuffer.ssbo)
         }
     }
 

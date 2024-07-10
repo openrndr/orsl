@@ -13,15 +13,15 @@ interface IntVector2Functions {
     fun abs(x: Symbol<IntVector2>): Symbol<IntVector2> = functionSymbol(x, "abs($0)")
 
     @JvmName("divVdSiv2")
-    operator fun Double.div(right: Symbol<IntVector2>): Symbol<Vector2> = functionSymbol(this, right, "($0 / $1)")
+    operator fun Double.div(right: Symbol<IntVector2>): Symbol<Vector2> = functionSymbol(this, right, "($0 / vec2($1))")
 
 
     @JvmName("timesSiv2Vd")
-    operator fun Symbol<IntVector2>.times(right: Double): Symbol<Vector2> = functionSymbol(this, right, "($0 * $1)")
+    operator fun Symbol<IntVector2>.times(right: Double): Symbol<Vector2> = functionSymbol(this, right, "(vec2($0) * $1)")
 
     @JvmName("timesSiv2Sd")
     operator fun Symbol<IntVector2>.times(right: Symbol<Double>): Symbol<Vector2> =
-        functionSymbol(this, right, "($0 * $1)")
+        functionSymbol(this, right, "(vec2($0) * $1)")
 
 
     val Symbol<IntVector2>.x: Symbol<Int>

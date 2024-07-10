@@ -7,10 +7,10 @@ import kotlin.jvm.JvmName
 @Suppress("INAPPLICABLE_JVM_NAME")
 interface UIntVector2Functions {
     @JvmName("divVdSuiv2")
-    operator fun Double.div(right: Symbol<UIntVector2>): Symbol<Vector2> = functionSymbol(this, right, "($0 / $1)")
+    operator fun Double.div(right: Symbol<UIntVector2>): Symbol<Vector2> = functionSymbol(this, right, "($0 / vec2($1))")
 
     @JvmName("timesSuiv2Vd")
-    operator fun Symbol<UIntVector2>.times(right: Double): Symbol<Vector2> = functionSymbol(this, right, "($0 * $1)")
+    operator fun Symbol<UIntVector2>.times(right: Double): Symbol<Vector2> = functionSymbol(this, right, "(vec2($0) * $1)")
 
     @JvmName("timesSuiv2Sd")
     operator fun Symbol<UIntVector2>.times(right: Symbol<Double>): Symbol<Vector2> =

@@ -3,6 +3,7 @@ package org.openrndr.orsl.convention
 import ScreenshotsHelper.collectScreenshots
 import org.gradle.accessors.dm.LibrariesForLibs
 import org.gradle.api.tasks.testing.logging.TestExceptionFormat
+import org.gradle.nativeplatform.platform.internal.DefaultNativePlatform
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 val libs = the<LibrariesForLibs>()
@@ -50,6 +51,10 @@ dependencies {
     "demoImplementation"(libs.openrndr.extensions)
     "demoRuntimeOnly"(libs.openrndr.gl3.core)
     "demoRuntimeOnly"(libs.slf4j.simple)
+    if (DefaultNativePlatform.getCurrentOperatingSystem().isMacOsX) {
+        "demoRuntimeOnly"(libs.openrndr.gl3.natives.macos.arm64)
+    }
+
 }
 
 
@@ -132,4 +137,8 @@ if (shouldPublish) {
         setRequired({ isReleaseVersion && gradle.taskGraph.hasTask("publish") })
         sign(publishing.publications)
     }
+}
+
+java {
+    targetCompatibility = JavaVersion.valueOf("VERSION_${libs.versions.jvmTarget.get()}")
 }

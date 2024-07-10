@@ -5,6 +5,7 @@ plugins {
 dependencies {
     implementation(libs.openrndr.application)
     implementation(libs.openrndr.gl3.core)
+    implementation("org.openrndr:openrndr-gl3-natives-macos-arm64:0.4.5-SNAPSHOT")
     implementation(project(":orsl-shader-generator"))
     implementation(project(":orsl-extension-color"))
     implementation(project(":orsl-extension-easing"))

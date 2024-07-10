@@ -50,7 +50,7 @@ fun main() {
                     )
                 }
             }
-            updateBuffer.buffer("buffer", buffer1)
+            updateBuffer.buffer("buffer", buffer1.ssbo)
 
             val style = shadeStyle {
                 vertexTransform {
@@ -70,7 +70,7 @@ fun main() {
                     )
                 }
             }
-            style.buffer("buffer", buffer1)
+            style.buffer("buffer", buffer1.ssbo)
 
             val sphere = sphereMesh(radius = 0.1)
 

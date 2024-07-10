@@ -3,6 +3,7 @@ package org.openrndr.orsl.convention
 import CollectScreenshotsTask
 import org.gradle.accessors.dm.LibrariesForLibs
 import org.gradle.api.tasks.testing.logging.TestExceptionFormat
+import org.gradle.nativeplatform.platform.internal.DefaultNativePlatform
 import java.net.URI
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jetbrains.kotlin.gradle.dsl.KotlinCompile
@@ -96,6 +97,11 @@ kotlin {
                 implementation(libs.openrndr.extensions)
                 runtimeOnly(libs.openrndr.gl3.core)
                 runtimeOnly(libs.slf4j.simple)
+                dependencies {
+                    if (DefaultNativePlatform.getCurrentOperatingSystem().isMacOsX) {
+                        runtimeOnly(libs.openrndr.gl3.natives.macos.arm64)
+                    }
+                }
             }
 
             // https://youtrack.jetbrains.com/issue/KTIJ-25644

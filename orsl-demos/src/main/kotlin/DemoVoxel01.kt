@@ -48,7 +48,7 @@ fun main() {
             val filterSdf = computeStyle {
                 image("sdf", vt.imageBinding(0, ImageAccess.READ))
 
-                buffer("instances", instances)
+                buffer("instances", instances.ssbo)
                 workGroupSize = IntVector3(1, 1, 1)
                 computeTransform {
                     val b_instances by parameter<Voxel32>()
@@ -87,7 +87,7 @@ fun main() {
             }
 
             val ss = shadeStyle {
-                buffer("instances", instances)
+                buffer("instances", instances.ssbo)
                 vertexTransform {
                     val b_instances by parameter<Voxel32>()
                     x_position *= b_instances.position[c_instance].w
@@ -101,7 +101,7 @@ fun main() {
             }
 
             vt.imageBinding(0, ImageAccess.READ_WRITE)
-            filterSdf.buffer("instances", instances)
+            filterSdf.buffer("instances", instances.ssbo)
             val box = boxMesh()
             extend(Orbital())
             extend {
@@ -114,8 +114,6 @@ fun main() {
                 drawer.vertexBufferInstances(listOf(box), emptyList(), DrawPrimitive.TRIANGLES, 32*32*32)
 
             }
-
-
         }
     }
 }

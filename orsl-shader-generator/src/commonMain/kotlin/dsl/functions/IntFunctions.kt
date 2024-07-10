@@ -38,13 +38,13 @@ interface IntFunctions {
     operator fun Symbol<Int>.plus(right: Symbol<Int>): Symbol<Int> = functionSymbol(this, right, "($0 + $1)")
 
     @JvmName("plusSiSd")
-    operator fun Symbol<Int>.plus(right: Symbol<Double>): Symbol<Double> = functionSymbol(this, right, "($0 + $1)")
+    operator fun Symbol<Int>.plus(right: Symbol<Double>): Symbol<Double> = functionSymbol(this, right, "(float($0) + $1)")
 
     @JvmName("plusSiVi")
     operator fun Symbol<Int>.plus(right: Int): Symbol<Int> = functionSymbol(this, right, "($0 + $1)")
 
     @JvmName("plusSiVd")
-    operator fun Symbol<Int>.plus(right: Double): Symbol<Double> = functionSymbol(this, right, "($0 + $1)")
+    operator fun Symbol<Int>.plus(right: Double): Symbol<Double> = functionSymbol(this, right, "(float($0) + $1)")
 
     @JvmName("minusSiSi")
     operator fun Symbol<Int>.minus(right: Symbol<Int>): Symbol<Int> = functionSymbol(this, right, "($0 - $1)")
@@ -59,16 +59,16 @@ interface IntFunctions {
     operator fun Symbol<Int>.times(right: Int): Symbol<Int> = functionSymbol(this, right, "($0 * $1)")
 
     @JvmName("timesSiVd")
-    operator fun Symbol<Int>.times(right: Double): Symbol<Double> = functionSymbol(this, right, "($0 * $1)")
+    operator fun Symbol<Int>.times(right: Double): Symbol<Double> = functionSymbol(this, right, "(float($0) * $1)")
 
     @JvmName("divSiSi")
     operator fun Symbol<Int>.div(right: Symbol<Int>): Symbol<Int> = functionSymbol(this, right, "($0 / $1)")
 
     @JvmName("divSiSd")
-    operator fun Symbol<Int>.div(right: Symbol<Double>): Symbol<Double> = functionSymbol(this, right, "($0 / $1)")
+    operator fun Symbol<Int>.div(right: Symbol<Double>): Symbol<Double> = functionSymbol(this, right, "(float($0) / $1)")
 
     @JvmName("divSiVd")
-    operator fun Symbol<Int>.div(right: Double): Symbol<Double> = functionSymbol(this, right, "($0 / $1)")
+    operator fun Symbol<Int>.div(right: Double): Symbol<Double> = functionSymbol(this, right, "(float($0) / $1)")
 
     @JvmName("eqSiSi")
     infix fun Symbol<Int>.eq(right: Symbol<Int>): Symbol<Boolean> = functionSymbol(this, right, "($0 == $1)")

@@ -167,13 +167,13 @@ interface DoubleFunctions {
     operator fun Double.plus(right: Symbol<Double>): Symbol<Double> = functionSymbol(this, right, "($0 + $1)")
 
     @JvmName("plusSdSi")
-    operator fun Symbol<Double>.plus(right: Symbol<Int>): Symbol<Double> = functionSymbol(this, right, "($0 + $1)")
+    operator fun Symbol<Double>.plus(right: Symbol<Int>): Symbol<Double> = functionSymbol(this, right, "($0 + float($1))")
 
     @JvmName("plusSdVd")
     operator fun Symbol<Double>.plus(right: Double): Symbol<Double> = functionSymbol(this, right, "($0 + $1)")
 
     @JvmName("plusSdVi")
-    operator fun Symbol<Double>.plus(right: Int): Symbol<Double> = functionSymbol(this, right, "($0 + $1)")
+    operator fun Symbol<Double>.plus(right: Int): Symbol<Double> = functionSymbol(this, right, "($0 + float($1))")
 
     @JvmName("minusVdSd")
     operator fun Double.minus(right: Symbol<Double>): Symbol<Double> = functionSymbol(this, right, "($0 - $1)")
@@ -194,7 +194,7 @@ interface DoubleFunctions {
     operator fun Symbol<Double>.times(right: Double): Symbol<Double> = functionSymbol(this, right, "($0 * $1)")
 
     @JvmName("timesSdVi")
-    operator fun Symbol<Double>.times(right: Int): Symbol<Double> = functionSymbol(this, right, "($0 * $1)")
+    operator fun Symbol<Double>.times(right: Int): Symbol<Double> = functionSymbol(this, right, "($0 * float($1))")
 
     @JvmName("divSdSd")
     operator fun Symbol<Double>.div(right: Symbol<Double>): Symbol<Double> = functionSymbol(this, right, "($0 / $1)")

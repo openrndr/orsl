@@ -17,15 +17,15 @@ class FibonacciPhrases : ShaderBook {
 vec4 sphericalDistribution( vec3 p, int n )
 {
     p = normalize(p);
-    float m = 1.0 - 1.0/n;
+    float m = 1.0 - 1.0 / float(n);
 
     float phi = min(atan(p.y, p.x), PI), cosTheta = p.z;
 
-    float k = max(2.0, floor( log(n * PI * sqrt(5.0) * (1.0 - cosTheta*cosTheta))/ log(PHI+1.0)));
+    float k = max(2.0, floor( log(float(n) * PI * sqrt(5.0) * (1.0 - cosTheta*cosTheta))/ log(PHI+1.0)));
     float Fk = pow(PHI, k)/sqrt(5.0);
     vec2 F = vec2( floor(Fk + 0.5), floor(Fk * PHI + 0.5) ); // k, k+1
 
-    vec2 ka = 2.0*F/n;
+    vec2 ka = 2.0*F/float(n);
     vec2 kb = 2.0*PI*( fract((F+1.0)*PHI) - (PHI-1.0) );
 
     mat2 iB = mat2( ka.y, -ka.x,
@@ -42,7 +42,7 @@ vec4 sphericalDistribution( vec3 p, int n )
         float i = dot(F, uv + c); // all quantities are ingeters (can take a round() for extra safety)
 
         float phi = 2.0*PI*fract(i*PHI);
-        float cosTheta = m - 2.0*i/n;
+        float cosTheta = m - 2.0*i/float(n);
         float sinTheta = sqrt(1.0 - cosTheta*cosTheta);
 
         vec3 q = vec3( cos(phi)*sinTheta, sin(phi)*sinTheta, cosTheta );
