@@ -29,7 +29,7 @@ repositories {
     mavenLocal()
 }
 
-group = "org.openrndr.extra"
+group = "org.openrndr.orsl"
 
 val main: SourceSet by sourceSets.getting
 
@@ -95,7 +95,7 @@ if (shouldPublish) {
         publications {
             create<MavenPublication>("maven") {
                 from(components["java"])
-                groupId = "org.openrndr.extra"
+                groupId = "org.openrndr.orsl"
                 artifactId = project.name
                 description = project.name
                 versionMapping {

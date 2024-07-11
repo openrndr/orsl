@@ -28,7 +28,7 @@ repositories {
     mavenLocal()
 }
 
-group = "org.openrndr.extra"
+group = "org.openrndr.orsl"
 
 tasks.withType<KotlinCompile<*>> {
     kotlinOptions.apiVersion = libs.versions.kotlinApi.get()
