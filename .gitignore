@@ -3,6 +3,7 @@ build
 out
 .idea
 .gradle
+.kotlin
 openrndr-application.exe
 openrndr-application.ico
 ffmpeg*

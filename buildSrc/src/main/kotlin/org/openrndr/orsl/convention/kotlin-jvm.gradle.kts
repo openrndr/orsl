@@ -4,7 +4,10 @@ import ScreenshotsHelper.collectScreenshots
 import org.gradle.accessors.dm.LibrariesForLibs
 import org.gradle.api.tasks.testing.logging.TestExceptionFormat
 import org.gradle.nativeplatform.platform.internal.DefaultNativePlatform
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+import org.jetbrains.kotlin.gradle.dsl.KotlinVersion
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+import org.jetbrains.kotlin.gradle.tasks.KotlinJvmCompile
 
 val libs = the<LibrariesForLibs>()
 
@@ -72,12 +75,18 @@ tasks {
             addBooleanOption("Xdoclint:none", true)
         }
     }
-    withType<KotlinCompile>() {
-        kotlinOptions.jvmTarget = libs.versions.jvmTarget.get()
-        kotlinOptions.apiVersion = libs.versions.kotlinApi.get()
-        kotlinOptions.languageVersion = libs.versions.kotlinLanguage.get()
-        kotlinOptions.freeCompilerArgs += "-Xexpect-actual-classes"
-        kotlinOptions.freeCompilerArgs += "-Xjdk-release=${libs.versions.jvmTarget.get()}"
+    withType<KotlinJvmCompile> {
+        compilerOptions {
+            jvmTarget.set(JvmTarget.fromTarget(libs.versions.jvmTarget.get()))
+            freeCompilerArgs.add("-Xjdk-release=${libs.versions.jvmTarget.get()}")
+        }
+    }
+    withType<KotlinCompile> {
+        compilerOptions {
+            apiVersion.set(KotlinVersion.KOTLIN_2_1)
+            languageVersion.set(KotlinVersion.KOTLIN_2_1)
+            freeCompilerArgs.add("-Xexpect-actual-classes")
+        }
     }
 }
 

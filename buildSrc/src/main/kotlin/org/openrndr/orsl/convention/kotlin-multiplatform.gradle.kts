@@ -4,9 +4,9 @@ import CollectScreenshotsTask
 import org.gradle.accessors.dm.LibrariesForLibs
 import org.gradle.api.tasks.testing.logging.TestExceptionFormat
 import org.gradle.nativeplatform.platform.internal.DefaultNativePlatform
-import java.net.URI
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
-import org.jetbrains.kotlin.gradle.dsl.KotlinCompile
+import org.jetbrains.kotlin.gradle.dsl.KotlinVersion
+import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 import org.jetbrains.kotlin.gradle.tasks.KotlinJvmCompile
 
 val libs = the<LibrariesForLibs>()
@@ -30,15 +30,21 @@ repositories {
 
 group = "org.openrndr.orsl"
 
-tasks.withType<KotlinCompile<*>> {
-    kotlinOptions.apiVersion = libs.versions.kotlinApi.get()
-    kotlinOptions.languageVersion = libs.versions.kotlinLanguage.get()
-    kotlinOptions.freeCompilerArgs += "-Xexpect-actual-classes"
-    kotlinOptions.freeCompilerArgs += "-Xjdk-release=${libs.versions.jvmTarget.get()}"
-}
 tasks.withType<KotlinJvmCompile>().configureEach {
-    compilerOptions.jvmTarget.set(JvmTarget.fromTarget(libs.versions.jvmTarget.get()))
+    compilerOptions {
+        jvmTarget.set(JvmTarget.fromTarget(libs.versions.jvmTarget.get()))
+        freeCompilerArgs.add("-Xjdk-release=${libs.versions.jvmTarget.get()}")
+    }
 }
+tasks.withType<KotlinCompile> {
+    compilerOptions {
+        // TODO: use libs.versions
+        apiVersion.set(KotlinVersion.KOTLIN_2_1)
+        languageVersion.set(KotlinVersion.KOTLIN_2_1)
+        freeCompilerArgs.add("-Xexpect-actual-classes")
+    }
+}
+
 kotlin {
     jvm {
         compilations {

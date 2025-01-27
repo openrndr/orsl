@@ -1,9 +1,10 @@
-import org.jetbrains.kotlin.gradle.dsl.KotlinCompile
+import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
     org.openrndr.orsl.convention.`kotlin-multiplatform`
-    id("com.google.devtools.ksp") version "1.9.23-1.0.19"
-
+    // TODO: the next version should not be hardcoded here
+    //id(libs.plugins.ksp.annotation.processor.get())
+    id("com.google.devtools.ksp") version "2.1.0-1.0.29"
 }
 
 kotlin {
@@ -45,7 +46,7 @@ dependencies {
     add("kspCommonMainMetadata", project(":orsl-shader-generator-processor"))
 }
 
-tasks.withType<KotlinCompile<*>>().all {
+tasks.withType<KotlinCompile>().all {
     if (name != "kspCommonMainKotlinMetadata") {
         dependsOn("kspCommonMainKotlinMetadata")
     }
@@ -53,6 +54,7 @@ tasks.withType<KotlinCompile<*>>().all {
 tasks.findByName("jsSourcesJar")!!.dependsOn("kspCommonMainKotlinMetadata")
 tasks.findByName("jvmSourcesJar")!!.dependsOn("kspCommonMainKotlinMetadata")
 tasks.findByName("sourcesJar")!!.dependsOn("kspCommonMainKotlinMetadata")
+tasks.findByName("compileKotlinJs")!!.dependsOn("kspCommonMainKotlinMetadata")
 
 kotlin.sourceSets.commonMain {
     kotlin.srcDir("build/generated/ksp/metadata/commonMain/kotlin")
