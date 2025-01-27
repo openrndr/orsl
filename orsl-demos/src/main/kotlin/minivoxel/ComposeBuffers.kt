@@ -17,7 +17,7 @@ fun composeRadiance() = shadeStyleFilter1to1 {
         val tex2 by parameter<Sampler2D>() // ambient occlusion
         val tex3 by parameter<Sampler2D>() // normal
         val tex4 by parameter<Sampler2D>() // irradiance
-        val v_texCoord0 by parameter<Vector2>()
+        val v_texCoord0 by varyingIn<Vector2>()
 
         val sh by function<Vector3, Vector3> { n ->
             Vector3(0.754554516862612, 0.748542953903366, 0.790921515418539).symbol +
@@ -55,7 +55,7 @@ fun composeFinal() = shadeStyleFilter1to1 {
         val tex4 by parameter<Sampler2D>() // material
         val tex5 by parameter<Sampler2D>() // albedo
         val tex6 by parameter<Sampler2D>() // ambient occlussion
-        val v_texCoord0 by parameter<Vector2>()
+        val v_texCoord0 by varyingIn<Vector2>()
         val p_cameraPosition by parameter<Vector3>()
 
         val radiance by tex0[v_texCoord0].xyz

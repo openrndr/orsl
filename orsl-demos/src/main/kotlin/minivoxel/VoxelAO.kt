@@ -29,7 +29,7 @@ fun voxelAO(voxel: VolumeTexture, rayCount: Int = 4, stepsPerRayCount: Int = 20)
 
 
 
-            val v_texCoord0 by parameter<Vector2>()
+            val v_texCoord0 by varyingIn<Vector2>()
             val worldNormal by tex0[v_texCoord0].xyz.normalized
             val worldPosition by tex1[v_texCoord0].xyz / (p_sdfs[0].size().double * 0.5)
 

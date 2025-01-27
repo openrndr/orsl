@@ -20,7 +20,7 @@ fun aoSmoother(samples: Int) = shadeStyleFilter1to1 {
         val worldNormal = tex2
         val p_bn1map by parameter<Sampler2D>()
 
-        val v_texCoord0 by parameter<Vector2>()
+        val v_texCoord0 by varyingIn<Vector2>()
         val step by 1.0 / tex0.size()
 
         val i by variable<Int>()

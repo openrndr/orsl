@@ -17,7 +17,7 @@
 //    fun fbm11() {
 //        val ss = shadeStyle {
 //            fragmentTransform {
-//                val va_texCoord0 by parameter<Vector2>()
+//                val va_texCoord0 by varyingIn<Vector2>()
 //
 //                val s1 by function<Double, Double> {
 //                    simplex12(Vector2(it, it))
@@ -34,7 +34,7 @@
 //    fun billow11() {
 //        val ss = shadeStyle {
 //            fragmentTransform {
-//                val va_texCoord0 by parameter<Vector2>()
+//                val va_texCoord0 by varyingIn<Vector2>()
 //
 //                val s1 by function<Double, Double> {
 //                    simplex12(Vector2(it, it))
@@ -51,7 +51,7 @@
 //    fun fbm12() {
 //        val ss = shadeStyle {
 //            fragmentTransform {
-//                val va_texCoord0 by parameter<Vector2>()
+//                val va_texCoord0 by varyingIn<Vector2>()
 //
 //                val s2 by function<Vector2, Double> {
 //                    simplex12(it)
@@ -68,7 +68,7 @@
 //    fun billow12() {
 //        val ss = shadeStyle {
 //            fragmentTransform {
-//                val va_texCoord0 by parameter<Vector2>()
+//                val va_texCoord0 by varyingIn<Vector2>()
 //
 //                val s2 by function<Vector2, Double> {
 //                    simplex12(it)
@@ -85,7 +85,7 @@
 //    fun fbm13() {
 //        val ss = shadeStyle {
 //            fragmentTransform {
-//                val va_texCoord0 by parameter<Vector2>()
+//                val va_texCoord0 by varyingIn<Vector2>()
 //
 //                val s3 by function<Vector3, Double> {
 //                    simplex13(it)
@@ -102,7 +102,7 @@
 //    fun billow13() {
 //        val ss = shadeStyle {
 //            fragmentTransform {
-//                val va_texCoord0 by parameter<Vector2>()
+//                val va_texCoord0 by varyingIn<Vector2>()
 //
 //                val s3 by function<Vector3, Double> {
 //                    simplex13(it)
@@ -119,7 +119,7 @@
 //    fun fbm14() {
 //        val ss = shadeStyle {
 //            fragmentTransform {
-//                val va_texCoord0 by parameter<Vector2>()
+//                val va_texCoord0 by varyingIn<Vector2>()
 //
 //                val s4 by function<Vector4, Double> {
 //                    simplex14(it)
@@ -136,7 +136,7 @@
 //    fun billow14() {
 //        val ss = shadeStyle {
 //            fragmentTransform {
-//                val va_texCoord0 by parameter<Vector2>()
+//                val va_texCoord0 by varyingIn<Vector2>()
 //
 //                val s4 by function<Vector4, Double> {
 //                    simplex14(it)

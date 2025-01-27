@@ -10,7 +10,7 @@ fun normalSmoother() = shadeStyleFilter1to1 {
     fragmentTransform {
         val tex0 by parameter<Sampler2D>() // world normals
 
-        val v_texCoord0 by parameter<Vector2>()
+        val v_texCoord0 by varyingIn<Vector2>()
         val step by 1.0 / tex0.size()
 
         val i by variable<Int>()

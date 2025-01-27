@@ -131,7 +131,7 @@ A common Kotlin pattern is `run {}` which is used to create anonymous blocks of 
 ```kotlin
 fragmentTransform {
     val p_time by parameter<Double>()
-    val va_texCoord0 by parameter<Vector2>()
+    val va_texCoord0 by varyingIn<Vector2>()
      
     val d by run {
         val t by va_texCoord0.x + va_texCoord0.y

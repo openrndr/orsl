@@ -23,7 +23,7 @@ fun voxelSSR(voxel: VolumeTexture, rayCount: Int = 4, stepsPerRayCount: Int = 20
             var g_voxelIntersection by global<Vector3>()
             var g_voxelIntersectionFound by global<Boolean>()
 
-            val v_texCoord0 by parameter<Vector2>()
+            val v_texCoord0 by varyingIn<Vector2>()
 
             val tex0 by parameter<Sampler2D>() // worldNormal
             val tex1 by parameter<Sampler2D>() // worldPosition
