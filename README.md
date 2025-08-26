@@ -1,6 +1,8 @@
 # ORSL
 
-![orsl in maven](https://maven-badges.herokuapp.com/maven-central/org.openrndr.orsl/orsl-shader-generator-jvm/badge.svg).
+[![Download](https://img.shields.io/maven-central/v/org.openrndr.orsl/orsl-shader-generator-jvm?style=flat&color=%23FFC0CB
+)](https://mvnrepository.com/artifact/org.openrndr.orsl)
+[![Build](https://github.com/openrndr/orsl/actions/workflows/build.yaml/badge.svg)](https://github.com/openrndr/orsl/actions/workflows/build.yaml)
 
 A set of modules that facilitate authoring shaders using Kotlin's typesafe builders. ORSL depends on [OPENRNDR](github.com/openrndr/openrndr) and
 [ORX](github.com/openrndr/orx).
